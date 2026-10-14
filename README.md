@@ -16,21 +16,46 @@ An intelligent agent and automation engine for Siemens Tessent ATPG test coverag
 - **Actionable Engineering Next Steps**: Prioritizes concrete DFT fixes (RAM blackboxing, clock/reset gating bypasses, DRC fixes, disposition waivers) to maximize test coverage.
 - **Interactive HTML Dashboard**: Produces executive KPI cards, search/filterable coverage hole tables, partition health status, and direct recommendations.
 
+### Modes
+1. **Single Run Mode**: Analyzes an ATPG run, identifies coverage holes, and produces an interactive coverage dashboard and AU CSV breakdown.
+2. **Two-Run Comparison Mode**: Compares 2 ATPG runs (e.g., TTLC vs RZL, Stuck-At vs At-Speed), analyzes cross-run divergence, and produces **3 distinct reports**:
+   - **Report 1**: Standalone coverage report for Run 1 (`atpg_coverage_report_run1.html`)
+   - **Report 2**: Standalone coverage report for Run 2 (`atpg_coverage_report_run2.html`)
+   - **Report 3**: Cross-Run Comparison & Improvement Advisory report (`atpg_coverage_comparison_report.html`) + deltas CSV (`au_comparison_deltas.csv`).
+
 ### CLI Usage
+
+#### 1. Single Run:
 ```bash
 python3 atpg_coverage_reporter.py --run-dir <atpg_run_directory> [options]
 ```
 
+#### 2. Compare 2 Runs (Produces 3 Reports):
+```bash
+python3 atpg_coverage_reporter.py \
+  --run-dir <run_dir_1> \
+  --compare-run-dir <run_dir_2> \
+  --label1 "<Label1>" \
+  --label2 "<Label2>" \
+  [options]
+```
+
 #### Options:
-- `--run-dir <dir>`: Path to the ATPG run folder (required).
-- `--recipe <recipe>`: Target recipe (e.g., `stuckat_edt_min`, `atspeed_edt_min`).
-- `--output-dir <dir>`: Directory for generated CSV and HTML reports (defaults to run-dir).
-- `--skip-tessent`: Skip Tessent execution and analyze existing `instance_au_breakdown.csv`.
+- `--run-dir <dir>`: Path to Run 1 ATPG folder (required).
+- `--compare-run-dir <dir>` / `--run-dir2 <dir>`: Path to Run 2 ATPG folder for comparison.
+- `--label1 <str>` / `--label2 <str>`: Display names for Run 1 and Run 2.
+- `--recipe1 <str>` / `--recipe2 <str>`: Explicit recipe names (auto-detected if omitted).
+- `--output-dir <dir>`: Output directory for reports and CSVs.
+- `--skip-tessent`: Skip Tessent and reuse existing `instance_au_breakdown*.csv` files.
 - `--top-n <int>`: Number of top coverage holes to display (default: 30).
 
 ### Chat Agent Usage
 In VS Code Copilot Chat, invoke:
 ```
+# Single run:
 @ATPG Coverage Report /path/to/atpg_run_dir/
+
+# Compare 2 runs:
+@ATPG Coverage Report compare /path/to/run1/ with /path/to/run2/
 ```
 

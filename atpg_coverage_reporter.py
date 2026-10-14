@@ -245,6 +245,7 @@ def parse_instance_au_breakdown(csv_path):
     top_record = None
     all_instances = []
     d1_instances = []
+    data_map = {}
 
     with open(csv_path, "r", errors="ignore") as f:
         reader = csv.reader(f)
@@ -291,6 +292,7 @@ def parse_instance_au_breakdown(csv_path):
                 all_instances.append(rec)
                 if depth == 1:
                     d1_instances.append(rec)
+            data_map[inst] = rec
 
     if not top_record:
         # Fallback if -top- wasn't named exactly
@@ -302,8 +304,9 @@ def parse_instance_au_breakdown(csv_path):
             "au": sum(d["au"] for d in d1_instances),
             "depth": 0
         }
+        data_map["-top-"] = top_record
 
-    return top_record, all_instances, d1_instances
+    return top_record, all_instances, d1_instances, data_map
 
 
 def classify_instance(inst, mod):
@@ -1021,94 +1024,1058 @@ def generate_html_report(analysis, artifacts, output_html):
     return output_html
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Automated ATPG Coverage & AU Breakdown Reporter")
-    parser.add_argument("--run-dir", "-r", required=True, help="Path to ATPG run directory")
-    parser.add_argument("--recipe", help="Recipe name (e.g. stuckat_edt_min, atspeed_edt_min)")
-    parser.add_argument("--output-dir", "-o", help="Directory to save generated CSV and HTML reports (defaults to run-dir)")
-    parser.add_argument("--csv-file", help="Path to write or use existing instance_au_breakdown.csv")
-    parser.add_argument("--html-file", help="Path to write output HTML report")
-    parser.add_argument("--skip-tessent", action="store_true", help="Skip Tessent execution and use existing CSV")
-    parser.add_argument("--tessent-bin", default=DEFAULT_TESSENT, help="Path to Tessent executable")
-    parser.add_argument("--license-server", default=DEFAULT_LICENSE, help="SALT license server")
-    parser.add_argument("--top-n", type=int, default=30, help="Number of top coverage holes to detail")
+def analyze_comparison(run1_data, run2_data, label1="Run 1", label2="Run 2"):
+    """
+    Performs cross-run delta analysis, ranks regressions/improvements, and formulates dual-run improvement advice.
+    """
+    top1 = run1_data["analysis"]["top"]
+    top2 = run2_data["analysis"]["top"]
+    map1 = run1_data["data_map"]
+    map2 = run2_data["data_map"]
 
-    args = parser.parse_args()
+    delta_faults = top1["faults"] - top2["faults"]
+    pct_delta_faults = (delta_faults / top2["faults"] * 100) if top2["faults"] else 0.0
 
-    # Resolve output directory
-    out_dir = os.path.abspath(args.output_dir if args.output_dir else args.run_dir)
+    delta_au = top1["au"] - top2["au"]
+    pct_delta_au = (delta_au / top2["au"] * 100) if top2["au"] else 0.0
+
+    delta_tc = top1["tc"] - top2["tc"]
+    au_rate1 = run1_data["analysis"]["au_rate"]
+    au_rate2 = run2_data["analysis"]["au_rate"]
+    delta_au_rate = au_rate1 - au_rate2
+
+    # Depth-1 Partitions comparison
+    all_keys = set(map1.keys()) | set(map2.keys())
+    d1_keys = {k for k in all_keys if (map1.get(k, {}).get("depth") == 1 or map2.get(k, {}).get("depth") == 1)}
+
+    d1_comparison = []
+    for k in sorted(d1_keys):
+        r1 = map1.get(k, {"faults": 0, "tc": 0.0, "au": 0, "module": ""})
+        r2 = map2.get(k, {"faults": 0, "tc": 0.0, "au": 0, "module": ""})
+        d_au = r1["au"] - r2["au"]
+        pct_au = (d_au / r2["au"] * 100) if r2["au"] > 0 else (100.0 if r1["au"] > 0 else 0.0)
+        d_f = r1["faults"] - r2["faults"]
+        d_tc = r1["tc"] - r2["tc"] if (r1["faults"] > 0 and r2["faults"] > 0) else 0.0
+        mod = r1["module"] if r1["module"] else r2["module"]
+        cat = classify_instance(k, mod)
+
+        if k in map1 and k in map2:
+            status = "Common"
+        elif k in map1:
+            status = f"{label1} Only"
+        else:
+            status = f"{label2} Only"
+
+        d1_comparison.append({
+            "instance": k,
+            "module": mod,
+            "category": cat,
+            "status": status,
+            "run1_faults": r1["faults"],
+            "run2_faults": r2["faults"],
+            "delta_faults": d_f,
+            "run1_tc": r1["tc"],
+            "run2_tc": r2["tc"],
+            "delta_tc": d_tc,
+            "run1_au": r1["au"],
+            "run2_au": r2["au"],
+            "delta_au": d_au,
+            "pct_delta_au": pct_au
+        })
+
+    # Glue logic delta
+    glue1 = run1_data["analysis"]["glue"]
+    glue2 = run2_data["analysis"]["glue"]
+    delta_glue_au = glue1["au"] - glue2["au"]
+    pct_glue_au = (delta_glue_au / glue2["au"] * 100) if glue2["au"] > 0 else 0.0
+    glue_comp = {
+        "instance": "[Top-Level Boundary / Glue Logic]",
+        "module": f"{top1['module']} (unassigned to D1)",
+        "category": "Buffer / Repeater / Glue",
+        "status": "Common",
+        "run1_faults": glue1["faults"],
+        "run2_faults": glue2["faults"],
+        "delta_faults": glue1["faults"] - glue2["faults"],
+        "run1_tc": glue1["tc"],
+        "run2_tc": glue2["tc"],
+        "delta_tc": glue1["tc"] - glue2["tc"],
+        "run1_au": glue1["au"],
+        "run2_au": glue2["au"],
+        "delta_au": delta_glue_au,
+        "pct_delta_au": pct_glue_au
+    }
+
+    d1_comparison.append(glue_comp)
+    d1_sorted = sorted(d1_comparison, key=lambda x: abs(x["delta_au"]), reverse=True)
+
+    # Hierarchical sub-instances comparison
+    all_inst_comp = []
+    for k in all_keys:
+        if k == "-top-": continue
+        r1 = map1.get(k, {"faults": 0, "tc": 0.0, "au": 0, "module": "", "depth": 0})
+        r2 = map2.get(k, {"faults": 0, "tc": 0.0, "au": 0, "module": "", "depth": 0})
+        if r1["au"] == 0 and r2["au"] == 0: continue
+        d_au = r1["au"] - r2["au"]
+        pct_au = (d_au / r2["au"] * 100) if r2["au"] > 0 else (100.0 if r1["au"] > 0 else 0.0)
+        mod = r1["module"] if r1["module"] else r2["module"]
+        depth = r1["depth"] if r1["depth"] else r2["depth"]
+        cat = classify_instance(k, mod)
+        status = "Common" if (k in map1 and k in map2) else (f"{label1} Only" if k in map1 else f"{label2} Only")
+
+        all_inst_comp.append({
+            "instance": k,
+            "module": mod,
+            "depth": depth,
+            "category": cat,
+            "status": status,
+            "run1_faults": r1["faults"],
+            "run2_faults": r2["faults"],
+            "delta_faults": r1["faults"] - r2["faults"],
+            "run1_tc": r1["tc"],
+            "run2_tc": r2["tc"],
+            "delta_tc": r1["tc"] - r2["tc"],
+            "run1_au": r1["au"],
+            "run2_au": r2["au"],
+            "delta_au": d_au,
+            "pct_delta_au": pct_au
+        })
+
+    regressions_run1 = sorted([x for x in all_inst_comp if x["delta_au"] > 100], key=lambda x: x["delta_au"], reverse=True)
+    improvements_run1 = sorted([x for x in all_inst_comp if x["delta_au"] < -100], key=lambda x: x["delta_au"])
+
+    # Improvement Advice for Run 1
+    advice_run1 = []
+    if regressions_run1:
+        top_reg = regressions_run1[0]
+        advice_run1.append({
+            "priority": "P1 - Critical Regression",
+            "title": f"Recover AU in {top_reg['instance']} ({top_reg['category']})",
+            "impact": f"{label1} has +{top_reg['delta_au']:,} more AU than {label2}",
+            "details": f"In {label1}, instance <code>{top_reg['instance']}</code> carries {top_reg['run1_au']:,} AU compared to only {top_reg['run2_au']:,} in {label2}. Inspect module <code>{top_reg['module']}</code> constraints, clock gating bypasses, or missing test waivers in {label1}.",
+            "command": f"report_faults {top_reg['instance']}/* -au -summary"
+        })
+    ram_reg = [x for x in regressions_run1 if "rw_array" in (x["instance"] + " " + x["module"]).lower() or "array" in x["instance"].lower()]
+    if ram_reg:
+        total_ram_reg = sum(x["delta_au"] for x in ram_reg)
+        advice_run1.append({
+            "priority": "P1 - High Impact",
+            "title": f"Blackbox / Bypass RAM Array Wrappers in {label1}",
+            "impact": f"Up to {total_ram_reg:,} AU higher in {label1} vs {label2}",
+            "details": f"{label1} exhibits higher AU in read/write RAM array wrappers (e.g. <code>{ram_reg[0]['instance'].split('/')[-1]}</code>). Ensure these unscan-stitched RAM arrays are blackboxed in logic ATPG or MBIST bypass mode is enforced.",
+            "command": "add_black_box par_santa_par_santa_ccf_rw_array_wrapper_* -auto"
+        })
+    advice_run1.append({
+        "priority": "P2 - Alignment",
+        "title": f"Audit Clock & Reset Bypass Rules against {label2}",
+        "impact": "Harmonizes ATPG constraints across both runs",
+        "details": f"Compare DO-files (resets.do, synchronous_clock_list.do) between {label1} and {label2} to identify missing pin constraints or inactive scan bypass signals in {label1}.",
+        "command": "report_clocks -matrix; report_drc_rules -violations"
+    })
+
+    # Improvement Advice for Run 2
+    advice_run2 = []
+    if improvements_run1:
+        top_imp = improvements_run1[0]
+        r2_higher = abs(top_imp["delta_au"])
+        advice_run2.append({
+            "priority": "P1 - Critical",
+            "title": f"Backport {label1} Fixes to {top_imp['instance']} in {label2}",
+            "impact": f"{label2} has +{r2_higher:,} more AU than {label1}",
+            "details": f"In {label2}, instance <code>{top_imp['instance']}</code> has {top_imp['run2_au']:,} AU, whereas {label1} achieved {top_imp['run1_au']:,} AU ({top_imp['pct_delta_au']:.1f}% reduction). Backport {label1}'s model, blackboxing, or DRC waivers to {label2}.",
+            "command": f"report_statistics -instance {top_imp['instance']}"
+        })
+    ram_imp = [x for x in improvements_run1 if "rw_array" in (x["instance"] + " " + x["module"]).lower() or "array" in x["instance"].lower()]
+    if ram_imp:
+        total_ram_imp = sum(abs(x["delta_au"]) for x in ram_imp)
+        advice_run2.append({
+            "priority": "P1 - High Impact",
+            "title": f"Adopt {label1} Array Blackboxing/Bypass Strategy in {label2}",
+            "impact": f"Can eliminate up to {total_ram_imp:,} AU in {label2}",
+            "details": f"{label1} successfully eliminated hundreds of thousands of AU across memory arrays and wrappers. Apply identical <code>add_black_box</code> or MBIST collar bypass directives in {label2}.",
+            "command": "add_black_box *rw_array_wrapper* -auto"
+        })
+    advice_run2.append({
+        "priority": "P2 - Alignment",
+        "title": f"Synchronize Fault Disposition Lists with {label1}",
+        "impact": "Excludes structurally tied/redundant logic from {label2}",
+        "details": f"Ensure the disposition file used in {label1} is applied to {label2} to delete known architectural untestable faults.",
+        "command": "read_faults $disp_file -delete"
+    })
+
+    # Shared Advice for Both Runs
+    advice_shared = [
+        {
+            "priority": "P2 - Core Health",
+            "title": "Resolve Asynchronous Reset Synchronizers (CDU / Double-Sync)",
+            "impact": "Improves testability across clock/reset domains in both runs",
+            "details": "Both runs carry residual AU in clock distribution and reset synchronizer chains (e.g. <code>cdu_</code>, <code>ctech_lib_doublesync_rst</code>). Verify that scan reset bypass signals (such as <code>fscan_bypx_rst</code>) are asserted during capture.",
+            "command": "add_cell_constraints -inst <doublesync_inst> -value 0"
+        },
+        {
+            "priority": "P3 - Test Points",
+            "title": "Evaluate Test Point Insertion (TPI) for Deep Combinational Logic",
+            "impact": "Breaks long observability chains to raise maximum coverage ceiling",
+            "details": "For deep logic cones with high fan-in where coverage saturates below 95%, test points (controllability and observability points) will raise the upper coverage bound for both runs.",
+            "command": "report_test_points -summary"
+        }
+    ]
+
+    return {
+        "label1": label1,
+        "label2": label2,
+        "top1": top1,
+        "top2": top2,
+        "delta_faults": delta_faults,
+        "pct_delta_faults": pct_delta_faults,
+        "delta_au": delta_au,
+        "pct_delta_au": pct_delta_au,
+        "delta_tc": delta_tc,
+        "au_rate1": au_rate1,
+        "au_rate2": au_rate2,
+        "delta_au_rate": delta_au_rate,
+        "d1_comparison": d1_sorted,
+        "glue": glue_comp,
+        "regressions_run1": regressions_run1[:50],
+        "improvements_run1": improvements_run1[:50],
+        "all_inst_comp": all_inst_comp,
+        "advice_run1": advice_run1,
+        "advice_run2": advice_run2,
+        "advice_shared": advice_shared
+    }
+
+
+def export_comparison_csv(comp_analysis, output_csv):
+    """
+    Exports full hierarchical comparison deltas into CSV format.
+    """
+    print(f"[*] Exporting comparison deltas CSV: {output_csv}")
+    l1 = comp_analysis["label1"]
+    l2 = comp_analysis["label2"]
+    with open(output_csv, "w", newline="", errors="ignore") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            "Instance", "Module", "Depth", "Category", "Status",
+            f"{l1} Faults", f"{l2} Faults", "Faults Delta",
+            f"{l1} TC (%)", f"{l2} TC (%)", "TC Delta (%)",
+            f"{l1} AU", f"{l2} AU", f"AU Delta ({l1} - {l2})", "AU % Change"
+        ])
+        for r in comp_analysis["all_inst_comp"]:
+            writer.writerow([
+                r["instance"], r["module"], r["depth"], r["category"], r["status"],
+                r["run1_faults"], r["run2_faults"], r["delta_faults"],
+                f"{r['run1_tc']:.2f}", f"{r['run2_tc']:.2f}", f"{r['delta_tc']:+.2f}",
+                r["run1_au"], r["run2_au"], r["delta_au"], f"{r['pct_delta_au']:+.2f}%"
+            ])
+    print(f"[✓] Saved comparison deltas CSV: {output_csv}")
+
+
+def generate_comparison_html_report(comp, run1_data, run2_data, output_html, rel_report1, rel_report2, rel_csv=None):
+    """
+    Renders an interactive 3-way cross-run comparison report with delta tables and improvement advisory.
+    """
+    print(f"[*] Rendering comparison HTML report: {output_html}")
+    l1 = comp["label1"]
+    l2 = comp["label2"]
+    top1 = comp["top1"]
+    top2 = comp["top2"]
+
+    dtc = comp["delta_tc"]
+    dau = comp["delta_au"]
+    if dtc > 0.05:
+        verdict_badge = f'<span class="badge badge-green">{html_lib.escape(l1)} Leads: +{dtc:.2f}% Coverage (AU Delta: {dau:+,})</span>'
+    elif dtc < -0.05:
+        verdict_badge = f'<span class="badge badge-yellow">{html_lib.escape(l2)} Leads: +{abs(dtc):.2f}% Coverage (AU Delta: {dau:+,})</span>'
+    else:
+        verdict_badge = f'<span class="badge badge-blue">Coverage Parity ({top1["tc"]:.2f}% vs {top2["tc"]:.2f}%)</span>'
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATPG Coverage Comparison Report: {html_lib.escape(l1)} vs {html_lib.escape(l2)}</title>
+    <style>
+        :root {{
+            --bg-page: #0f172a;
+            --bg-card: #1e293b;
+            --bg-subcard: #243247;
+            --bg-hover: rgba(255, 255, 255, 0.04);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --text-highlight: #38bdf8;
+            --border: #334155;
+            --red: #f87171;
+            --red-bg: rgba(248, 113, 113, 0.12);
+            --green: #4ade80;
+            --green-bg: rgba(74, 222, 128, 0.12);
+            --yellow: #facc15;
+            --yellow-bg: rgba(250, 204, 21, 0.12);
+            --blue: #60a5fa;
+            --blue-bg: rgba(96, 165, 250, 0.12);
+            --purple: #c084fc;
+            --purple-bg: rgba(192, 132, 252, 0.12);
+            --code-bg: #0b1120;
+        }}
+        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 1.5rem;
+        }}
+        .container {{ max-width: 1520px; margin: 0 auto; }}
+        header {{
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }}
+        h1 {{
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-highlight);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }}
+        .meta {{
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.9;
+        }}
+        .meta code {{
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            background: var(--code-bg);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #7dd3fc;
+            border: 1px solid var(--border);
+        }}
+        .nav-links {{
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }}
+        .nav-btn {{
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 0.9rem;
+            background: var(--bg-subcard);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-highlight);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }}
+        .nav-btn:hover {{
+            background: var(--border);
+            color: #fff;
+            transform: translateY(-1px);
+        }}
+        .badge {{
+            display: inline-block;
+            padding: 0.35rem 0.9rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }}
+        .badge-green {{ background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }}
+        .badge-blue {{ background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue); }}
+        .badge-yellow {{ background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow); }}
+        .badge-red {{ background: var(--red-bg); color: var(--red); border: 1px solid var(--red); }}
+
+        .kpi-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }}
+        .kpi-card {{
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+        }}
+        .kpi-title {{
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--text-dim);
+            margin-bottom: 0.4rem;
+        }}
+        .kpi-val {{
+            font-size: 1.85rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+        }}
+        .kpi-sub {{
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            font-weight: 500;
+        }}
+        .val-red {{ color: var(--red); }}
+        .val-green {{ color: var(--green); }}
+        .val-yellow {{ color: var(--yellow); }}
+        .val-blue {{ color: var(--blue); }}
+
+        .card {{
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+        }}
+        h2 {{
+            font-size: 1.35rem;
+            color: var(--text-highlight);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.75rem;
+        }}
+        h3 {{
+            font-size: 1.15rem;
+            color: var(--text-main);
+            margin: 1.25rem 0 0.5rem 0;
+        }}
+        p {{ margin-bottom: 0.75rem; color: var(--text-dim); }}
+
+        .split-grid {{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }}
+        @media (max-width: 960px) {{
+            .split-grid {{ grid-template-columns: 1fr; }}
+        }}
+
+        .action-card {{
+            background: var(--bg-subcard);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--blue);
+            border-radius: 6px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }}
+        .action-card.p1 {{ border-left-color: var(--red); }}
+        .action-card.p2 {{ border-left-color: var(--yellow); }}
+        .action-header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+        }}
+        .action-title {{
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }}
+        .action-impact {{
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.15rem 0.55rem;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-highlight);
+        }}
+        .action-code {{
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.45rem 0.7rem;
+            margin-top: 0.6rem;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 0.84rem;
+            color: #7dd3fc;
+            overflow-x: auto;
+        }}
+
+        .table-responsive {{
+            overflow-x: auto;
+            margin-top: 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }}
+        th {{
+            background: #162032;
+            color: var(--text-main);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.85rem 1rem;
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+        }}
+        td {{
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-dim);
+        }}
+        tr:hover td {{
+            background-color: var(--bg-hover);
+            color: var(--text-main);
+        }}
+        .text-right {{ text-align: right; }}
+        .text-center {{ text-align: center; }}
+        .font-mono {{
+            font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+            font-size: 0.84rem;
+            color: #cbd5e1;
+        }}
+        .tag {{
+            display: inline-block;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }}
+        .tag-improved {{ background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }}
+        .tag-regressed {{ background: var(--red-bg); color: var(--red); border: 1px solid var(--red); }}
+        .tag-neutral {{ background: rgba(148, 163, 184, 0.15); color: #cbd5e1; border: 1px solid #475569; }}
+
+        .search-box {{
+            width: 100%;
+            max-width: 450px;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-main);
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            outline: none;
+        }}
+        .search-box:focus {{ border-color: var(--text-highlight); }}
+    </style>
+    <script>
+        function filterTable(inputId, tableId) {{
+            const filter = document.getElementById(inputId).value.toLowerCase();
+            const rows = document.getElementById(tableId).getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            for (let i = 0; i < rows.length; i++) {{
+                const text = rows[i].textContent.toLowerCase();
+                rows[i].style.display = text.includes(filter) ? '' : 'none';
+            }}
+        }}
+    </script>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h1>ATPG Coverage Comparison: {html_lib.escape(l1)} vs {html_lib.escape(l2)}</h1>
+                <div class="meta">
+                    Generated on: <code>{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</code> &nbsp;|&nbsp;
+                    Run 1: <code>{html_lib.escape(run1_data['artifacts']['work_dir'])}</code> &nbsp;|&nbsp;
+                    Run 2: <code>{html_lib.escape(run2_data['artifacts']['work_dir'])}</code>
+                </div>
+                <div class="nav-links">
+                    <a href="{html_lib.escape(rel_report1)}" class="nav-btn">📄 Report 1: {html_lib.escape(l1)} Coverage Report</a>
+                    <a href="{html_lib.escape(rel_report2)}" class="nav-btn">📄 Report 2: {html_lib.escape(l2)} Coverage Report</a>
+                    {f'<a href="{html_lib.escape(rel_csv)}" class="nav-btn">📊 Download Deltas CSV</a>' if rel_csv else ''}
+                </div>
+            </div>
+            <div>
+                {verdict_badge}
+            </div>
+        </div>
+    </header>
+
+    <!-- KPI Grid -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-title">Test Coverage (TC)</div>
+            <div class="kpi-val { 'val-green' if dtc >= 0 else 'val-red' }">
+                {dtc:+.2f}%
+            </div>
+            <div class="kpi-sub">{l1}: {top1['tc']:.2f}% vs {l2}: {top2['tc']:.2f}%</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">AU Delta ({l1} - {l2})</div>
+            <div class="kpi-val { 'val-green' if dau <= 0 else 'val-red' }">
+                {dau:+,}
+            </div>
+            <div class="kpi-sub">{l1}: {top1['au']:,} vs {l2}: {top2['au']:,} ({comp['pct_delta_au']:+.1f}%)</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">Fault Universe Delta</div>
+            <div class="kpi-val val-blue">
+                {comp['delta_faults']:+,}
+            </div>
+            <div class="kpi-sub">{l1}: {top1['faults']:,} vs {l2}: {top2['faults']:,} ({comp['pct_delta_faults']:+.1f}%)</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">AU Rate Delta</div>
+            <div class="kpi-val { 'val-green' if comp['delta_au_rate'] <= 0 else 'val-red' }">
+                {comp['delta_au_rate']:+.2f}%
+            </div>
+            <div class="kpi-sub">{l1}: {comp['au_rate1']:.2f}% vs {l2}: {comp['au_rate2']:.2f}%</div>
+        </div>
+    </div>
+
+    <!-- Dual-Run Actionable Advisory -->
+    <div class="card">
+        <h2>
+            <span>Actionable Advisory: How to Improve Coverage in Both Runs</span>
+            <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-dim);">Targeted Dual-Run Guidance</span>
+        </h2>
+        <p>Specific engineering recommendations derived from cross-run divergence, identifying where each run lags and how each can achieve optimal test coverage:</p>
+
+        <div class="split-grid">
+            <!-- Advice for Run 1 -->
+            <div>
+                <h3>1. How to Improve {html_lib.escape(l1)} Coverage</h3>
+                <p style="font-size: 0.9rem;">Initiatives addressing areas where {html_lib.escape(l1)} regressed or lags behind {html_lib.escape(l2)}:</p>
+"""
+
+    for step in comp["advice_run1"]:
+        p_cls = "p1" if "Critical" in step["priority"] else "p2"
+        html += f"""
+                <div class="action-card {p_cls}">
+                    <div class="action-header">
+                        <span class="action-title">{html_lib.escape(step['priority'])}: {html_lib.escape(step['title'])}</span>
+                        <span class="action-impact">{html_lib.escape(step['impact'])}</span>
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
+                        {step['details']}
+                    </div>
+                    {f'<div class="action-code">{html_lib.escape(step["command"])}</div>' if step.get("command") else ''}
+                </div>
+"""
+
+    html += f"""
+            </div>
+
+            <!-- Advice for Run 2 -->
+            <div>
+                <h3>2. How to Improve {html_lib.escape(l2)} Coverage</h3>
+                <p style="font-size: 0.9rem;">Initiatives backporting {html_lib.escape(l1)} victories and closing {html_lib.escape(l2)} gaps:</p>
+"""
+
+    for step in comp["advice_run2"]:
+        p_cls = "p1" if "Critical" in step["priority"] else "p2"
+        html += f"""
+                <div class="action-card {p_cls}">
+                    <div class="action-header">
+                        <span class="action-title">{html_lib.escape(step['priority'])}: {html_lib.escape(step['title'])}</span>
+                        <span class="action-impact">{html_lib.escape(step['impact'])}</span>
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
+                        {step['details']}
+                    </div>
+                    {f'<div class="action-code">{html_lib.escape(step["command"])}</div>' if step.get("command") else ''}
+                </div>
+"""
+
+    html += f"""
+            </div>
+        </div>
+
+        <!-- Shared Advice -->
+        <h3 style="margin-top: 1.5rem;">3. Shared Initiatives for Both Runs</h3>
+        <p style="font-size: 0.9rem;">Common bottlenecks identified across both designs:</p>
+"""
+
+    for step in comp["advice_shared"]:
+        html += f"""
+        <div class="action-card p2">
+            <div class="action-header">
+                <span class="action-title">{html_lib.escape(step['priority'])}: {html_lib.escape(step['title'])}</span>
+                <span class="action-impact">{html_lib.escape(step['impact'])}</span>
+            </div>
+            <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
+                {step['details']}
+            </div>
+            {f'<div class="action-code">{html_lib.escape(step["command"])}</div>' if step.get("command") else ''}
+        </div>
+"""
+
+    html += f"""
+    </div>
+
+    <!-- Depth-1 Partitions Comparison Table -->
+    <div class="card">
+        <h2>
+            <span>Primary Partition (Depth-1) Delta Comparison</span>
+            <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-dim);">{len(comp['d1_comparison'])} Partitions</span>
+        </h2>
+        <p>Comparison of fault totals, test coverage %, and AU delta across all Depth-1 partition instances.</p>
+
+        <input type="text" id="d1CompSearch" class="search-box" onkeyup="filterTable('d1CompSearch', 'd1CompTable')" placeholder="Search partitions by name or module...">
+
+        <div class="table-responsive">
+            <table id="d1CompTable">
+                <thead>
+                    <tr>
+                        <th>Partition Instance</th>
+                        <th>Module</th>
+                        <th class="text-right">{html_lib.escape(l1)} AU</th>
+                        <th class="text-right">{html_lib.escape(l2)} AU</th>
+                        <th class="text-right">AU Delta</th>
+                        <th class="text-right">% Change</th>
+                        <th class="text-right">{html_lib.escape(l1)} TC</th>
+                        <th class="text-right">{html_lib.escape(l2)} TC</th>
+                        <th class="text-right">TC Delta</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+"""
+
+    for r in comp["d1_comparison"]:
+        dau_val = r["delta_au"]
+        dtc_val = r["delta_tc"]
+        val_cls = "val-green" if dau_val < 0 else ("val-red" if dau_val > 0 else "")
+        tc_cls = "val-green" if dtc_val > 0.5 else ("val-red" if dtc_val < -0.5 else "")
+        status_tag = (
+            f'<span class="tag tag-improved">IMPROVED IN {html_lib.escape(l1)}</span>' if dau_val < -500 else
+            (f'<span class="tag tag-regressed">REGRESSED IN {html_lib.escape(l1)}</span>' if dau_val > 500 else
+            f'<span class="tag tag-neutral">{html_lib.escape(r["status"])}</span>')
+        )
+
+        html += f"""
+                    <tr>
+                        <td class="font-mono"><strong>{html_lib.escape(r['instance'])}</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">{html_lib.escape(r['module'][:38])}</td>
+                        <td class="text-right font-mono">{r['run1_au']:,}</td>
+                        <td class="text-right font-mono">{r['run2_au']:,}</td>
+                        <td class="text-right font-mono {val_cls}"><strong>{dau_val:+,}</strong></td>
+                        <td class="text-right font-mono {val_cls}">{r['pct_delta_au']:+.1f}%</td>
+                        <td class="text-right font-mono">{r['run1_tc']:.2f}%</td>
+                        <td class="text-right font-mono">{r['run2_tc']:.2f}%</td>
+                        <td class="text-right font-mono {tc_cls}"><strong>{dtc_val:+.2f}%</strong></td>
+                        <td class="text-center">{status_tag}</td>
+                    </tr>
+"""
+
+    html += f"""
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Top Regressions Table -->
+    <div class="card">
+        <h2>
+            <span>Top AU Regressions in {html_lib.escape(l1)} ({html_lib.escape(l1)} AU &gt; {html_lib.escape(l2)} AU)</span>
+            <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-dim);">{len(comp['regressions_run1'])} High Delta Instances</span>
+        </h2>
+        <p>Sub-instances where {html_lib.escape(l1)} introduced more untestable faults than {html_lib.escape(l2)}. These represent prime opportunities to recover coverage in {html_lib.escape(l1)}.</p>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Instance Path</th>
+                        <th>Module</th>
+                        <th>Category</th>
+                        <th class="text-right">{html_lib.escape(l1)} AU</th>
+                        <th class="text-right">{html_lib.escape(l2)} AU</th>
+                        <th class="text-right">AU Delta</th>
+                        <th class="text-right">{html_lib.escape(l1)} TC</th>
+                        <th class="text-right">{html_lib.escape(l2)} TC</th>
+                    </tr>
+                </thead>
+                <tbody>
+"""
+
+    for idx, r in enumerate(comp["regressions_run1"][:25], 1):
+        html += f"""
+                    <tr>
+                        <td class="text-center font-mono">{idx}</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>{html_lib.escape(r['instance'])}</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">{html_lib.escape(r['module'])}</td>
+                        <td><span class="tag tag-neutral">{html_lib.escape(r['category'])}</span></td>
+                        <td class="text-right font-mono val-red"><strong>{r['run1_au']:,}</strong></td>
+                        <td class="text-right font-mono">{r['run2_au']:,}</td>
+                        <td class="text-right font-mono val-red"><strong>{r['delta_au']:+,}</strong></td>
+                        <td class="text-right font-mono">{r['run1_tc']:.2f}%</td>
+                        <td class="text-right font-mono">{r['run2_tc']:.2f}%</td>
+                    </tr>
+"""
+
+    html += f"""
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Top Improvements Table -->
+    <div class="card">
+        <h2>
+            <span>Top AU Improvements in {html_lib.escape(l1)} ({html_lib.escape(l1)} AU &lt; {html_lib.escape(l2)} AU)</span>
+            <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-dim);">{len(comp['improvements_run1'])} Resolved Blocks</span>
+        </h2>
+        <p>Sub-instances where {html_lib.escape(l1)} successfully eliminated untestable faults compared to {html_lib.escape(l2)}. Apply these techniques to improve {html_lib.escape(l2)}.</p>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Instance Path</th>
+                        <th>Module</th>
+                        <th>Category</th>
+                        <th class="text-right">{html_lib.escape(l1)} AU</th>
+                        <th class="text-right">{html_lib.escape(l2)} AU</th>
+                        <th class="text-right">AU Delta</th>
+                        <th class="text-right">{html_lib.escape(l1)} TC</th>
+                        <th class="text-right">{html_lib.escape(l2)} TC</th>
+                    </tr>
+                </thead>
+                <tbody>
+"""
+
+    for idx, r in enumerate(comp["improvements_run1"][:25], 1):
+        html += f"""
+                    <tr>
+                        <td class="text-center font-mono">{idx}</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>{html_lib.escape(r['instance'])}</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">{html_lib.escape(r['module'])}</td>
+                        <td><span class="tag tag-neutral">{html_lib.escape(r['category'])}</span></td>
+                        <td class="text-right font-mono">{r['run1_au']:,}</td>
+                        <td class="text-right font-mono val-red"><strong>{r['run2_au']:,}</strong></td>
+                        <td class="text-right font-mono val-green"><strong>{r['delta_au']:+,}</strong></td>
+                        <td class="text-right font-mono">{r['run1_tc']:.2f}%</td>
+                        <td class="text-right font-mono">{r['run2_tc']:.2f}%</td>
+                    </tr>
+"""
+
+    html += f"""
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-dim); font-size: 0.85rem;">
+        Generated by <strong>ATPG Coverage Report Agent</strong> &bull; Cross-Run Comparison Flow &bull; Intel CTH DFT Automation
+    </footer>
+</div>
+</body>
+</html>
+"""
+
+    with open(output_html, "w") as f:
+        f.write(html)
+
+    print(f"[✓] Successfully generated comparison HTML report: {output_html}")
+    return output_html
+
+
+def process_single_run(run_dir, recipe=None, csv_file=None, output_dir=None, html_file=None,
+                       skip_tessent=False, tessent_bin=DEFAULT_TESSENT, license_server=DEFAULT_LICENSE,
+                       top_n=30, label_suffix=""):
+    """
+    Executes full pipeline for a single ATPG run.
+    """
+    out_dir = os.path.abspath(output_dir if output_dir else run_dir)
     os.makedirs(out_dir, exist_ok=True)
 
     csv_path = None
-    if args.csv_file:
-        csv_path = os.path.abspath(args.csv_file)
+    if csv_file:
+        csv_path = os.path.abspath(csv_file)
     else:
-        # Check if instance_au_breakdown.csv exists in out_dir or run_dir
-        candidate = os.path.join(out_dir, "instance_au_breakdown.csv")
+        candidate_name = f"instance_au_breakdown{label_suffix}.csv" if label_suffix else "instance_au_breakdown.csv"
+        candidate = os.path.join(out_dir, candidate_name)
         if os.path.exists(candidate) and os.path.getsize(candidate) > 1000:
             csv_path = candidate
         else:
-            # Check for any instance_au_breakdown*.csv in run_dir
-            existing_csvs = glob.glob(os.path.join(args.run_dir, "instance_au_breakdown*.csv"))
+            existing_csvs = glob.glob(os.path.join(run_dir, "instance_au_breakdown*.csv"))
             if existing_csvs:
-                # Pick the largest or newest valid CSV
                 existing_csvs.sort(key=lambda x: os.path.getsize(x), reverse=True)
                 if os.path.getsize(existing_csvs[0]) > 1000:
                     csv_path = existing_csvs[0]
             if not csv_path:
                 csv_path = candidate
 
-    html_path = os.path.abspath(args.html_file if args.html_file else os.path.join(out_dir, "atpg_coverage_report.html"))
+    html_default = f"atpg_coverage_report{label_suffix}.html" if label_suffix else "atpg_coverage_report.html"
+    html_path = os.path.abspath(html_file if html_file else os.path.join(out_dir, html_default))
     log_path = os.path.splitext(csv_path)[0] + "_tessent.log"
 
-    # Step 1: Discover artifacts
-    artifacts = find_files_for_run(args.run_dir, recipe=args.recipe)
+    artifacts = find_files_for_run(run_dir, recipe=recipe)
 
-    # Step 2: Run Tessent or reuse CSV
-    if args.skip_tessent:
+    if skip_tessent:
         if not os.path.exists(csv_path):
             raise FileNotFoundError(f"--skip-tessent specified, but CSV does not exist: {csv_path}")
         print(f"[*] Skipping Tessent execution as requested. Using existing CSV: {csv_path}")
     else:
-        # Check if CSV already exists in run_dir or output_dir
         if os.path.exists(csv_path) and os.path.getsize(csv_path) > 1000:
-            print(f"[*] Found pre-existing {csv_path}. To regenerate, delete the file or specify a different path.")
+            print(f"[*] Found pre-existing {csv_path}. Reusing for analysis.")
         else:
             run_tessent_extraction(
                 artifacts=artifacts,
                 output_csv=csv_path,
                 log_file=log_path,
-                tessent_bin=args.tessent_bin,
-                license_server=args.license_server
+                tessent_bin=tessent_bin,
+                license_server=license_server
             )
 
-    # Step 3: Parse CSV
-    top_record, all_instances, d1_instances = parse_instance_au_breakdown(csv_path)
-
-    # Step 4: Analyze coverage holes and formulate next steps
-    analysis = analyze_coverage(top_record, all_instances, d1_instances, top_n=args.top_n)
-
-    # Step 5: Generate HTML report
+    top_record, all_instances, d1_instances, data_map = parse_instance_au_breakdown(csv_path)
+    analysis = analyze_coverage(top_record, all_instances, d1_instances, top_n=top_n)
     generate_html_report(analysis, artifacts, html_path)
 
-    # Step 6: Print Console Summary
-    print("\n" + "="*80)
-    print(f"  ATPG COVERAGE & AU BREAKDOWN SUMMARY: {artifacts['fub']} ({artifacts['recipe']})")
-    print("="*80)
-    print(f"  • Overall Test Coverage:  {analysis['overall_tc']:.2f}% (Target: >=95.00%)")
-    print(f"  • Total Design Faults:    {analysis['total_faults']:,}")
-    print(f"  • Total AU Faults:        {analysis['total_au']:,} ({analysis['au_rate']:.2f}% AU Rate)")
-    print(f"  • Partition Count (D1):   {len(analysis['d1_list'])}")
-    print("-"*80)
-    print("  TOP 5 COVERAGE HOLES:")
-    for idx, hole in enumerate(analysis["coverage_holes"][:5], 1):
-        print(f"    {idx}. {hole['instance']} ({hole['category']})")
-        print(f"       AU: {hole['au']:,} ({hole['pct_of_total_au']:.2f}% of design AU) | TC: {hole['tc']:.2f}% | Faults: {hole['faults']:,}")
-    print("-"*80)
-    print(f"  Generated Artifacts:")
-    print(f"  • CSV Breakdown:  {csv_path}")
-    print(f"  • HTML Report:    {html_path}")
-    print("="*80 + "\n")
+    return {
+        "artifacts": artifacts,
+        "csv_path": csv_path,
+        "html_path": html_path,
+        "top_record": top_record,
+        "all_instances": all_instances,
+        "d1_instances": d1_instances,
+        "data_map": data_map,
+        "analysis": analysis
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Automated ATPG Coverage & AU Breakdown Reporter")
+    parser.add_argument("--run-dir", "-r", required=True, help="Path to ATPG run directory (Run 1)")
+    parser.add_argument("--compare-run-dir", "--run-dir2", "-c", help="Path to second ATPG run directory for comparison (Run 2)")
+    parser.add_argument("--label1", help="Custom display label for Run 1")
+    parser.add_argument("--label2", help="Custom display label for Run 2")
+    parser.add_argument("--recipe", "--recipe1", help="Recipe name for Run 1 (e.g. stuckat_edt_min, atspeed_edt_min)")
+    parser.add_argument("--recipe2", help="Recipe name for Run 2")
+    parser.add_argument("--output-dir", "-o", help="Directory to save generated CSV and HTML reports")
+    parser.add_argument("--csv-file", "--csv-file1", help="Path to CSV for Run 1")
+    parser.add_argument("--csv-file2", help="Path to CSV for Run 2")
+    parser.add_argument("--html-file", "--html-file1", help="Path to write output HTML report for Run 1")
+    parser.add_argument("--html-file2", help="Path to write output HTML report for Run 2")
+    parser.add_argument("--html-compare", help="Path to write output comparison HTML report")
+    parser.add_argument("--skip-tessent", action="store_true", help="Skip Tessent execution and use existing CSVs")
+    parser.add_argument("--tessent-bin", default=DEFAULT_TESSENT, help="Path to Tessent executable")
+    parser.add_argument("--license-server", default=DEFAULT_LICENSE, help="SALT license server")
+    parser.add_argument("--top-n", type=int, default=30, help="Number of top coverage holes to detail")
+
+    args = parser.parse_args()
+
+    out_dir = os.path.abspath(args.output_dir if args.output_dir else (os.getcwd() if args.compare_run_dir else args.run_dir))
+    os.makedirs(out_dir, exist_ok=True)
+
+    # Comparison Mode
+    if args.compare_run_dir:
+        label1 = args.label1 if args.label1 else "Run 1"
+        label2 = args.label2 if args.label2 else "Run 2"
+
+        print("\n" + "="*80)
+        print(f"  STARTING ATPG COVERAGE COMPARISON MODE: {label1} vs {label2}")
+        print("="*80 + "\n")
+
+        print(f"--- [1/3] Processing {label1} ---")
+        run1_data = process_single_run(
+            run_dir=args.run_dir,
+            recipe=args.recipe,
+            csv_file=args.csv_file,
+            output_dir=out_dir,
+            html_file=args.html_file,
+            skip_tessent=args.skip_tessent,
+            tessent_bin=args.tessent_bin,
+            license_server=args.license_server,
+            top_n=args.top_n,
+            label_suffix="_run1"
+        )
+
+        print(f"\n--- [2/3] Processing {label2} ---")
+        run2_data = process_single_run(
+            run_dir=args.compare_run_dir,
+            recipe=args.recipe2,
+            csv_file=args.csv_file2,
+            output_dir=out_dir,
+            html_file=args.html_file2,
+            skip_tessent=args.skip_tessent,
+            tessent_bin=args.tessent_bin,
+            license_server=args.license_server,
+            top_n=args.top_n,
+            label_suffix="_run2"
+        )
+
+        # Refine labels if default
+        if not args.label1:
+            label1 = f"{run1_data['artifacts']['fub']} ({run1_data['artifacts']['recipe']})"
+        if not args.label2:
+            label2 = f"{run2_data['artifacts']['fub']} ({run2_data['artifacts']['recipe']})"
+
+        print(f"\n--- [3/3] Generating Cross-Run Comparison & Improvement Advisory ---")
+        comp = analyze_comparison(run1_data, run2_data, label1=label1, label2=label2)
+
+        comp_csv = os.path.join(out_dir, "au_comparison_deltas.csv")
+        export_comparison_csv(comp, comp_csv)
+
+        comp_html = os.path.abspath(args.html_compare if args.html_compare else os.path.join(out_dir, "atpg_coverage_comparison_report.html"))
+        rel_r1 = os.path.relpath(run1_data["html_path"], os.path.dirname(comp_html))
+        rel_r2 = os.path.relpath(run2_data["html_path"], os.path.dirname(comp_html))
+        rel_csv = os.path.relpath(comp_csv, os.path.dirname(comp_html))
+
+        generate_comparison_html_report(comp, run1_data, run2_data, comp_html, rel_r1, rel_r2, rel_csv)
+
+        print("\n" + "="*80)
+        print(f"  ATPG COVERAGE COMPARISON SUMMARY: {label1} vs {label2}")
+        print("="*80)
+        print(f"  • {label1} Coverage:  {comp['top1']['tc']:.2f}% (AU: {comp['top1']['au']:,})")
+        print(f"  • {label2} Coverage:  {comp['top2']['tc']:.2f}% (AU: {comp['top2']['au']:,})")
+        print(f"  • Coverage Delta:     {comp['delta_tc']:+.2f}%")
+        print(f"  • AU Delta ({label1} - {label2}): {comp['delta_au']:+,} ({comp['pct_delta_au']:+.1f}%)")
+        print("-"*80)
+        print(f"  THREE GENERATED REPORTS:")
+        print(f"  1. Report 1 ({label1}):          {run1_data['html_path']}")
+        print(f"  2. Report 2 ({label2}):          {run2_data['html_path']}")
+        print(f"  3. Report 3 (Comparison Report): {comp_html}")
+        print(f"  • Comparison Deltas CSV:         {comp_csv}")
+        print("="*80 + "\n")
+
+    # Single Run Mode
+    else:
+        run_data = process_single_run(
+            run_dir=args.run_dir,
+            recipe=args.recipe,
+            csv_file=args.csv_file,
+            output_dir=out_dir,
+            html_file=args.html_file,
+            skip_tessent=args.skip_tessent,
+            tessent_bin=args.tessent_bin,
+            license_server=args.license_server,
+            top_n=args.top_n
+        )
+
+        analysis = run_data["analysis"]
+        artifacts = run_data["artifacts"]
+
+        print("\n" + "="*80)
+        print(f"  ATPG COVERAGE & AU BREAKDOWN SUMMARY: {artifacts['fub']} ({artifacts['recipe']})")
+        print("="*80)
+        print(f"  • Overall Test Coverage:  {analysis['overall_tc']:.2f}% (Target: >=95.00%)")
+        print(f"  • Total Design Faults:    {analysis['total_faults']:,}")
+        print(f"  • Total AU Faults:        {analysis['total_au']:,} ({analysis['au_rate']:.2f}% AU Rate)")
+        print(f"  • Partition Count (D1):   {len(analysis['d1_list'])}")
+        print("-"*80)
+        print("  TOP 5 COVERAGE HOLES:")
+        for idx, hole in enumerate(analysis["coverage_holes"][:5], 1):
+            print(f"    {idx}. {hole['instance']} ({hole['category']})")
+            print(f"       AU: {hole['au']:,} ({hole['pct_of_total_au']:.2f}% of design AU) | TC: {hole['tc']:.2f}% | Faults: {hole['faults']:,}")
+        print("-"*80)
+        print(f"  Generated Artifacts:")
+        print(f"  • CSV Breakdown:  {run_data['csv_path']}")
+        print(f"  • HTML Report:    {run_data['html_path']}")
+        print("="*80 + "\n")
 
 
 if __name__ == "__main__":
