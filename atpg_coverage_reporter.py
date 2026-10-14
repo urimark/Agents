@@ -1947,6 +1947,77 @@ def process_single_run(run_dir, recipe=None, csv_file=None, output_dir=None, htm
     }
 
 
+def get_workweek_tag(custom_ww=None):
+    """
+    Computes WorkWeek and day tag, e.g. WW42.Wed. If a custom tag is given, sanitizes and returns it.
+    """
+    if custom_ww and custom_ww != "auto":
+        clean = custom_ww.strip().rstrip("/")
+        if not clean.upper().startswith("WW") and clean[0].isdigit():
+            clean = "WW" + clean
+        return clean
+    now = datetime.now()
+    ww_num = now.isocalendar()[1]
+    day_abbr = now.strftime("%a")
+    return f"WW{ww_num:02d}.{day_abbr}"
+
+
+def save_to_git_results(report_files, ww_tag, git_repo_dir=None, commit_msg=None, push=True):
+    """
+    Copies report files into <git_repo>/results/<ww_tag>/, stages them, commits, and pushes to git.
+    """
+    if not git_repo_dir:
+        candidates = [
+            "/nfs/site/disks/umark_wa01/gitprivateumark01/Agents",
+            os.path.join(os.getcwd(), "Agents"),
+            os.getcwd()
+        ]
+        for c in candidates:
+            if os.path.isdir(os.path.join(c, ".git")):
+                git_repo_dir = c
+                break
+
+    if not git_repo_dir or not os.path.isdir(os.path.join(git_repo_dir, ".git")):
+        print(f"[!] Warning: Git repository not found at '{git_repo_dir}'. Skipping git load.")
+        return False
+
+    target_dir = os.path.join(git_repo_dir, "results", ww_tag)
+    os.makedirs(target_dir, exist_ok=True)
+    print(f"\n[*] Storing reports to Git results folder: {target_dir}")
+
+    import shutil
+    copied_files = []
+    for src in report_files:
+        if src and os.path.exists(src):
+            dst = os.path.join(target_dir, os.path.basename(src))
+            if os.path.abspath(src) != os.path.abspath(dst):
+                shutil.copy2(src, dst)
+            copied_files.append(dst)
+            print(f"    • Loaded into results: {os.path.basename(src)}")
+
+    if push:
+        print(f"[*] Committing and pushing results to Git ({git_repo_dir})...")
+        try:
+            rel_folder = f"results/{ww_tag}"
+            subprocess.run(["git", "add", rel_folder], cwd=git_repo_dir, check=True)
+            msg = commit_msg if commit_msg else f"Add ATPG coverage reports for {ww_tag}"
+            res = subprocess.run(["git", "commit", "-m", msg], cwd=git_repo_dir, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            if "nothing to commit" in res.stdout:
+                print(f"[*] Git: Nothing new to commit (already up to date).")
+            else:
+                print(f"[✓] Git commit created: {msg}")
+                push_res = subprocess.run(["git", "push", "origin", "main"], cwd=git_repo_dir, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+                if push_res.returncode == 0:
+                    print(f"[✓] Git push to origin main successful.")
+                else:
+                    print(f"[!] Git push warning: {push_res.stdout.strip()}")
+            return True
+        except Exception as e:
+            print(f"[!] Git operation error: {e}")
+            return False
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser(description="Automated ATPG Coverage & AU Breakdown Reporter")
     parser.add_argument("--run-dir", "-r", required=True, help="Path to ATPG run directory (Run 1)")
@@ -1965,11 +2036,30 @@ def main():
     parser.add_argument("--tessent-bin", default=DEFAULT_TESSENT, help="Path to Tessent executable")
     parser.add_argument("--license-server", default=DEFAULT_LICENSE, help="SALT license server")
     parser.add_argument("--top-n", type=int, default=30, help="Number of top coverage holes to detail")
+    parser.add_argument("--ww", nargs="?", const="auto", help="Save reports by WorkWeek and day folder (e.g., WW42.Wed). Pass without value for current WW, or specify explicitly.")
+    parser.add_argument("--save-ww", action="store_true", help="Enable saving reports under WorkWeek and day folder (e.g. results/WW42.Wed/)")
+    parser.add_argument("--load-git", "--git-push", action="store_true", help="Copy reports to git results folder, commit, and push to remote origin")
+    parser.add_argument("--git-repo", default="/nfs/site/disks/umark_wa01/gitprivateumark01/Agents", help="Path to local git repository (defaults to /nfs/site/disks/umark_wa01/gitprivateumark01/Agents)")
 
     args = parser.parse_args()
 
-    out_dir = os.path.abspath(args.output_dir if args.output_dir else (os.getcwd() if args.compare_run_dir else args.run_dir))
+    # Determine WorkWeek tag
+    ww_tag = None
+    if args.ww or args.save_ww or args.load_git:
+        ww_tag = get_workweek_tag(args.ww)
+        print(f"[*] WorkWeek Partitioning Enabled: {ww_tag}")
+
+    # Resolve output directory
+    if ww_tag:
+        if args.output_dir:
+            out_dir = os.path.abspath(os.path.join(args.output_dir, "results", ww_tag) if not args.output_dir.endswith(ww_tag) else args.output_dir)
+        else:
+            out_dir = os.path.abspath(os.path.join(os.getcwd(), "results", ww_tag))
+    else:
+        out_dir = os.path.abspath(args.output_dir if args.output_dir else (os.getcwd() if args.compare_run_dir else args.run_dir))
+
     os.makedirs(out_dir, exist_ok=True)
+    print(f"[*] Output Directory: {out_dir}")
 
     # Comparison Mode
     if args.compare_run_dir:
@@ -2042,6 +2132,19 @@ def main():
         print(f"  • Comparison Deltas CSV:         {comp_csv}")
         print("="*80 + "\n")
 
+        # Load into Git results folder if requested
+        if args.load_git or args.ww or args.save_ww:
+            active_ww = ww_tag if ww_tag else get_workweek_tag("auto")
+            files_to_sync = [run1_data["html_path"], run2_data["html_path"], comp_html, comp_csv]
+            commit_title = f"Add ATPG comparison reports for {active_ww} ({label1} vs {label2})"
+            save_to_git_results(
+                report_files=files_to_sync,
+                ww_tag=active_ww,
+                git_repo_dir=args.git_repo,
+                commit_msg=commit_title,
+                push=True
+            )
+
     # Single Run Mode
     else:
         run_data = process_single_run(
@@ -2076,6 +2179,19 @@ def main():
         print(f"  • CSV Breakdown:  {run_data['csv_path']}")
         print(f"  • HTML Report:    {run_data['html_path']}")
         print("="*80 + "\n")
+
+        # Load into Git results folder if requested
+        if args.load_git or args.ww or args.save_ww:
+            active_ww = ww_tag if ww_tag else get_workweek_tag("auto")
+            files_to_sync = [run_data["html_path"], run_data["csv_path"]]
+            commit_title = f"Add ATPG coverage report for {active_ww} ({artifacts['fub']} {artifacts['recipe']})"
+            save_to_git_results(
+                report_files=files_to_sync,
+                ww_tag=active_ww,
+                git_repo_dir=args.git_repo,
+                commit_msg=commit_title,
+                push=True
+            )
 
 
 if __name__ == "__main__":

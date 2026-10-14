@@ -48,6 +48,23 @@ python3 atpg_coverage_reporter.py \
 - `--output-dir <dir>`: Output directory for reports and CSVs.
 - `--skip-tessent`: Skip Tessent and reuse existing `instance_au_breakdown*.csv` files.
 - `--top-n <int>`: Number of top coverage holes to display (default: 30).
+- `--ww [TAG]`: Save reports by WorkWeek and day folder (e.g., `results/WW42.Wed/`). Automatically computes current WW if passed without value, or accepts custom tag (e.g. `--ww WW42.Wed`).
+- `--save-ww`: Convenience flag to enable saving under WorkWeek folder.
+- `--load-git` / `--git-push`: Automatically copy generated reports into the Git `results/<WW>/` directory, commit, and push to remote origin.
+- `--git-repo <path>`: Local Git repository path (defaults to current repo).
+
+#### Examples with WorkWeek and Git Loading:
+```bash
+# Save to results/WW42.Wed/ and load to Git:
+python3 atpg_coverage_reporter.py --run-dir /path/to/run/ --ww --load-git
+
+# Compare 2 runs, save to results/WW42.Wed/, and push all 3 reports to Git:
+python3 atpg_coverage_reporter.py \
+  --run-dir /path/to/run1/ \
+  --compare-run-dir /path/to/run2/ \
+  --label1 "TTLC" --label2 "RZL" \
+  --ww --load-git
+```
 
 ### Chat Agent Usage
 In VS Code Copilot Chat, invoke:
@@ -55,7 +72,10 @@ In VS Code Copilot Chat, invoke:
 # Single run:
 @ATPG Coverage Report /path/to/atpg_run_dir/
 
-# Compare 2 runs:
-@ATPG Coverage Report compare /path/to/run1/ with /path/to/run2/
+# Single run with WorkWeek git upload:
+@ATPG Coverage Report /path/to/atpg_run_dir/ and save by WW to git
+
+# Compare 2 runs and load to git:
+@ATPG Coverage Report compare /path/to/run1/ with /path/to/run2/ --ww --load-git
 ```
 

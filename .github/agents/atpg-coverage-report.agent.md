@@ -45,6 +45,10 @@ python3 atpg_coverage_reporter.py \
 - `--skip-tessent`: Skip Tessent extraction and reuse pre-existing `instance_au_breakdown*.csv` files.
 - `--csv-file1 <file>` / `--csv-file2 <file>`: Explicit CSV input paths.
 - `--html-compare <file>`: Custom path for output comparison HTML report.
+- `--ww [TAG]`: Save reports by WorkWeek and day folder (e.g., `results/WW42.Wed/`). Automatically computes current WW if passed without value, or accepts a custom tag (e.g. `--ww WW42.Wed`).
+- `--save-ww`: Convenience flag to enable saving under WorkWeek and day folder.
+- `--load-git` / `--git-push`: Automatically copy generated reports into the Git `results/<WW>/` directory, commit, and push to remote origin (`origin main`).
+- `--git-repo <path>`: Local Git repository path (defaults to `/nfs/site/disks/umark_wa01/gitprivateumark01/Agents`).
 
 ### Underlying Siemens Tessent Flow
 If `instance_au_breakdown.csv` does not exist or needs to be regenerated, the runner executes Siemens Tessent with the following flow:
