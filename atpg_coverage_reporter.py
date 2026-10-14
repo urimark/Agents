@@ -1039,7 +1039,25 @@ def main():
     out_dir = os.path.abspath(args.output_dir if args.output_dir else args.run_dir)
     os.makedirs(out_dir, exist_ok=True)
 
-    csv_path = os.path.abspath(args.csv_file if args.csv_file else os.path.join(out_dir, "instance_au_breakdown.csv"))
+    csv_path = None
+    if args.csv_file:
+        csv_path = os.path.abspath(args.csv_file)
+    else:
+        # Check if instance_au_breakdown.csv exists in out_dir or run_dir
+        candidate = os.path.join(out_dir, "instance_au_breakdown.csv")
+        if os.path.exists(candidate) and os.path.getsize(candidate) > 1000:
+            csv_path = candidate
+        else:
+            # Check for any instance_au_breakdown*.csv in run_dir
+            existing_csvs = glob.glob(os.path.join(args.run_dir, "instance_au_breakdown*.csv"))
+            if existing_csvs:
+                # Pick the largest or newest valid CSV
+                existing_csvs.sort(key=lambda x: os.path.getsize(x), reverse=True)
+                if os.path.getsize(existing_csvs[0]) > 1000:
+                    csv_path = existing_csvs[0]
+            if not csv_path:
+                csv_path = candidate
+
     html_path = os.path.abspath(args.html_file if args.html_file else os.path.join(out_dir, "atpg_coverage_report.html"))
     log_path = os.path.splitext(csv_path)[0] + "_tessent.log"
 
