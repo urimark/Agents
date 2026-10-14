@@ -223,7 +223,7 @@ exit -force
     ]
 
     print(f"[*] Command: {' '.join(cmd)}")
-    p = subprocess.run(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    p = subprocess.run(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
 
     if not os.path.exists(output_csv) or os.path.getsize(output_csv) == 0:
         print("[!] Tessent output log snippet:")
@@ -2385,13 +2385,13 @@ def save_to_git_results(report_files, ww_tag, git_repo_dir=None, commit_msg=None
             rel_folder = f"{results_subdir}/{ww_tag}"
             subprocess.run(["git", "add", rel_folder, f"{results_subdir}/index.html", "index.html"], cwd=git_repo_dir, check=True)
             msg = commit_msg if commit_msg else f"Add ATPG coverage reports for {ww_tag}"
-            res = subprocess.run(["git", "commit", "-m", msg], cwd=git_repo_dir, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            res = subprocess.run(["git", "commit", "-m", msg], cwd=git_repo_dir, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
             if "nothing to commit" in res.stdout:
                 print(f"[*] Git: Nothing new to commit (already up to date).")
             else:
                 print(f"[✓] Git commit created: {msg}")
-                subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=git_repo_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                push_res = subprocess.run(["git", "push", "origin", "main"], cwd=git_repo_dir, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+                subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=git_repo_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+                push_res = subprocess.run(["git", "push", "origin", "main"], cwd=git_repo_dir, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
                 if push_res.returncode == 0:
                     print(f"[✓] Git push to origin main successful.")
                 else:
@@ -2448,9 +2448,9 @@ def main():
         try:
             rel_idx = f"{args.results_subdir}/index.html"
             subprocess.run(["git", "add", rel_idx, "index.html"], cwd=args.results_repo, check=True)
-            res = subprocess.run(["git", "commit", "-m", "Update ATPG coverage portal menu index"], cwd=args.results_repo, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            res = subprocess.run(["git", "commit", "-m", "Update ATPG coverage portal menu index"], cwd=args.results_repo, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
             if "nothing to commit" not in res.stdout:
-                subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=args.results_repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=args.results_repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
                 subprocess.run(["git", "push", "origin", "main"], cwd=args.results_repo, check=True)
                 print("[✓] Pushed menu portal updates to GitHub.")
             else:
