@@ -1885,35 +1885,43 @@ def generate_comparison_html_report(comp, run1_data, run2_data, output_html, rel
 
 def process_single_run(run_dir, recipe=None, csv_file=None, output_dir=None, html_file=None,
                        skip_tessent=False, tessent_bin=DEFAULT_TESSENT, license_server=DEFAULT_LICENSE,
-                       top_n=30, label_suffix=""):
+                       top_n=30, label_suffix="", artifacts=None):
     """
     Executes full pipeline for a single ATPG run.
     """
     out_dir = os.path.abspath(output_dir if output_dir else run_dir)
     os.makedirs(out_dir, exist_ok=True)
 
+    if not artifacts:
+        artifacts = find_files_for_run(run_dir, recipe=recipe)
+
+    part_name = artifacts.get("fub", "partition")
+    run_type = artifacts.get("recipe", "atpg")
+
     csv_path = None
     if csv_file:
         csv_path = os.path.abspath(csv_file)
     else:
-        candidate_name = f"instance_au_breakdown{label_suffix}.csv" if label_suffix else "instance_au_breakdown.csv"
-        candidate = os.path.join(out_dir, candidate_name)
-        if os.path.exists(candidate) and os.path.getsize(candidate) > 1000:
-            csv_path = candidate
-        else:
-            existing_csvs = glob.glob(os.path.join(run_dir, "instance_au_breakdown*.csv"))
-            if existing_csvs:
-                existing_csvs.sort(key=lambda x: os.path.getsize(x), reverse=True)
-                if os.path.getsize(existing_csvs[0]) > 1000:
-                    csv_path = existing_csvs[0]
-            if not csv_path:
-                csv_path = candidate
+        # Check if pre-existing CSV in run_dir
+        existing_csvs = glob.glob(os.path.join(run_dir, "instance_au_breakdown*.csv"))
+        if existing_csvs:
+            existing_csvs.sort(key=lambda x: os.path.getsize(x), reverse=True)
+            if os.path.getsize(existing_csvs[0]) > 1000:
+                csv_path = existing_csvs[0]
 
-    html_default = f"atpg_coverage_report{label_suffix}.html" if label_suffix else "atpg_coverage_report.html"
+        if not csv_path:
+            candidate_name = f"instance_au_breakdown_{part_name}_{run_type}{label_suffix}.csv" if label_suffix else f"instance_au_breakdown_{part_name}_{run_type}.csv"
+            candidate = os.path.join(out_dir, candidate_name)
+            if os.path.exists(candidate) and os.path.getsize(candidate) > 1000:
+                csv_path = candidate
+            else:
+                std_candidate = os.path.join(out_dir, "instance_au_breakdown.csv")
+                csv_path = std_candidate if (os.path.exists(std_candidate) and os.path.getsize(std_candidate) > 1000) else candidate
+
+    # Standard naming: atpg_coverage_report_run_<partition_name>_<runtype>.html
+    html_default = f"atpg_coverage_report_run_{part_name}_{run_type}{label_suffix}.html" if label_suffix else f"atpg_coverage_report_run_{part_name}_{run_type}.html"
     html_path = os.path.abspath(html_file if html_file else os.path.join(out_dir, html_default))
     log_path = os.path.splitext(csv_path)[0] + "_tessent.log"
-
-    artifacts = find_files_for_run(run_dir, recipe=recipe)
 
     if skip_tessent:
         if not os.path.exists(csv_path):
@@ -1983,10 +1991,8 @@ def generate_menu_pages(git_repo_dir, results_subdir="results"):
                 continue
 
             reports_info = []
-            comp_report = None
-            run1_report = None
-            run2_report = None
-            single_report = None
+            comp_reports = []
+            run_reports = []
 
             for h in html_files:
                 fname = os.path.basename(h)
@@ -1997,22 +2003,18 @@ def generate_menu_pages(git_repo_dir, results_subdir="results"):
 
                 info = {"filename": fname, "title": title}
                 reports_info.append(info)
-                if "comparison" in fname:
-                    comp_report = info
-                elif "run1" in fname:
-                    run1_report = info
-                elif "run2" in fname:
-                    run2_report = info
-                elif fname == "atpg_coverage_report.html":
-                    single_report = info
+                if "comparison" in fname.lower():
+                    comp_reports.append(info)
+                else:
+                    run_reports.append(info)
 
             mode_desc = "ATPG Coverage Analysis"
-            if comp_report:
-                m = re.search(r"Comparison Report:\s*(.*)", comp_report["title"], re.IGNORECASE)
+            if comp_reports:
+                m = re.search(r"Comparison Report:\s*(.*)", comp_reports[0]["title"], re.IGNORECASE)
                 mode_desc = f"Comparison: {m.group(1)}" if m else "Cross-Run Comparison"
-            elif single_report:
-                m = re.search(r"Report:\s*(.*)", single_report["title"], re.IGNORECASE)
-                mode_desc = f"Single Run: {m.group(1)}" if m else "Single Run Coverage"
+            elif run_reports:
+                m = re.search(r"Report:\s*(.*)", run_reports[0]["title"], re.IGNORECASE)
+                mode_desc = f"Coverage: {m.group(1)}" if m else "ATPG Coverage Run"
 
             mtime = datetime.fromtimestamp(os.path.getmtime(full_p)).strftime("%Y-%m-%d %H:%M:%S")
 
@@ -2021,10 +2023,8 @@ def generate_menu_pages(git_repo_dir, results_subdir="results"):
                 "path": full_p,
                 "mtime": mtime,
                 "mode_desc": mode_desc,
-                "comp_report": comp_report,
-                "run1_report": run1_report,
-                "run2_report": run2_report,
-                "single_report": single_report,
+                "comp_reports": comp_reports,
+                "run_reports": run_reports,
                 "html_files": reports_info,
                 "csv_files": [os.path.basename(c) for c in csv_files if not os.path.basename(c).startswith("index")]
             })
@@ -2265,26 +2265,20 @@ def generate_menu_pages(git_repo_dir, results_subdir="results"):
 
             <div class="btn-group">
 """
-            if entry["comp_report"]:
-                comp_url = prefix + entry["comp_report"]["filename"]
-                html += f"""                <a href="{html_lib.escape(comp_url)}" class="btn btn-primary">📊 Cross-Run Comparison Report</a>\n"""
+            for comp_r in entry["comp_reports"]:
+                comp_url = prefix + comp_r["filename"]
+                html += f"""                <a href="{html_lib.escape(comp_url)}" class="btn btn-primary">📊 Comparison: {html_lib.escape(comp_r['title'].replace('ATPG Coverage Comparison Report: ', ''))}</a>\n"""
 
-            if entry["run1_report"]:
-                r1_url = prefix + entry["run1_report"]["filename"]
-                html += f"""                <a href="{html_lib.escape(r1_url)}" class="btn btn-secondary">📄 Run 1 Coverage Report</a>\n"""
-
-            if entry["run2_report"]:
-                r2_url = prefix + entry["run2_report"]["filename"]
-                html += f"""                <a href="{html_lib.escape(r2_url)}" class="btn btn-secondary">📄 Run 2 Coverage Report</a>\n"""
-
-            if entry["single_report"] and not entry["comp_report"]:
-                s_url = prefix + entry["single_report"]["filename"]
-                html += f"""                <a href="{html_lib.escape(s_url)}" class="btn btn-primary">📄 ATPG Coverage Report</a>\n"""
+            for run_r in entry["run_reports"]:
+                run_url = prefix + run_r["filename"]
+                m_label = re.search(r"atpg_coverage_report_run_(.+?)\.html", run_r["filename"])
+                label_txt = m_label.group(1) if m_label else run_r["title"].replace("ATPG Coverage & AU Breakdown Report: ", "")
+                html += f"""                <a href="{html_lib.escape(run_url)}" class="btn btn-secondary">📄 {html_lib.escape(label_txt)}</a>\n"""
 
             for csv_f in entry["csv_files"]:
                 csv_url = prefix + csv_f
-                label = "Deltas CSV" if "delta" in csv_f.lower() else "AU Breakdown CSV"
-                html += f"""                <a href="{html_lib.escape(csv_url)}" class="btn btn-csv">📥 {label}</a>\n"""
+                label = "Deltas CSV" if "delta" in csv_f.lower() else ("AU CSV: " + csv_f.replace("instance_au_breakdown_", "").replace(".csv", ""))
+                html += f"""                <a href="{html_lib.escape(csv_url)}" class="btn btn-csv">📥 {html_lib.escape(label)}</a>\n"""
 
             html += f"""            </div>
 
@@ -2486,6 +2480,13 @@ def main():
         label1 = args.label1 if args.label1 else "Run 1"
         label2 = args.label2 if args.label2 else "Run 2"
 
+        # Pre-discover artifacts to check if names would collide
+        artifacts1 = find_files_for_run(args.run_dir, recipe=args.recipe)
+        artifacts2 = find_files_for_run(args.compare_run_dir, recipe=args.recipe2)
+        collision = (artifacts1.get("fub") == artifacts2.get("fub") and artifacts1.get("recipe") == artifacts2.get("recipe"))
+        suf1 = "_run1" if collision else ""
+        suf2 = "_run2" if collision else ""
+
         print("\n" + "="*80)
         print(f"  STARTING ATPG COVERAGE COMPARISON MODE: {label1} vs {label2}")
         print("="*80 + "\n")
@@ -2501,7 +2502,8 @@ def main():
             tessent_bin=args.tessent_bin,
             license_server=args.license_server,
             top_n=args.top_n,
-            label_suffix="_run1"
+            label_suffix=suf1,
+            artifacts=artifacts1
         )
 
         print(f"\n--- [2/3] Processing {label2} ---")
@@ -2515,7 +2517,8 @@ def main():
             tessent_bin=args.tessent_bin,
             license_server=args.license_server,
             top_n=args.top_n,
-            label_suffix="_run2"
+            label_suffix=suf2,
+            artifacts=artifacts2
         )
 
         # Refine labels if default

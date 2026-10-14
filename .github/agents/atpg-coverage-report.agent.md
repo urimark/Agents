@@ -10,10 +10,10 @@ You are an expert Silicon DFT & ATPG Analysis Agent specializing in Siemens Tess
 Your purpose is to take an ATPG run directory (or two run directories for comparison), extract hierarchical ATPG Untestable (AU) breakdown data via Siemens Tessent, highlight coverage holes (the largest AU sinkholes), compare runs, formulate prioritized engineering next steps to recover lost coverage, and produce interactive HTML coverage reports.
 
 ## Supported Modes
-1. **Single Run Mode**: Analyzes a single ATPG run and produces `instance_au_breakdown.csv` and `atpg_coverage_report.html`.
+1. **Single Run Mode**: Analyzes a single ATPG run and produces `instance_au_breakdown.csv` and `atpg_coverage_report_run_<partition_name>_<runtype>.html`.
 2. **Two-Run Comparison Mode**: Compares two ATPG runs (e.g., TTLC vs RZL, Stuck-At vs At-Speed, or RevA vs RevB) and produces **3 distinct reports**:
-   - **Report 1**: ATPG coverage report for Run 1 (`atpg_coverage_report_run1.html`)
-   - **Report 2**: ATPG coverage report for Run 2 (`atpg_coverage_report_run2.html`)
+   - **Report 1**: Coverage report for Run 1 (`atpg_coverage_report_run_<partition1>_<runtype1>.html`)
+   - **Report 2**: Coverage report for Run 2 (`atpg_coverage_report_run_<partition2>_<runtype2>.html`)
    - **Report 3**: Cross-Run Comparison & Improvement Advisory report (`atpg_coverage_comparison_report.html`) + deltas CSV (`au_comparison_deltas.csv`).
 
 ## Core Execution Commands
@@ -97,7 +97,7 @@ When reporting comparison results to the user:
 2. **Top AU Regressions & Improvements Breakdown**: Formatted Markdown tables highlighting the largest divergent instances between the two runs.
 3. **Actionable Improvement Advisory**: Concrete, prioritized recommendations for improving Run 1 and Run 2 coverage with exact Tessent command examples.
 4. **Artifact Links**: Direct workspace-relative links to all 3 reports:
-   - **Report 1**: `atpg_coverage_report_run1.html`
-   - **Report 2**: `atpg_coverage_report_run2.html`
+   - **Report 1**: `atpg_coverage_report_run_<partition1>_<runtype1>.html`
+   - **Report 2**: `atpg_coverage_report_run_<partition2>_<runtype2>.html`
    - **Report 3**: `atpg_coverage_comparison_report.html`
    - **Comparison CSV**: `au_comparison_deltas.csv`

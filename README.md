@@ -17,10 +17,10 @@ An intelligent agent and automation engine for Siemens Tessent ATPG test coverag
 - **Interactive HTML Dashboard**: Produces executive KPI cards, search/filterable coverage hole tables, partition health status, and direct recommendations.
 
 ### Modes
-1. **Single Run Mode**: Analyzes an ATPG run, identifies coverage holes, and produces an interactive coverage dashboard and AU CSV breakdown.
+1. **Single Run Mode**: Analyzes an ATPG run, identifies coverage holes, and produces an interactive coverage dashboard named `atpg_coverage_report_run_<partition>_<runtype>.html` and AU CSV breakdown.
 2. **Two-Run Comparison Mode**: Compares 2 ATPG runs (e.g., TTLC vs RZL, Stuck-At vs At-Speed), analyzes cross-run divergence, and produces **3 distinct reports**:
-   - **Report 1**: Standalone coverage report for Run 1 (`atpg_coverage_report_run1.html`)
-   - **Report 2**: Standalone coverage report for Run 2 (`atpg_coverage_report_run2.html`)
+   - **Report 1**: Standalone coverage report for Run 1 (`atpg_coverage_report_run_<partition1>_<runtype1>.html`)
+   - **Report 2**: Standalone coverage report for Run 2 (`atpg_coverage_report_run_<partition2>_<runtype2>.html`)
    - **Report 3**: Cross-Run Comparison & Improvement Advisory report (`atpg_coverage_comparison_report.html`) + deltas CSV (`au_comparison_deltas.csv`).
 
 ### CLI Usage
