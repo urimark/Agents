@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATPG Coverage Comparison Report: TTLC_StuckAt vs RZL_AtSpeed</title>
+    <title>ATPG Coverage Comparison Report: TTLC vs RZL</title>
     <style>
         :root {
             --bg-page: #0f172a;
@@ -292,20 +292,20 @@
     <header>
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 1rem;">
             <div>
-                <h1>ATPG Coverage Comparison: TTLC_StuckAt vs RZL_AtSpeed</h1>
+                <h1>ATPG Coverage Comparison: TTLC vs RZL</h1>
                 <div class="meta">
-                    Generated on: <code>2026-10-14 01:33:01</code> &nbsp;|&nbsp;
-                    Run 1: <code>/nfs/site/disks/umark_wa01/Pandora_ttlc_atpg3/ww41cS/par_santa/par_santa_wa/runs/par_santa/1278.7/sage_atpg/sage/WORK/stuckat_edt_min</code> &nbsp;|&nbsp;
+                    Generated on: <code>2026-10-14 01:54:46</code> &nbsp;|&nbsp;
+                    Run 1: <code>/nfs/site/disks/umark_wa01/Pandora_ttlc_atpg3/ww41cA/par_santa/par_santa_wa/runs/par_santa/1278.7/sage_atpg/sage/WORK/atspeed_edt_min</code> &nbsp;|&nbsp;
                     Run 2: <code>/nfs/site/disks/umark_wa01/Pandora_ttlc_atpg1/rzlparsantaWW26_ParSantaAtSpeed/par_santa_wa/runs/par_santa/n2p_htall_conf7/sage_atpg/sage/WORK/atspeed_edt_min</code>
                 </div>
                 <div class="nav-links">
-                    <a href="atpg_coverage_report_run1.html" class="nav-btn">📄 Report 1: TTLC_StuckAt Coverage Report</a>
-                    <a href="atpg_coverage_report_run2.html" class="nav-btn">📄 Report 2: RZL_AtSpeed Coverage Report</a>
+                    <a href="atpg_coverage_report_run1.html" class="nav-btn">📄 Report 1: TTLC Coverage Report</a>
+                    <a href="atpg_coverage_report_run2.html" class="nav-btn">📄 Report 2: RZL Coverage Report</a>
                     <a href="au_comparison_deltas.csv" class="nav-btn">📊 Download Deltas CSV</a>
                 </div>
             </div>
             <div>
-                <span class="badge badge-green">TTLC_StuckAt Leads: +8.43% Coverage (AU Delta: -660,803)</span>
+                <span class="badge badge-yellow">RZL Leads: +4.60% Coverage (AU Delta: -198,530)</span>
             </div>
         </div>
     </header>
@@ -314,31 +314,31 @@
     <div class="kpi-grid">
         <div class="kpi-card">
             <div class="kpi-title">Test Coverage (TC)</div>
-            <div class="kpi-val val-green">
-                +8.43%
+            <div class="kpi-val val-red">
+                -4.60%
             </div>
-            <div class="kpi-sub">TTLC_StuckAt: 94.79% vs RZL_AtSpeed: 86.36%</div>
+            <div class="kpi-sub">TTLC: 81.76% vs RZL: 86.36%</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-title">AU Delta (TTLC_StuckAt - RZL_AtSpeed)</div>
+            <div class="kpi-title">AU Delta (TTLC - RZL)</div>
             <div class="kpi-val val-green">
-                -660,803
+                -198,530
             </div>
-            <div class="kpi-sub">TTLC_StuckAt: 375,891 vs RZL_AtSpeed: 1,036,694 (-63.7%)</div>
+            <div class="kpi-sub">TTLC: 838,164 vs RZL: 1,036,694 (-19.2%)</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-title">Fault Universe Delta</div>
             <div class="kpi-val val-blue">
-                -302,146
+                -776,660
             </div>
-            <div class="kpi-sub">TTLC_StuckAt: 7,595,790 vs RZL_AtSpeed: 7,897,936 (-3.8%)</div>
+            <div class="kpi-sub">TTLC: 7,121,276 vs RZL: 7,897,936 (-9.8%)</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-title">AU Rate Delta</div>
             <div class="kpi-val val-green">
-                -8.18%
+                -1.36%
             </div>
-            <div class="kpi-sub">TTLC_StuckAt: 4.95% vs RZL_AtSpeed: 13.13%</div>
+            <div class="kpi-sub">TTLC: 11.77% vs RZL: 13.13%</div>
         </div>
     </div>
 
@@ -353,38 +353,38 @@
         <div class="split-grid">
             <!-- Advice for Run 1 -->
             <div>
-                <h3>1. How to Improve TTLC_StuckAt Coverage</h3>
-                <p style="font-size: 0.9rem;">Initiatives addressing areas where TTLC_StuckAt regressed or lags behind RZL_AtSpeed:</p>
+                <h3>1. How to Improve TTLC Coverage</h3>
+                <p style="font-size: 0.9rem;">Initiatives addressing areas where TTLC regressed or lags behind RZL:</p>
 
                 <div class="action-card p1">
                     <div class="action-header">
                         <span class="action-title">P1 - Critical Regression: Recover AU in /santa0_wrap/santa0/santa_arrays/santa_cclk_arrays/vc0_drs_incoming_arr (Memory / RAM Array)</span>
-                        <span class="action-impact">TTLC_StuckAt has +46,955 more AU than RZL_AtSpeed</span>
+                        <span class="action-impact">TTLC has +128,373 more AU than RZL</span>
                     </div>
                     <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
-                        In TTLC_StuckAt, instance <code>/santa0_wrap/santa0/santa_arrays/santa_cclk_arrays/vc0_drs_incoming_arr</code> carries 46,955 AU compared to only 0 in RZL_AtSpeed. Inspect module <code>par_santa_par_santa_ccf_rw_array_wrapper_326_6_56_1_1_1_1_1_1_1_6_4_235242_0</code> constraints, clock gating bypasses, or missing test waivers in TTLC_StuckAt.
+                        In TTLC, instance <code>/santa0_wrap/santa0/santa_arrays/santa_cclk_arrays/vc0_drs_incoming_arr</code> carries 128,373 AU compared to only 0 in RZL. Inspect module <code>par_santa_par_santa_ccf_rw_array_wrapper_326_6_56_1_1_1_1_1_1_1_6_4_235242_0</code> constraints, clock gating bypasses, or missing test waivers in TTLC.
                     </div>
                     <div class="action-code">report_faults /santa0_wrap/santa0/santa_arrays/santa_cclk_arrays/vc0_drs_incoming_arr/* -au -summary</div>
                 </div>
 
                 <div class="action-card p2">
                     <div class="action-header">
-                        <span class="action-title">P1 - High Impact: Blackbox / Bypass RAM Array Wrappers in TTLC_StuckAt</span>
-                        <span class="action-impact">Up to 222,557 AU higher in TTLC_StuckAt vs RZL_AtSpeed</span>
+                        <span class="action-title">P1 - High Impact: Blackbox / Bypass RAM Array Wrappers in TTLC</span>
+                        <span class="action-impact">Up to 682,715 AU higher in TTLC vs RZL</span>
                     </div>
                     <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
-                        TTLC_StuckAt exhibits higher AU in read/write RAM array wrappers (e.g. <code>vc0_drs_incoming_arr</code>). Ensure these unscan-stitched RAM arrays are blackboxed in logic ATPG or MBIST bypass mode is enforced.
+                        TTLC exhibits higher AU in read/write RAM array wrappers (e.g. <code>vc0_drs_incoming_arr</code>). Ensure these unscan-stitched RAM arrays are blackboxed in logic ATPG or MBIST bypass mode is enforced.
                     </div>
                     <div class="action-code">add_black_box par_santa_par_santa_ccf_rw_array_wrapper_* -auto</div>
                 </div>
 
                 <div class="action-card p2">
                     <div class="action-header">
-                        <span class="action-title">P2 - Alignment: Audit Clock &amp; Reset Bypass Rules against RZL_AtSpeed</span>
+                        <span class="action-title">P2 - Alignment: Audit Clock &amp; Reset Bypass Rules against RZL</span>
                         <span class="action-impact">Harmonizes ATPG constraints across both runs</span>
                     </div>
                     <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
-                        Compare DO-files (resets.do, synchronous_clock_list.do) between TTLC_StuckAt and RZL_AtSpeed to identify missing pin constraints or inactive scan bypass signals in TTLC_StuckAt.
+                        Compare DO-files (resets.do, synchronous_clock_list.do) between TTLC and RZL to identify missing pin constraints or inactive scan bypass signals in TTLC.
                     </div>
                     <div class="action-code">report_clocks -matrix; report_drc_rules -violations</div>
                 </div>
@@ -393,38 +393,38 @@
 
             <!-- Advice for Run 2 -->
             <div>
-                <h3>2. How to Improve RZL_AtSpeed Coverage</h3>
-                <p style="font-size: 0.9rem;">Initiatives backporting TTLC_StuckAt victories and closing RZL_AtSpeed gaps:</p>
+                <h3>2. How to Improve RZL Coverage</h3>
+                <p style="font-size: 0.9rem;">Initiatives backporting TTLC victories and closing RZL gaps:</p>
 
                 <div class="action-card p1">
                     <div class="action-header">
-                        <span class="action-title">P1 - Critical: Backport TTLC_StuckAt Fixes to /santa0_wrap in RZL_AtSpeed</span>
-                        <span class="action-impact">RZL_AtSpeed has +180,608 more AU than TTLC_StuckAt</span>
+                        <span class="action-title">P1 - Critical: Backport TTLC Fixes to /sbo_pma in RZL</span>
+                        <span class="action-impact">RZL has +75,955 more AU than TTLC</span>
                     </div>
                     <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
-                        In RZL_AtSpeed, instance <code>/santa0_wrap</code> has 316,541 AU, whereas TTLC_StuckAt achieved 135,933 AU (-57.1% reduction). Backport TTLC_StuckAt's model, blackboxing, or DRC waivers to RZL_AtSpeed.
+                        In RZL, instance <code>/sbo_pma</code> has 92,752 AU, whereas TTLC achieved 16,797 AU (-81.9% reduction). Backport TTLC's model, blackboxing, or DRC waivers to RZL.
                     </div>
-                    <div class="action-code">report_statistics -instance /santa0_wrap</div>
+                    <div class="action-code">report_statistics -instance /sbo_pma</div>
                 </div>
 
                 <div class="action-card p2">
                     <div class="action-header">
-                        <span class="action-title">P1 - High Impact: Adopt TTLC_StuckAt Array Blackboxing/Bypass Strategy in RZL_AtSpeed</span>
-                        <span class="action-impact">Can eliminate up to 184,087 AU in RZL_AtSpeed</span>
+                        <span class="action-title">P1 - High Impact: Adopt TTLC Array Blackboxing/Bypass Strategy in RZL</span>
+                        <span class="action-impact">Can eliminate up to 109,581 AU in RZL</span>
                     </div>
                     <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
-                        TTLC_StuckAt successfully eliminated hundreds of thousands of AU across memory arrays and wrappers. Apply identical <code>add_black_box</code> or MBIST collar bypass directives in RZL_AtSpeed.
+                        TTLC successfully eliminated hundreds of thousands of AU across memory arrays and wrappers. Apply identical <code>add_black_box</code> or MBIST collar bypass directives in RZL.
                     </div>
                     <div class="action-code">add_black_box *rw_array_wrapper* -auto</div>
                 </div>
 
                 <div class="action-card p2">
                     <div class="action-header">
-                        <span class="action-title">P2 - Alignment: Synchronize Fault Disposition Lists with TTLC_StuckAt</span>
+                        <span class="action-title">P2 - Alignment: Synchronize Fault Disposition Lists with TTLC</span>
                         <span class="action-impact">Excludes structurally tied/redundant logic from {label2}</span>
                     </div>
                     <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
-                        Ensure the disposition file used in TTLC_StuckAt is applied to RZL_AtSpeed to delete known architectural untestable faults.
+                        Ensure the disposition file used in TTLC is applied to RZL to delete known architectural untestable faults.
                     </div>
                     <div class="action-code">read_faults $disp_file -delete</div>
                 </div>
@@ -476,12 +476,12 @@
                     <tr>
                         <th>Partition Instance</th>
                         <th>Module</th>
-                        <th class="text-right">TTLC_StuckAt AU</th>
-                        <th class="text-right">RZL_AtSpeed AU</th>
+                        <th class="text-right">TTLC AU</th>
+                        <th class="text-right">RZL AU</th>
                         <th class="text-right">AU Delta</th>
                         <th class="text-right">% Change</th>
-                        <th class="text-right">TTLC_StuckAt TC</th>
-                        <th class="text-right">RZL_AtSpeed TC</th>
+                        <th class="text-right">TTLC TC</th>
+                        <th class="text-right">RZL TC</th>
                         <th class="text-right">TC Delta</th>
                         <th class="text-center">Status</th>
                     </tr>
@@ -489,133 +489,120 @@
                 <tbody>
 
                     <tr>
-                        <td class="font-mono"><strong>/santa0_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa0_wrap</td>
-                        <td class="text-right font-mono">135,933</td>
-                        <td class="text-right font-mono">316,541</td>
-                        <td class="text-right font-mono val-green"><strong>-180,608</strong></td>
-                        <td class="text-right font-mono val-green">-57.1%</td>
-                        <td class="text-right font-mono">93.66%</td>
-                        <td class="text-right font-mono">86.53%</td>
-                        <td class="text-right font-mono val-green"><strong>+7.13%</strong></td>
-                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_StuckAt</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/santa1_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa1_wrap</td>
-                        <td class="text-right font-mono">122,577</td>
-                        <td class="text-right font-mono">300,804</td>
-                        <td class="text-right font-mono val-green"><strong>-178,227</strong></td>
-                        <td class="text-right font-mono val-green">-59.3%</td>
-                        <td class="text-right font-mono">93.52%</td>
-                        <td class="text-right font-mono">84.79%</td>
-                        <td class="text-right font-mono val-green"><strong>+8.73%</strong></td>
-                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_StuckAt</span></td>
+                        <td class="font-mono"><strong>/sbo_pma</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_sbo_pma</td>
+                        <td class="text-right font-mono">16,797</td>
+                        <td class="text-right font-mono">92,752</td>
+                        <td class="text-right font-mono val-green"><strong>-75,955</strong></td>
+                        <td class="text-right font-mono val-green">-81.9%</td>
+                        <td class="text-right font-mono">95.50%</td>
+                        <td class="text-right font-mono">84.43%</td>
+                        <td class="text-right font-mono val-green"><strong>+11.07%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC</span></td>
                     </tr>
 
                     <tr>
                         <td class="font-mono"><strong>/ncu</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_ncu</td>
-                        <td class="text-right font-mono">32,118</td>
+                        <td class="text-right font-mono">126,465</td>
                         <td class="text-right font-mono">170,827</td>
-                        <td class="text-right font-mono val-green"><strong>-138,709</strong></td>
-                        <td class="text-right font-mono val-green">-81.2%</td>
-                        <td class="text-right font-mono">97.58%</td>
+                        <td class="text-right font-mono val-green"><strong>-44,362</strong></td>
+                        <td class="text-right font-mono val-green">-26.0%</td>
+                        <td class="text-right font-mono">88.91%</td>
                         <td class="text-right font-mono">87.25%</td>
-                        <td class="text-right font-mono val-green"><strong>+10.33%</strong></td>
-                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_StuckAt</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/sbo_pma</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_sbo_pma</td>
-                        <td class="text-right font-mono">37,233</td>
-                        <td class="text-right font-mono">92,752</td>
-                        <td class="text-right font-mono val-green"><strong>-55,519</strong></td>
-                        <td class="text-right font-mono val-green">-59.9%</td>
-                        <td class="text-right font-mono">94.28%</td>
-                        <td class="text-right font-mono">84.43%</td>
-                        <td class="text-right font-mono val-green"><strong>+9.85%</strong></td>
-                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_StuckAt</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/sbo</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_sbo</td>
-                        <td class="text-right font-mono">32,933</td>
-                        <td class="text-right font-mono">82,924</td>
-                        <td class="text-right font-mono val-green"><strong>-49,991</strong></td>
-                        <td class="text-right font-mono val-green">-60.3%</td>
-                        <td class="text-right font-mono">96.07%</td>
-                        <td class="text-right font-mono">90.72%</td>
-                        <td class="text-right font-mono val-green"><strong>+5.35%</strong></td>
-                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_StuckAt</span></td>
+                        <td class="text-right font-mono val-green"><strong>+1.66%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC</span></td>
                     </tr>
 
                     <tr>
                         <td class="font-mono"><strong>[Top-Level Boundary / Glue Logic]</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa (unassigned to D1)</td>
-                        <td class="text-right font-mono">16</td>
+                        <td class="text-right font-mono">0</td>
                         <td class="text-right font-mono">37,186</td>
-                        <td class="text-right font-mono val-green"><strong>-37,170</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-37,186</strong></td>
                         <td class="text-right font-mono val-green">-100.0%</td>
-                        <td class="text-right font-mono">60.00%</td>
+                        <td class="text-right font-mono">100.00%</td>
                         <td class="text-right font-mono">14.88%</td>
-                        <td class="text-right font-mono val-green"><strong>+45.12%</strong></td>
-                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_StuckAt</span></td>
+                        <td class="text-right font-mono val-green"><strong>+85.12%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/sbo</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_sbo</td>
+                        <td class="text-right font-mono">47,349</td>
+                        <td class="text-right font-mono">82,924</td>
+                        <td class="text-right font-mono val-green"><strong>-35,575</strong></td>
+                        <td class="text-right font-mono val-green">-42.9%</td>
+                        <td class="text-right font-mono">92.83%</td>
+                        <td class="text-right font-mono">90.72%</td>
+                        <td class="text-right font-mono val-green"><strong>+2.11%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/santa1_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa1_wrap</td>
+                        <td class="text-right font-mono">318,387</td>
+                        <td class="text-right font-mono">300,804</td>
+                        <td class="text-right font-mono val-red"><strong>+17,583</strong></td>
+                        <td class="text-right font-mono val-red">+5.8%</td>
+                        <td class="text-right font-mono">72.03%</td>
+                        <td class="text-right font-mono">84.79%</td>
+                        <td class="text-right font-mono val-red"><strong>-12.76%</strong></td>
+                        <td class="text-center"><span class="tag tag-regressed">REGRESSED IN TTLC</span></td>
                     </tr>
 
                     <tr>
                         <td class="font-mono"><strong>/cdu_dfd_santa_infvnn</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">cdu_dfd_santa_infvnn</td>
-                        <td class="text-right font-mono">8,310</td>
+                        <td class="text-right font-mono">7,289</td>
                         <td class="text-right font-mono">16,954</td>
-                        <td class="text-right font-mono val-green"><strong>-8,644</strong></td>
-                        <td class="text-right font-mono val-green">-51.0%</td>
-                        <td class="text-right font-mono">96.12%</td>
+                        <td class="text-right font-mono val-green"><strong>-9,665</strong></td>
+                        <td class="text-right font-mono val-green">-57.0%</td>
+                        <td class="text-right font-mono">95.31%</td>
                         <td class="text-right font-mono">93.23%</td>
-                        <td class="text-right font-mono val-green"><strong>+2.89%</strong></td>
-                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_StuckAt</span></td>
+                        <td class="text-right font-mono val-green"><strong>+2.08%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC</span></td>
                     </tr>
 
                     <tr>
                         <td class="font-mono"><strong>/cdu_dfd_santa_vccr</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">cdu_dfd_santa_vccr</td>
-                        <td class="text-right font-mono">191</td>
+                        <td class="text-right font-mono">223</td>
                         <td class="text-right font-mono">7,350</td>
-                        <td class="text-right font-mono val-green"><strong>-7,159</strong></td>
-                        <td class="text-right font-mono val-green">-97.4%</td>
-                        <td class="text-right font-mono">99.17%</td>
+                        <td class="text-right font-mono val-green"><strong>-7,127</strong></td>
+                        <td class="text-right font-mono val-green">-97.0%</td>
+                        <td class="text-right font-mono">96.22%</td>
                         <td class="text-right font-mono">75.80%</td>
-                        <td class="text-right font-mono val-green"><strong>+23.37%</strong></td>
-                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_StuckAt</span></td>
+                        <td class="text-right font-mono val-green"><strong>+20.42%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC</span></td>
                     </tr>
 
                     <tr>
                         <td class="font-mono"><strong>/pmsbrccfroot</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_pmsbrccfroot_sbr_generic</td>
-                        <td class="text-right font-mono">2,204</td>
+                        <td class="text-right font-mono">1,796</td>
                         <td class="text-right font-mono">4,839</td>
-                        <td class="text-right font-mono val-green"><strong>-2,635</strong></td>
-                        <td class="text-right font-mono val-green">-54.5%</td>
-                        <td class="text-right font-mono">95.56%</td>
+                        <td class="text-right font-mono val-green"><strong>-3,043</strong></td>
+                        <td class="text-right font-mono val-green">-62.9%</td>
+                        <td class="text-right font-mono">95.14%</td>
                         <td class="text-right font-mono">89.48%</td>
-                        <td class="text-right font-mono val-green"><strong>+6.08%</strong></td>
-                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_StuckAt</span></td>
+                        <td class="text-right font-mono val-green"><strong>+5.66%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC</span></td>
                     </tr>
 
                     <tr>
                         <td class="font-mono"><strong>/sbrccfroot</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_sbrccfroot_sbr_generic</td>
-                        <td class="text-right font-mono">2,634</td>
+                        <td class="text-right font-mono">2,428</td>
                         <td class="text-right font-mono">4,881</td>
-                        <td class="text-right font-mono val-green"><strong>-2,247</strong></td>
-                        <td class="text-right font-mono val-green">-46.0%</td>
-                        <td class="text-right font-mono">96.74%</td>
+                        <td class="text-right font-mono val-green"><strong>-2,453</strong></td>
+                        <td class="text-right font-mono val-green">-50.3%</td>
+                        <td class="text-right font-mono">95.57%</td>
                         <td class="text-right font-mono">93.31%</td>
-                        <td class="text-right font-mono val-green"><strong>+3.43%</strong></td>
-                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_StuckAt</span></td>
+                        <td class="text-right font-mono val-green"><strong>+2.26%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC</span></td>
                     </tr>
 
                     <tr>
@@ -628,42 +615,81 @@
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono">19.75%</td>
                         <td class="text-right font-mono "><strong>+0.00%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">RZL_AtSpeed Only</span></td>
+                        <td class="text-center"><span class="tag tag-neutral">RZL Only</span></td>
                     </tr>
 
                     <tr>
                         <td class="font-mono"><strong>/santa_pcg_sbclk</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_scu_CTECH_EXP_0_0_8_7_2_1_8_</td>
-                        <td class="text-right font-mono">783</td>
+                        <td class="text-right font-mono">115</td>
                         <td class="text-right font-mono">456</td>
-                        <td class="text-right font-mono val-red"><strong>+327</strong></td>
-                        <td class="text-right font-mono val-red">+71.7%</td>
-                        <td class="text-right font-mono">52.89%</td>
+                        <td class="text-right font-mono val-green"><strong>-341</strong></td>
+                        <td class="text-right font-mono val-green">-74.8%</td>
+                        <td class="text-right font-mono">84.62%</td>
                         <td class="text-right font-mono">60.61%</td>
-                        <td class="text-right font-mono val-red"><strong>-7.72%</strong></td>
+                        <td class="text-right font-mono val-green"><strong>+24.01%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/santa0_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa0_wrap</td>
+                        <td class="text-right font-mono">316,754</td>
+                        <td class="text-right font-mono">316,541</td>
+                        <td class="text-right font-mono val-red"><strong>+213</strong></td>
+                        <td class="text-right font-mono val-red">+0.1%</td>
+                        <td class="text-right font-mono">74.82%</td>
+                        <td class="text-right font-mono">86.53%</td>
+                        <td class="text-right font-mono val-red"><strong>-11.71%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/santa_dlc_uclk_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa_dlc_uclk_wrap</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">146</td>
+                        <td class="text-right font-mono val-green"><strong>-146</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
                         <td class="text-center"><span class="tag tag-neutral">Common</span></td>
                     </tr>
 
                     <tr>
                         <td class="font-mono"><strong>/fast_imon_rptr_timing_santa</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_fast_imon_rptr</td>
-                        <td class="text-right font-mono">405</td>
+                        <td class="text-right font-mono">341</td>
                         <td class="text-right font-mono">197</td>
-                        <td class="text-right font-mono val-red"><strong>+208</strong></td>
-                        <td class="text-right font-mono val-red">+105.6%</td>
-                        <td class="text-right font-mono">20.28%</td>
+                        <td class="text-right font-mono val-red"><strong>+144</strong></td>
+                        <td class="text-right font-mono val-red">+73.1%</td>
+                        <td class="text-right font-mono">20.09%</td>
                         <td class="text-right font-mono">25.38%</td>
-                        <td class="text-right font-mono val-red"><strong>-5.10%</strong></td>
+                        <td class="text-right font-mono val-red"><strong>-5.29%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cri_ring_dlvr_rptr_santa0_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_cri_ring_dlvr_rptr_santa0_wr</td>
+                        <td class="text-right font-mono">146</td>
+                        <td class="text-right font-mono">257</td>
+                        <td class="text-right font-mono val-green"><strong>-111</strong></td>
+                        <td class="text-right font-mono val-green">-43.2%</td>
+                        <td class="text-right font-mono">76.98%</td>
+                        <td class="text-right font-mono">64.70%</td>
+                        <td class="text-right font-mono val-green"><strong>+12.28%</strong></td>
                         <td class="text-center"><span class="tag tag-neutral">Common</span></td>
                     </tr>
 
                     <tr>
                         <td class="font-mono"><strong>/pma_vccr_pwrgood_sync</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_dfx_synchronizer_c</td>
-                        <td class="text-right font-mono">10</td>
+                        <td class="text-right font-mono">0</td>
                         <td class="text-right font-mono">42</td>
-                        <td class="text-right font-mono val-green"><strong>-32</strong></td>
-                        <td class="text-right font-mono val-green">-76.2%</td>
+                        <td class="text-right font-mono val-green"><strong>-42</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono "><strong>+0.00%</strong></td>
@@ -673,101 +699,10 @@
                     <tr>
                         <td class="font-mono"><strong>/ctech_lib_buf_santa_fscan_mode_syn</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_dfx_ultiscan_ctech_buf</td>
-                        <td class="text-right font-mono">4</td>
+                        <td class="text-right font-mono">0</td>
                         <td class="text-right font-mono">30</td>
-                        <td class="text-right font-mono val-green"><strong>-26</strong></td>
-                        <td class="text-right font-mono val-green">-86.7%</td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/cri_ring_dlvr_rptr_santa0_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_cri_ring_dlvr_rptr_santa0_wr</td>
-                        <td class="text-right font-mono">241</td>
-                        <td class="text-right font-mono">257</td>
-                        <td class="text-right font-mono val-green"><strong>-16</strong></td>
-                        <td class="text-right font-mono val-green">-6.2%</td>
-                        <td class="text-right font-mono">66.80%</td>
-                        <td class="text-right font-mono">64.70%</td>
-                        <td class="text-right font-mono val-green"><strong>+2.10%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_d2d_cfi_ack_santa</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_inf_d2d_cfi_ack_santa</td>
-                        <td class="text-right font-mono">16</td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+16</strong></td>
-                        <td class="text-right font-mono val-red">+100.0%</td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">TTLC_StuckAt Only</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/santa_dlc_uclk_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa_dlc_uclk_wrap</td>
-                        <td class="text-right font-mono">134</td>
-                        <td class="text-right font-mono">146</td>
-                        <td class="text-right font-mono val-green"><strong>-12</strong></td>
-                        <td class="text-right font-mono val-green">-8.2%</td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/santa_c2hclk_clkdist_flop_repeater_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa_c2hclk_clkdist_flop_re</td>
-                        <td class="text-right font-mono">53</td>
-                        <td class="text-right font-mono">42</td>
-                        <td class="text-right font-mono val-red"><strong>+11</strong></td>
-                        <td class="text-right font-mono val-red">+26.2%</td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/buffer_sbo_pma_ptpcvinfvnnpwrgoodxynnnlvccu_2_vnnaon</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ft_buf_2</td>
-                        <td class="text-right font-mono">8</td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+8</strong></td>
-                        <td class="text-right font-mono val-red">+100.0%</td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/pmsbrccfroot_sbr_pmc_idle_ff</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_soc_ff_1</td>
-                        <td class="text-right font-mono">26</td>
-                        <td class="text-right font-mono">20</td>
-                        <td class="text-right font-mono val-red"><strong>+6</strong></td>
-                        <td class="text-right font-mono val-red">+30.0%</td>
-                        <td class="text-right font-mono">50.00%</td>
-                        <td class="text-right font-mono">62.96%</td>
-                        <td class="text-right font-mono val-red"><strong>-12.96%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/santa_ubp_nc2tap_pmon_sync</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_dfx_synchronizer_c</td>
-                        <td class="text-right font-mono">20</td>
-                        <td class="text-right font-mono">16</td>
-                        <td class="text-right font-mono val-red"><strong>+4</strong></td>
-                        <td class="text-right font-mono val-red">+25.0%</td>
+                        <td class="text-right font-mono val-green"><strong>-30</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono "><strong>+0.00%</strong></td>
@@ -777,10 +712,49 @@
                     <tr>
                         <td class="font-mono"><strong>/santa_ubp_pmon_overflow_sync</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_dfx_synchronizer_c</td>
-                        <td class="text-right font-mono">20</td>
+                        <td class="text-right font-mono">6</td>
                         <td class="text-right font-mono">24</td>
-                        <td class="text-right font-mono val-green"><strong>-4</strong></td>
-                        <td class="text-right font-mono val-green">-16.7%</td>
+                        <td class="text-right font-mono val-green"><strong>-18</strong></td>
+                        <td class="text-right font-mono val-green">-75.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/santa_c2hclk_clkdist_flop_repeater_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa_c2hclk_clkdist_flop_re</td>
+                        <td class="text-right font-mono">26</td>
+                        <td class="text-right font-mono">42</td>
+                        <td class="text-right font-mono val-green"><strong>-16</strong></td>
+                        <td class="text-right font-mono val-green">-38.1%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_d2d_cfi_ack_santa</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_inf_d2d_cfi_ack_santa</td>
+                        <td class="text-right font-mono">14</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+14</strong></td>
+                        <td class="text-right font-mono val-red">+100.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">TTLC Only</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/santa_ubp_nc2tap_pmon_sync</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_dfx_synchronizer_c</td>
+                        <td class="text-right font-mono">6</td>
+                        <td class="text-right font-mono">16</td>
+                        <td class="text-right font-mono val-green"><strong>-10</strong></td>
+                        <td class="text-right font-mono val-green">-62.5%</td>
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono "><strong>+0.00%</strong></td>
@@ -790,13 +764,39 @@
                     <tr>
                         <td class="font-mono"><strong>/sbrccfroot_sbr_pmc_idle_ff</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_soc_ff_0</td>
-                        <td class="text-right font-mono">18</td>
+                        <td class="text-right font-mono">10</td>
                         <td class="text-right font-mono">20</td>
-                        <td class="text-right font-mono val-green"><strong>-2</strong></td>
-                        <td class="text-right font-mono val-green">-10.0%</td>
-                        <td class="text-right font-mono">59.09%</td>
+                        <td class="text-right font-mono val-green"><strong>-10</strong></td>
+                        <td class="text-right font-mono val-green">-50.0%</td>
+                        <td class="text-right font-mono">72.73%</td>
                         <td class="text-right font-mono">60.00%</td>
-                        <td class="text-right font-mono val-red"><strong>-0.91%</strong></td>
+                        <td class="text-right font-mono val-green"><strong>+12.73%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/pmsbrccfroot_sbr_pmc_idle_ff</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_soc_ff_1</td>
+                        <td class="text-right font-mono">12</td>
+                        <td class="text-right font-mono">20</td>
+                        <td class="text-right font-mono val-green"><strong>-8</strong></td>
+                        <td class="text-right font-mono val-green">-40.0%</td>
+                        <td class="text-right font-mono">66.67%</td>
+                        <td class="text-right font-mono">62.96%</td>
+                        <td class="text-right font-mono val-green"><strong>+3.71%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/pma_vccr_powergood_inv_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_pma_vccr_powergood_inv_wrap</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">4</td>
+                        <td class="text-right font-mono val-green"><strong>-4</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
                         <td class="text-center"><span class="tag tag-neutral">Common</span></td>
                     </tr>
 
@@ -810,7 +810,7 @@
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono "><strong>+0.00%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">TTLC_StuckAt Only</span></td>
+                        <td class="text-center"><span class="tag tag-neutral">TTLC Only</span></td>
                     </tr>
 
                     <tr>
@@ -823,7 +823,20 @@
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono "><strong>+0.00%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">TTLC_StuckAt Only</span></td>
+                        <td class="text-center"><span class="tag tag-neutral">TTLC Only</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/buffer_sbo_pma_ptpcvinfvnnpwrgoodxynnnlvccu_2_vnnaon</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ft_buf_2</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
                     </tr>
 
                     <tr>
@@ -836,7 +849,7 @@
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono "><strong>+0.00%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">TTLC_StuckAt Only</span></td>
+                        <td class="text-center"><span class="tag tag-neutral">TTLC Only</span></td>
                     </tr>
 
                     <tr>
@@ -953,7 +966,7 @@
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono "><strong>+0.00%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">TTLC_StuckAt Only</span></td>
+                        <td class="text-center"><span class="tag tag-neutral">TTLC Only</span></td>
                     </tr>
 
                     <tr>
@@ -1018,7 +1031,7 @@
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono "><strong>+0.00%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">TTLC_StuckAt Only</span></td>
+                        <td class="text-center"><span class="tag tag-neutral">TTLC Only</span></td>
                     </tr>
 
                     <tr>
@@ -1065,19 +1078,6 @@
                         <td class="font-mono" style="color: #94a3b8;">par_santa_lcp_ijtag</td>
                         <td class="text-right font-mono">0</td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono "><strong>+0</strong></td>
-                        <td class="text-right font-mono ">+0.0%</td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/pma_vccr_powergood_inv_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_pma_vccr_powergood_inv_wrap</td>
-                        <td class="text-right font-mono">4</td>
-                        <td class="text-right font-mono">4</td>
                         <td class="text-right font-mono "><strong>+0</strong></td>
                         <td class="text-right font-mono ">+0.0%</td>
                         <td class="text-right font-mono">0.00%</td>
@@ -1187,7 +1187,7 @@
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono "><strong>+0.00%</strong></td>
-                        <td class="text-center"><span class="tag tag-neutral">TTLC_StuckAt Only</span></td>
+                        <td class="text-center"><span class="tag tag-neutral">TTLC Only</span></td>
                     </tr>
 
                     <tr>
@@ -1354,10 +1354,10 @@
     <!-- Top Regressions Table -->
     <div class="card">
         <h2>
-            <span>Top AU Regressions in TTLC_StuckAt (TTLC_StuckAt AU &gt; RZL_AtSpeed AU)</span>
+            <span>Top AU Regressions in TTLC (TTLC AU &gt; RZL AU)</span>
             <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-dim);">50 High Delta Instances</span>
         </h2>
-        <p>Sub-instances where TTLC_StuckAt introduced more untestable faults than RZL_AtSpeed. These represent prime opportunities to recover coverage in TTLC_StuckAt.</p>
+        <p>Sub-instances where TTLC introduced more untestable faults than RZL. These represent prime opportunities to recover coverage in TTLC.</p>
 
         <div class="table-responsive">
             <table>
@@ -1367,11 +1367,11 @@
                         <th>Instance Path</th>
                         <th>Module</th>
                         <th>Category</th>
-                        <th class="text-right">TTLC_StuckAt AU</th>
-                        <th class="text-right">RZL_AtSpeed AU</th>
+                        <th class="text-right">TTLC AU</th>
+                        <th class="text-right">RZL AU</th>
                         <th class="text-right">AU Delta</th>
-                        <th class="text-right">TTLC_StuckAt TC</th>
-                        <th class="text-right">RZL_AtSpeed TC</th>
+                        <th class="text-right">TTLC TC</th>
+                        <th class="text-right">RZL TC</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1381,226 +1381,226 @@
                         <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_arrays/santa_cclk_arrays/vc0_drs_incoming_arr</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_326_6_56_1_1_1_1_1_1_1_6_4_235242_0</td>
                         <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono val-red"><strong>46,955</strong></td>
+                        <td class="text-right font-mono val-red"><strong>128,373</strong></td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+46,955</strong></td>
-                        <td class="text-right font-mono">79.92%</td>
+                        <td class="text-right font-mono val-red"><strong>+128,373</strong></td>
+                        <td class="text-right font-mono">8.15%</td>
                         <td class="text-right font-mono">0.00%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">2</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_arrays/santa_cclk_arrays/vc0_drs_incoming_arr</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_326_6_56_1_1_1_1_1_1_1_6_4_235242_1</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_arrays/santa_cclk_arrays</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_cclk_arrays_0</td>
                         <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono val-red"><strong>45,010</strong></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+45,010</strong></td>
-                        <td class="text-right font-mono">79.03%</td>
-                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono val-red"><strong>193,896</strong></td>
+                        <td class="text-right font-mono">80,478</td>
+                        <td class="text-right font-mono val-red"><strong>+113,418</strong></td>
+                        <td class="text-right font-mono">11.23%</td>
+                        <td class="text-right font-mono">79.08%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">3</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_arrays/santa_cclk_arrays/upi_snp_incoming_arr</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_103_6_56_1_1_1_1_1_1_1_6_4_060242_0</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_arrays/santa_cclk_arrays/vc0_drs_incoming_arr</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_326_6_56_1_1_1_1_1_1_1_6_4_235242_1</td>
                         <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono val-red"><strong>14,866</strong></td>
+                        <td class="text-right font-mono val-red"><strong>111,046</strong></td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+14,866</strong></td>
-                        <td class="text-right font-mono">77.66%</td>
+                        <td class="text-right font-mono val-red"><strong>+111,046</strong></td>
+                        <td class="text-right font-mono">8.98%</td>
                         <td class="text-right font-mono">0.00%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">4</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_arrays/santa_cclk_arrays/upi_snp_incoming_arr</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_103_6_56_1_1_1_1_1_1_1_6_4_060242_1</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_arrays/santa_cclk_arrays</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_cclk_arrays_1</td>
                         <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono val-red"><strong>14,467</strong></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+14,467</strong></td>
-                        <td class="text-right font-mono">78.42%</td>
-                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono val-red"><strong>177,772</strong></td>
+                        <td class="text-right font-mono">81,459</td>
+                        <td class="text-right font-mono val-red"><strong>+96,313</strong></td>
+                        <td class="text-right font-mono">11.88%</td>
+                        <td class="text-right font-mono">78.57%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">5</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo_pma/sboidpgpsbrs/sboidp_sbr_generic</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_sbrccfsboidp_sbr_generic</td>
-                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
-                        <td class="text-right font-mono val-red"><strong>9,562</strong></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+9,562</strong></td>
-                        <td class="text-right font-mono">94.95%</td>
-                        <td class="text-right font-mono">0.00%</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_arrays</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa_arrays_00000001_1</td>
+                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
+                        <td class="text-right font-mono val-red"><strong>195,995</strong></td>
+                        <td class="text-right font-mono">143,390</td>
+                        <td class="text-right font-mono val-red"><strong>+52,605</strong></td>
+                        <td class="text-right font-mono">74.25%</td>
+                        <td class="text-right font-mono">90.07%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">6</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/ncu/ncu_arrays</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_ncu_arrays_00000001_9_4</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_arrays</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa_arrays_00000001_0</td>
                         <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono val-red"><strong>9,533</strong></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+9,533</strong></td>
-                        <td class="text-right font-mono">90.83%</td>
-                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono val-red"><strong>179,250</strong></td>
+                        <td class="text-right font-mono">132,827</td>
+                        <td class="text-right font-mono val-red"><strong>+46,423</strong></td>
+                        <td class="text-right font-mono">71.48%</td>
+                        <td class="text-right font-mono">88.79%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">7</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo/sbadm/sring_ad_all</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_sring_ad_all</td>
-                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
-                        <td class="text-right font-mono val-red"><strong>8,499</strong></td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_arrays/santa_cclk_arrays/upi_snp_incoming_arr</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_103_6_56_1_1_1_1_1_1_1_6_4_060242_1</td>
+                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
+                        <td class="text-right font-mono val-red"><strong>36,186</strong></td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+8,499</strong></td>
-                        <td class="text-right font-mono">92.11%</td>
+                        <td class="text-right font-mono val-red"><strong>+36,186</strong></td>
+                        <td class="text-right font-mono">9.28%</td>
                         <td class="text-right font-mono">0.00%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">8</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo/sbadm</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_sbadm</td>
-                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
-                        <td class="text-right font-mono val-red"><strong>8,499</strong></td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_arrays/santa_cclk_arrays/upi_snp_incoming_arr</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_103_6_56_1_1_1_1_1_1_1_6_4_060242_0</td>
+                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
+                        <td class="text-right font-mono val-red"><strong>35,277</strong></td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+8,499</strong></td>
-                        <td class="text-right font-mono">92.11%</td>
+                        <td class="text-right font-mono val-red"><strong>+35,277</strong></td>
+                        <td class="text-right font-mono">10.05%</td>
                         <td class="text-right font-mono">0.00%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">9</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_arrays/santa_cclk_arrays/vc0_ndr_incoming_arr</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_58_6_56_1_1_1_1_1_1_1_6_4_258242_0</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_arrays/santa_cclk_arrays/vc0_ndr_incoming_arr</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_58_6_56_1_1_1_1_1_1_1_6_4_258242_1</td>
                         <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono val-red"><strong>8,390</strong></td>
+                        <td class="text-right font-mono val-red"><strong>22,901</strong></td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+8,390</strong></td>
-                        <td class="text-right font-mono">79.02%</td>
+                        <td class="text-right font-mono val-red"><strong>+22,901</strong></td>
+                        <td class="text-right font-mono">10.93%</td>
                         <td class="text-right font-mono">0.00%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">10</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo_pma/sboidpgpsbrs/sboidp_sbr_generic/sbrccfsboidp_inst</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_iosfsbr_nvl_sbrccfsboidp_3</td>
-                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
-                        <td class="text-right font-mono val-red"><strong>8,328</strong></td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_arrays/santa_cclk_arrays/vc0_ndr_incoming_arr</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_58_6_56_1_1_1_1_1_1_1_6_4_258242_0</td>
+                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
+                        <td class="text-right font-mono val-red"><strong>22,843</strong></td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+8,328</strong></td>
-                        <td class="text-right font-mono">95.52%</td>
+                        <td class="text-right font-mono val-red"><strong>+22,843</strong></td>
+                        <td class="text-right font-mono">11.47%</td>
                         <td class="text-right font-mono">0.00%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">11</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_arrays/santa_cclk_arrays/vc0_ndr_incoming_arr</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_58_6_56_1_1_1_1_1_1_1_6_4_258242_1</td>
-                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono val-red"><strong>8,321</strong></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+8,321</strong></td>
-                        <td class="text-right font-mono">79.21%</td>
-                        <td class="text-right font-mono">0.00%</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa1_0000000c_00000001</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>318,367</strong></td>
+                        <td class="text-right font-mono">300,586</td>
+                        <td class="text-right font-mono val-red"><strong>+17,781</strong></td>
+                        <td class="text-right font-mono">72.03%</td>
+                        <td class="text-right font-mono">84.79%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">12</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/ncu/ncu_arrays/cncu_enable_upstream_fifo_nc_ncs_upstream_mmio_queue_payload_arr</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_294_2_4_00000000_1_1_00000001_1_1_9_4_865242_0</td>
-                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono val-red"><strong>7,988</strong></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+7,988</strong></td>
-                        <td class="text-right font-mono">29.28%</td>
-                        <td class="text-right font-mono">0.00%</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa1_wrap</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>318,387</strong></td>
+                        <td class="text-right font-mono">300,804</td>
+                        <td class="text-right font-mono val-red"><strong>+17,583</strong></td>
+                        <td class="text-right font-mono">72.03%</td>
+                        <td class="text-right font-mono">84.79%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">13</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/ncu/ncu_arrays/cncu_enable_upstream_fifo_nc_ncs_upstream_mmio_queue_payload_arr/genram_array</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_genram_bees_knees_294_4_1_1_1_1_0_0_0_0_0_0_1_0_1_vram_clock_0_00000001_0_vram_clock_1_0_0_2_0</td>
-                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono val-red"><strong>7,956</strong></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+7,956</strong></td>
-                        <td class="text-right font-mono">29.17%</td>
-                        <td class="text-right font-mono">0.00%</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_misc/santa_regs_top/santa_regs</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_regs_0_200_6_1_1_1_1_1_1_1_1_1_1_56_1_1_2_56_56_0_200_0_2_5a_1</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>67,771</strong></td>
+                        <td class="text-right font-mono">59,502</td>
+                        <td class="text-right font-mono val-red"><strong>+8,269</strong></td>
+                        <td class="text-right font-mono">62.83%</td>
+                        <td class="text-right font-mono">62.89%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">14</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo_pma/ccfpmcs/pmc_pmu</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_pmc_pmu</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo/sbadm</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_sbadm</td>
                         <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
-                        <td class="text-right font-mono val-red"><strong>9,529</strong></td>
-                        <td class="text-right font-mono">2,112</td>
-                        <td class="text-right font-mono val-red"><strong>+7,417</strong></td>
-                        <td class="text-right font-mono">94.73%</td>
-                        <td class="text-right font-mono">97.27%</td>
+                        <td class="text-right font-mono val-red"><strong>7,944</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+7,944</strong></td>
+                        <td class="text-right font-mono">87.69%</td>
+                        <td class="text-right font-mono">0.00%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">15</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_arrays/santa_uclk_arrays/tx_upi_req</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_95_6_60_1_1_1_1_1_1_1_9_4_911242_1</td>
-                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono val-red"><strong>4,758</strong></td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo/sbadm/sring_ad_all</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_sring_ad_all</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono val-red"><strong>7,944</strong></td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+4,758</strong></td>
-                        <td class="text-right font-mono">93.61%</td>
+                        <td class="text-right font-mono val-red"><strong>+7,944</strong></td>
+                        <td class="text-right font-mono">87.69%</td>
                         <td class="text-right font-mono">0.00%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">16</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_arrays/santa_uclk_arrays/tx_upi_req</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_95_6_60_1_1_1_1_1_1_1_9_4_911242_0</td>
-                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono val-red"><strong>4,684</strong></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+4,684</strong></td>
-                        <td class="text-right font-mono">93.65%</td>
-                        <td class="text-right font-mono">0.00%</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_misc/santa_regs_top</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_regs_top_0000000c_1</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>68,066</strong></td>
+                        <td class="text-right font-mono">60,880</td>
+                        <td class="text-right font-mono val-red"><strong>+7,186</strong></td>
+                        <td class="text-right font-mono">66.04%</td>
+                        <td class="text-right font-mono">66.76%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">17</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo_pma/ccfpmcs</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_ccfpmcs</td>
-                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
-                        <td class="text-right font-mono val-red"><strong>17,947</strong></td>
-                        <td class="text-right font-mono">13,698</td>
-                        <td class="text-right font-mono val-red"><strong>+4,249</strong></td>
-                        <td class="text-right font-mono">95.40%</td>
-                        <td class="text-right font-mono">94.84%</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_misc</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_misc_0000000c_1</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>68,638</strong></td>
+                        <td class="text-right font-mono">62,897</td>
+                        <td class="text-right font-mono val-red"><strong>+5,741</strong></td>
+                        <td class="text-right font-mono">71.29%</td>
+                        <td class="text-right font-mono">72.52%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">18</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_arrays/santa_uclk_arrays/tx_upi_req/genram_array</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_genram_bees_knees_95_60_1_1_1_1_0_0_0_0_0_0_1_0_1_vram_clock_0_1_0_vram_clock_1_0_0_2_0</td>
-                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono val-red"><strong>4,046</strong></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+4,046</strong></td>
-                        <td class="text-right font-mono">94.06%</td>
-                        <td class="text-right font-mono">0.00%</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_rx_gpcfi_ep</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa_rx_gpcfi_ep_1</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono val-red"><strong>33,145</strong></td>
+                        <td class="text-right font-mono">29,215</td>
+                        <td class="text-right font-mono val-red"><strong>+3,930</strong></td>
+                        <td class="text-right font-mono">52.53%</td>
+                        <td class="text-right font-mono">80.87%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">19</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_arrays/santa_uclk_arrays/tx_upi_req/genram_array</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_genram_bees_knees_95_60_1_1_1_1_0_0_0_0_0_0_1_0_1_vram_clock_0_1_0_vram_clock_1_0_0_2_1</td>
-                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono val-red"><strong>4,030</strong></td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_santa_infvnn/sb_snf_ccf_snf_wrap/SB_OBS_WITH_EP_sb_obs_top_wrap/dtf_obs_wrapper</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_sb_generic_sniffer_wrapper_0_43_8_0_1_2_2_2_2_2_0_4_1_4_1_692492514519_1_1_0_64_0_1_8_4_0_1_0_64_0_1_8_4_0_1_0_64_0_1_8_4_0_1_0_64_0_1_8_4_0_0_0_15_3800_3800_3800_000004000100020a_000004000100020a_0000040001000208_434242</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono val-red"><strong>3,815</strong></td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+4,030</strong></td>
-                        <td class="text-right font-mono">94.13%</td>
+                        <td class="text-right font-mono val-red"><strong>+3,815</strong></td>
+                        <td class="text-right font-mono">96.02%</td>
                         <td class="text-right font-mono">0.00%</td>
                     </tr>
 
@@ -1609,10 +1609,10 @@
                         <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo/sbblpm</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_sbblpm</td>
                         <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
-                        <td class="text-right font-mono val-red"><strong>3,941</strong></td>
+                        <td class="text-right font-mono val-red"><strong>3,780</strong></td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+3,941</strong></td>
-                        <td class="text-right font-mono">96.35%</td>
+                        <td class="text-right font-mono val-red"><strong>+3,780</strong></td>
+                        <td class="text-right font-mono">95.69%</td>
                         <td class="text-right font-mono">0.00%</td>
                     </tr>
 
@@ -1621,22 +1621,22 @@
                         <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo/sbadm/sring_ad_all/AD_RING_STOP_0_gring_ad_ring</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_gring_ad_ring_2_0</td>
                         <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
-                        <td class="text-right font-mono val-red"><strong>3,800</strong></td>
+                        <td class="text-right font-mono val-red"><strong>3,721</strong></td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+3,800</strong></td>
-                        <td class="text-right font-mono">60.85%</td>
+                        <td class="text-right font-mono val-red"><strong>+3,721</strong></td>
+                        <td class="text-right font-mono">61.37%</td>
                         <td class="text-right font-mono">0.00%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">22</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_santa_infvnn/sb_snf_ccf_snf_wrap/SB_OBS_WITH_EP_sb_obs_top_wrap/dtf_obs_wrapper</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_sb_generic_sniffer_wrapper_0_43_8_0_1_2_2_2_2_2_0_4_1_4_1_692492514519_1_1_0_64_0_1_8_4_0_1_0_64_0_1_8_4_0_1_0_64_0_1_8_4_0_1_0_64_0_1_8_4_0_0_0_15_3800_3800_3800_000004000100020a_000004000100020a_0000040001000208_434242</td>
-                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono val-red"><strong>3,767</strong></td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo/sbadm/sring_ad_all/AD_RING_STOP_1_gring_ad_ring</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_gring_ad_ring_2_1</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono val-red"><strong>3,493</strong></td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+3,767</strong></td>
-                        <td class="text-right font-mono">97.03%</td>
+                        <td class="text-right font-mono val-red"><strong>+3,493</strong></td>
+                        <td class="text-right font-mono">63.10%</td>
                         <td class="text-right font-mono">0.00%</td>
                     </tr>
 
@@ -1645,34 +1645,34 @@
                         <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_santa_infvnn/sb_snf_ccf_snf_wrap/SB_OBS_WITH_EP_sb_obs_top_wrap/dtf_obs_wrapper/sb_obs_dtf_obs_enc_regs</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_sb_obs_dtf_obs_enc_regs_15_3800_3800_3800_0000040001000208_000004000100020a_000004000100020a</td>
                         <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono val-red"><strong>3,601</strong></td>
+                        <td class="text-right font-mono val-red"><strong>3,408</strong></td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+3,601</strong></td>
-                        <td class="text-right font-mono">87.60%</td>
+                        <td class="text-right font-mono val-red"><strong>+3,408</strong></td>
+                        <td class="text-right font-mono">85.53%</td>
                         <td class="text-right font-mono">0.00%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">24</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo/sbadm/sring_ad_all/AD_RING_STOP_1_gring_ad_ring</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_gring_ad_ring_2_1</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_rx_gpcfi_ep/gpcfi_rx_data_ep/vc0_drs_incoming_queue</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_linked_list_q_2_56_1_235242_0</td>
                         <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
-                        <td class="text-right font-mono val-red"><strong>3,564</strong></td>
+                        <td class="text-right font-mono val-red"><strong>3,345</strong></td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+3,564</strong></td>
-                        <td class="text-right font-mono">62.62%</td>
+                        <td class="text-right font-mono val-red"><strong>+3,345</strong></td>
+                        <td class="text-right font-mono">15.73%</td>
                         <td class="text-right font-mono">0.00%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">25</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_arrays/santa_uclk_arrays/tx_data_hdr_p0</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_rw_array_wrapper_55_6_46_1_1_1_1_1_1_9_4_270242_0</td>
-                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono val-red"><strong>3,334</strong></td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_rx_gpcfi_ep/gpcfi_rx_data_ep/vc0_drs_incoming_queue</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_ccf_linked_list_q_2_56_1_235242_1</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono val-red"><strong>3,344</strong></td>
                         <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red"><strong>+3,334</strong></td>
-                        <td class="text-right font-mono">89.67%</td>
+                        <td class="text-right font-mono val-red"><strong>+3,344</strong></td>
+                        <td class="text-right font-mono">16.77%</td>
                         <td class="text-right font-mono">0.00%</td>
                     </tr>
 
@@ -1684,10 +1684,10 @@
     <!-- Top Improvements Table -->
     <div class="card">
         <h2>
-            <span>Top AU Improvements in TTLC_StuckAt (TTLC_StuckAt AU &lt; RZL_AtSpeed AU)</span>
+            <span>Top AU Improvements in TTLC (TTLC AU &lt; RZL AU)</span>
             <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-dim);">50 Resolved Blocks</span>
         </h2>
-        <p>Sub-instances where TTLC_StuckAt successfully eliminated untestable faults compared to RZL_AtSpeed. Apply these techniques to improve RZL_AtSpeed.</p>
+        <p>Sub-instances where TTLC successfully eliminated untestable faults compared to RZL. Apply these techniques to improve RZL.</p>
 
         <div class="table-responsive">
             <table>
@@ -1697,61 +1697,61 @@
                         <th>Instance Path</th>
                         <th>Module</th>
                         <th>Category</th>
-                        <th class="text-right">TTLC_StuckAt AU</th>
-                        <th class="text-right">RZL_AtSpeed AU</th>
+                        <th class="text-right">TTLC AU</th>
+                        <th class="text-right">RZL AU</th>
                         <th class="text-right">AU Delta</th>
-                        <th class="text-right">TTLC_StuckAt TC</th>
-                        <th class="text-right">RZL_AtSpeed TC</th>
+                        <th class="text-right">TTLC TC</th>
+                        <th class="text-right">RZL TC</th>
                     </tr>
                 </thead>
                 <tbody>
 
                     <tr>
                         <td class="text-center font-mono">1</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa0_wrap</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">135,933</td>
-                        <td class="text-right font-mono val-red"><strong>316,541</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-180,608</strong></td>
-                        <td class="text-right font-mono">93.66%</td>
-                        <td class="text-right font-mono">86.53%</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo_pma</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_sbo_pma</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">16,797</td>
+                        <td class="text-right font-mono val-red"><strong>92,752</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-75,955</strong></td>
+                        <td class="text-right font-mono">95.50%</td>
+                        <td class="text-right font-mono">84.43%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">2</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa0_0000000c_00000001</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">135,711</td>
-                        <td class="text-right font-mono val-red"><strong>316,217</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-180,506</strong></td>
-                        <td class="text-right font-mono">93.67%</td>
-                        <td class="text-right font-mono">86.54%</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo_pma/sboidpgpsbrs</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_sboidpgpsbrs</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">3,978</td>
+                        <td class="text-right font-mono val-red"><strong>69,284</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-65,306</strong></td>
+                        <td class="text-right font-mono">97.24%</td>
+                        <td class="text-right font-mono">78.36%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">3</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa1_wrap</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">122,577</td>
-                        <td class="text-right font-mono val-red"><strong>300,804</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-178,227</strong></td>
-                        <td class="text-right font-mono">93.52%</td>
-                        <td class="text-right font-mono">84.79%</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_arrays/santa_uclk_arrays</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa_uclk_arrays_00000001_1</td>
+                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
+                        <td class="text-right font-mono">2,032</td>
+                        <td class="text-right font-mono val-red"><strong>56,198</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-54,166</strong></td>
+                        <td class="text-right font-mono">99.25%</td>
+                        <td class="text-right font-mono">94.60%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">4</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa1_0000000c_00000001</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">122,447</td>
-                        <td class="text-right font-mono val-red"><strong>300,586</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-178,139</strong></td>
-                        <td class="text-right font-mono">93.53%</td>
-                        <td class="text-right font-mono">84.79%</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_arrays/santa_uclk_arrays</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa_uclk_arrays_00000001_0</td>
+                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
+                        <td class="text-right font-mono">1,466</td>
+                        <td class="text-right font-mono val-red"><strong>46,534</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-45,068</strong></td>
+                        <td class="text-right font-mono">99.38%</td>
+                        <td class="text-right font-mono">94.15%</td>
                     </tr>
 
                     <tr>
@@ -1759,243 +1759,27 @@
                         <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/ncu</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_ncu</td>
                         <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">32,118</td>
+                        <td class="text-right font-mono">126,465</td>
                         <td class="text-right font-mono val-red"><strong>170,827</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-138,709</strong></td>
-                        <td class="text-right font-mono">97.58%</td>
+                        <td class="text-right font-mono val-green"><strong>-44,362</strong></td>
+                        <td class="text-right font-mono">88.91%</td>
                         <td class="text-right font-mono">87.25%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">6</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/ncu/ncdfcus</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_ncdfcus_4_1_9_18_eeb3eeb2_eeb2_e9e8e7e6e5e4e3e2e1_225_233_201_224_1_1_00000000_128_26_fff_24_808242</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">11,172</td>
-                        <td class="text-right font-mono val-red"><strong>88,164</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-76,992</strong></td>
-                        <td class="text-right font-mono">98.52%</td>
-                        <td class="text-right font-mono">88.60%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">7</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/ncu/ncdfcus/eventb</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_eventb_1_1_fff_2_128_00000000_0</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">9,051</td>
-                        <td class="text-right font-mono val-red"><strong>70,449</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-61,398</strong></td>
-                        <td class="text-right font-mono">97.49%</td>
-                        <td class="text-right font-mono">80.06%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">8</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo_pma</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_sbo_pma</td>
-                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
-                        <td class="text-right font-mono">37,233</td>
-                        <td class="text-right font-mono val-red"><strong>92,752</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-55,519</strong></td>
-                        <td class="text-right font-mono">94.28%</td>
-                        <td class="text-right font-mono">84.43%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">9</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_misc</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_misc_0000000c_1</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">8,172</td>
-                        <td class="text-right font-mono val-red"><strong>62,897</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-54,725</strong></td>
-                        <td class="text-right font-mono">96.90%</td>
-                        <td class="text-right font-mono">72.52%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">10</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_misc/santa_regs_top</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_regs_top_0000000c_1</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">8,025</td>
-                        <td class="text-right font-mono val-red"><strong>60,880</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-52,855</strong></td>
-                        <td class="text-right font-mono">96.36%</td>
-                        <td class="text-right font-mono">66.76%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">11</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo_pma/sboidpgpsbrs</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_sboidpgpsbrs</td>
-                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
-                        <td class="text-right font-mono">17,382</td>
-                        <td class="text-right font-mono val-red"><strong>69,284</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-51,902</strong></td>
-                        <td class="text-right font-mono">93.17%</td>
-                        <td class="text-right font-mono">78.36%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">12</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_misc/santa_regs_top/santa_regs</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_regs_0_200_6_1_1_1_1_1_1_1_1_1_1_56_1_1_2_56_56_0_200_0_2_5a_1</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">7,905</td>
-                        <td class="text-right font-mono val-red"><strong>59,502</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-51,597</strong></td>
-                        <td class="text-right font-mono">96.06%</td>
-                        <td class="text-right font-mono">62.89%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">13</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/ncu/ncdfcus/eventb/CCF_VCCR_RET_ncevents_regs</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_ncevents_type</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">6,650</td>
-                        <td class="text-right font-mono val-red"><strong>57,997</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-51,347</strong></td>
-                        <td class="text-right font-mono">97.19%</td>
-                        <td class="text-right font-mono">75.07%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">14</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_misc</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_misc_0000000c_0</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">7,880</td>
-                        <td class="text-right font-mono val-red"><strong>58,883</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-51,003</strong></td>
-                        <td class="text-right font-mono">96.32%</td>
-                        <td class="text-right font-mono">74.29%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">15</td>
                         <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_sbo</td>
                         <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
-                        <td class="text-right font-mono">32,933</td>
+                        <td class="text-right font-mono">47,349</td>
                         <td class="text-right font-mono val-red"><strong>82,924</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-49,991</strong></td>
-                        <td class="text-right font-mono">96.07%</td>
+                        <td class="text-right font-mono val-green"><strong>-35,575</strong></td>
+                        <td class="text-right font-mono">92.83%</td>
                         <td class="text-right font-mono">90.72%</td>
                     </tr>
 
                     <tr>
-                        <td class="text-center font-mono">16</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_tx_gpcfi_ep</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_tx_gpcfi_ep_0</td>
-                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
-                        <td class="text-right font-mono">11,209</td>
-                        <td class="text-right font-mono val-red"><strong>60,954</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-49,745</strong></td>
-                        <td class="text-right font-mono">90.73%</td>
-                        <td class="text-right font-mono">54.35%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">17</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_tx_gpcfi_ep</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_tx_gpcfi_ep_1</td>
-                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
-                        <td class="text-right font-mono">11,179</td>
-                        <td class="text-right font-mono val-red"><strong>60,919</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-49,740</strong></td>
-                        <td class="text-right font-mono">90.92%</td>
-                        <td class="text-right font-mono">54.04%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">18</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_misc/santa_regs_top</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_regs_top_0000000c_0</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">7,690</td>
-                        <td class="text-right font-mono val-red"><strong>56,292</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-48,602</strong></td>
-                        <td class="text-right font-mono">95.46%</td>
-                        <td class="text-right font-mono">68.62%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">19</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_arrays</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa_arrays_00000001_1</td>
-                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono">95,192</td>
-                        <td class="text-right font-mono val-red"><strong>143,390</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-48,198</strong></td>
-                        <td class="text-right font-mono">92.87%</td>
-                        <td class="text-right font-mono">90.07%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">20</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_misc/santa_regs_top/santa_regs</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_regs_0_200_6_1_1_1_1_1_1_1_1_1_1_56_1_1_2_56_56_0_200_0_2_5a_0</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">7,511</td>
-                        <td class="text-right font-mono val-red"><strong>54,907</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-47,396</strong></td>
-                        <td class="text-right font-mono">94.93%</td>
-                        <td class="text-right font-mono">64.88%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">21</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_arrays</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa_arrays_00000001_0</td>
-                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono">88,867</td>
-                        <td class="text-right font-mono val-red"><strong>132,827</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-43,960</strong></td>
-                        <td class="text-right font-mono">92.10%</td>
-                        <td class="text-right font-mono">88.79%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">22</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/ncu/ncdecs</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_ncdecs_1_00000001_00000000_26</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">5,898</td>
-                        <td class="text-right font-mono val-red"><strong>45,807</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-39,909</strong></td>
-                        <td class="text-right font-mono">96.58%</td>
-                        <td class="text-right font-mono">73.07%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">23</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/ncu/ncdecs/CCF_VCCR_RET_ncdecs_regs</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_ncdecs_type</td>
-                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">5,387</td>
-                        <td class="text-right font-mono val-red"><strong>43,356</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-37,969</strong></td>
-                        <td class="text-right font-mono">95.66%</td>
-                        <td class="text-right font-mono">64.27%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">24</td>
-                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_arrays/santa_uclk_arrays</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_santa_santa_uclk_arrays_00000001_1</td>
-                        <td><span class="tag tag-neutral">Memory / RAM Array</span></td>
-                        <td class="text-right font-mono">18,420</td>
-                        <td class="text-right font-mono val-red"><strong>56,198</strong></td>
-                        <td class="text-right font-mono val-green"><strong>-37,778</strong></td>
-                        <td class="text-right font-mono">98.09%</td>
-                        <td class="text-right font-mono">94.60%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">25</td>
+                        <td class="text-center font-mono">7</td>
                         <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo_pma/sboidpgpsbrs/sboidp_sbr_generic_sbrccfsboidp_inst</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">par_santa_iosfsbr_nvl_sbrccfsboidp_3</td>
                         <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
@@ -2004,6 +1788,222 @@
                         <td class="text-right font-mono val-green"><strong>-35,198</strong></td>
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-right font-mono">84.81%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">8</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_tx_gpcfi_ep</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_tx_gpcfi_ep_1</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">39,273</td>
+                        <td class="text-right font-mono val-red"><strong>60,919</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-21,646</strong></td>
+                        <td class="text-right font-mono">32.71%</td>
+                        <td class="text-right font-mono">54.04%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">9</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_tx_gpcfi_ep</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_tx_gpcfi_ep_0</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">39,536</td>
+                        <td class="text-right font-mono val-red"><strong>60,954</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-21,418</strong></td>
+                        <td class="text-right font-mono">32.88%</td>
+                        <td class="text-right font-mono">54.35%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">10</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/ncu/ncdfcus</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_ncdfcus_4_1_9_18_eeb3eeb2_eeb2_e9e8e7e6e5e4e3e2e1_225_233_201_224_1_1_00000000_128_26_fff_24_808242</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">68,304</td>
+                        <td class="text-right font-mono val-red"><strong>88,164</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-19,860</strong></td>
+                        <td class="text-right font-mono">89.35%</td>
+                        <td class="text-right font-mono">88.60%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">11</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_misc</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_misc_0000000c_0</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">41,496</td>
+                        <td class="text-right font-mono val-red"><strong>58,883</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-17,387</strong></td>
+                        <td class="text-right font-mono">77.98%</td>
+                        <td class="text-right font-mono">74.29%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">12</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_tx_gpcfi_ep/gpcfi_tx_data_ep/cfi_tx_data_gfifo/generic_gfifo/generic_gfifo_write</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_generic_gfifo_write__mcr_v___10_1_1_0_no_0_yes_0_2_no_4_yes_235242_0</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">6,042</td>
+                        <td class="text-right font-mono val-red"><strong>23,392</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-17,350</strong></td>
+                        <td class="text-right font-mono">26.58%</td>
+                        <td class="text-right font-mono">26.60%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">13</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_tx_gpcfi_ep/gpcfi_tx_data_ep/cfi_tx_data_gfifo/generic_gfifo/generic_gfifo_write</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_generic_gfifo_write__mcr_v___10_1_1_0_no_0_yes_0_2_no_4_yes_235242_1</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">6,254</td>
+                        <td class="text-right font-mono val-red"><strong>23,144</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-16,890</strong></td>
+                        <td class="text-right font-mono">25.90%</td>
+                        <td class="text-right font-mono">25.49%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">14</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_tx_gpcfi_ep/gpcfi_tx_data_ep/cfi_tx_data_gfifo/generic_gfifo</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_generic_gfifo__mcr_v___10_1_5_yes_1_0_0_no_2_no_yes_4_4_1_235242_0</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">16,190</td>
+                        <td class="text-right font-mono val-red"><strong>32,137</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-15,947</strong></td>
+                        <td class="text-right font-mono">17.54%</td>
+                        <td class="text-right font-mono">32.20%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">15</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_tx_gpcfi_ep/gpcfi_tx_data_ep/cfi_tx_data_gfifo/generic_gfifo</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_generic_gfifo__mcr_v___10_1_5_yes_1_0_0_no_2_no_yes_4_4_1_235242_1</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">16,113</td>
+                        <td class="text-right font-mono val-red"><strong>31,985</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-15,872</strong></td>
+                        <td class="text-right font-mono">17.21%</td>
+                        <td class="text-right font-mono">34.06%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">16</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_misc/santa_regs_top</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_regs_top_0000000c_0</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">40,774</td>
+                        <td class="text-right font-mono val-red"><strong>56,292</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-15,518</strong></td>
+                        <td class="text-right font-mono">72.86%</td>
+                        <td class="text-right font-mono">68.62%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">17</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_tx_gpcfi_ep/gpcfi_tx_data_ep/cfi_tx_data_gfifo</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_generic_gfifo_wrap_10_1_326_1_no_yes_4_4_235242_0</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">19,925</td>
+                        <td class="text-right font-mono val-red"><strong>34,753</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-14,828</strong></td>
+                        <td class="text-right font-mono">28.71%</td>
+                        <td class="text-right font-mono">45.35%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">18</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_tx_gpcfi_ep/gpcfi_tx_data_ep/cfi_tx_data_gfifo</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_generic_gfifo_wrap_10_1_326_1_no_yes_4_4_235242_1</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">19,920</td>
+                        <td class="text-right font-mono val-red"><strong>34,583</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-14,663</strong></td>
+                        <td class="text-right font-mono">28.29%</td>
+                        <td class="text-right font-mono">45.65%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">19</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_misc/santa_regs_top/santa_regs</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_santa_regs_0_200_6_1_1_1_1_1_1_1_1_1_1_56_1_1_2_56_56_0_200_0_2_5a_0</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">40,376</td>
+                        <td class="text-right font-mono val-red"><strong>54,907</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-14,531</strong></td>
+                        <td class="text-right font-mono">69.16%</td>
+                        <td class="text-right font-mono">64.88%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">20</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_tx_gpcfi_ep/gpcfi_tx_data_ep</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_gpcfi_tx_data_ep_1</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">22,536</td>
+                        <td class="text-right font-mono val-red"><strong>36,223</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-13,687</strong></td>
+                        <td class="text-right font-mono">29.86%</td>
+                        <td class="text-right font-mono">50.86%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">21</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_tx_gpcfi_ep/gpcfi_tx_data_ep</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_gpcfi_tx_data_ep_0</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">22,796</td>
+                        <td class="text-right font-mono val-red"><strong>36,320</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-13,524</strong></td>
+                        <td class="text-right font-mono">29.97%</td>
+                        <td class="text-right font-mono">50.30%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">22</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo/sbctls</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_sbctls</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">26,054</td>
+                        <td class="text-right font-mono val-red"><strong>38,415</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-12,361</strong></td>
+                        <td class="text-right font-mono">91.16%</td>
+                        <td class="text-right font-mono">89.49%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">23</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbo/sbctls/sbmiscs</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_sbmiscs</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">25,690</td>
+                        <td class="text-right font-mono val-red"><strong>37,230</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-11,540</strong></td>
+                        <td class="text-right font-mono">90.80%</td>
+                        <td class="text-right font-mono">89.07%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">24</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa0_wrap/santa0/santa_rx_gpcfi_ep/gpcfi_rx_data_ep/cfi_rx_data_gfifo/generic_gfifo</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_generic_gfifo__mcr_v___10_1_5_yes_1_0_0_no_2_no_yes_4_4_1_890242_0</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">1,009</td>
+                        <td class="text-right font-mono val-red"><strong>11,532</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-10,523</strong></td>
+                        <td class="text-right font-mono">93.12%</td>
+                        <td class="text-right font-mono">72.54%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">25</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/santa1_wrap/santa1/santa_rx_gpcfi_ep/gpcfi_rx_data_ep/cfi_rx_data_gfifo/generic_gfifo</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_santa_par_santa_generic_gfifo__mcr_v___10_1_5_yes_1_0_0_no_2_no_yes_4_4_1_890242_1</td>
+                        <td><span class="tag tag-neutral">Bus / Interconnect / NoC</span></td>
+                        <td class="text-right font-mono">1,088</td>
+                        <td class="text-right font-mono val-red"><strong>11,594</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-10,506</strong></td>
+                        <td class="text-right font-mono">93.37%</td>
+                        <td class="text-right font-mono">73.57%</td>
                     </tr>
 
                 </tbody>
