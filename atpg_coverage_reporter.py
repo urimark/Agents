@@ -1962,26 +1962,407 @@ def get_workweek_tag(custom_ww=None):
     return f"WW{ww_num:02d}.{day_abbr}"
 
 
-def save_to_git_results(report_files, ww_tag, git_repo_dir=None, commit_msg=None, push=True):
+def generate_menu_pages(git_repo_dir, results_subdir="results"):
     """
-    Copies report files into <git_repo>/results/<ww_tag>/, stages them, commits, and pushes to git.
+    Scans all results/<WW>/ folders and generates interactive Menu index.html pages
+    at git repo root, results/index.html, and inside each results/<WW>/index.html.
+    """
+    results_dir = os.path.join(git_repo_dir, results_subdir)
+    if not os.path.isdir(results_dir):
+        return []
+
+    import re
+    ww_entries = []
+    for name in sorted(os.listdir(results_dir), reverse=True):
+        full_p = os.path.join(results_dir, name)
+        if os.path.isdir(full_p) and not name.startswith("."):
+            html_files = sorted(glob.glob(os.path.join(full_p, "*.html")))
+            csv_files = sorted(glob.glob(os.path.join(full_p, "*.csv")))
+            html_files = [h for h in html_files if not os.path.basename(h).startswith("index")]
+            if not html_files and not csv_files:
+                continue
+
+            reports_info = []
+            comp_report = None
+            run1_report = None
+            run2_report = None
+            single_report = None
+
+            for h in html_files:
+                fname = os.path.basename(h)
+                with open(h, "r", errors="ignore") as f:
+                    snippet = f.read(4096)
+                    title_m = re.search(r"<title>(.*?)</title>", snippet, re.IGNORECASE)
+                    title = title_m.group(1).strip() if title_m else fname
+
+                info = {"filename": fname, "title": title}
+                reports_info.append(info)
+                if "comparison" in fname:
+                    comp_report = info
+                elif "run1" in fname:
+                    run1_report = info
+                elif "run2" in fname:
+                    run2_report = info
+                elif fname == "atpg_coverage_report.html":
+                    single_report = info
+
+            mode_desc = "ATPG Coverage Analysis"
+            if comp_report:
+                m = re.search(r"Comparison Report:\s*(.*)", comp_report["title"], re.IGNORECASE)
+                mode_desc = f"Comparison: {m.group(1)}" if m else "Cross-Run Comparison"
+            elif single_report:
+                m = re.search(r"Report:\s*(.*)", single_report["title"], re.IGNORECASE)
+                mode_desc = f"Single Run: {m.group(1)}" if m else "Single Run Coverage"
+
+            mtime = datetime.fromtimestamp(os.path.getmtime(full_p)).strftime("%Y-%m-%d %H:%M:%S")
+
+            ww_entries.append({
+                "name": name,
+                "path": full_p,
+                "mtime": mtime,
+                "mode_desc": mode_desc,
+                "comp_report": comp_report,
+                "run1_report": run1_report,
+                "run2_report": run2_report,
+                "single_report": single_report,
+                "html_files": reports_info,
+                "csv_files": [os.path.basename(c) for c in csv_files if not os.path.basename(c).startswith("index")]
+            })
+
+    def render_portal(base_depth):
+        html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATPG Coverage & Analysis Portal - Results Menu</title>
+    <style>
+        :root {{
+            --bg-page: #0f172a;
+            --bg-card: #1e293b;
+            --bg-subcard: #243247;
+            --bg-hover: rgba(255, 255, 255, 0.04);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --text-highlight: #38bdf8;
+            --border: #334155;
+            --red: #f87171;
+            --red-bg: rgba(248, 113, 113, 0.12);
+            --green: #4ade80;
+            --green-bg: rgba(74, 222, 128, 0.12);
+            --yellow: #facc15;
+            --yellow-bg: rgba(250, 204, 21, 0.12);
+            --blue: #60a5fa;
+            --blue-bg: rgba(96, 165, 250, 0.12);
+            --purple: #c084fc;
+            --purple-bg: rgba(192, 132, 252, 0.12);
+            --code-bg: #0b1120;
+        }}
+        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2.5rem 2rem;
+        }}
+        .container {{ max-width: 1400px; margin: 0 auto; }}
+        header {{
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }}
+        h1 {{
+            font-size: 2.3rem;
+            font-weight: 800;
+            color: var(--text-highlight);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }}
+        .subtitle {{
+            color: var(--text-dim);
+            font-size: 1.05rem;
+        }}
+        .search-box {{
+            width: 100%;
+            max-width: 420px;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            padding: 0.75rem 1.25rem;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }}
+        .search-box:focus {{ border-color: var(--text-highlight); }}
+        .portal-grid {{
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.75rem;
+        }}
+        .ww-card {{
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.25);
+            transition: transform 0.2s, border-color 0.2s;
+        }}
+        .ww-card:hover {{
+            transform: translateY(-2px);
+            border-color: #475569;
+        }}
+        .ww-card-header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }}
+        .ww-title-area {{
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }}
+        .ww-badge {{
+            font-size: 1.25rem;
+            font-weight: 800;
+            padding: 0.35rem 0.9rem;
+            border-radius: 8px;
+            background: var(--blue-bg);
+            color: var(--text-highlight);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-family: 'JetBrains Mono', Consolas, monospace;
+        }}
+        .ww-desc {{
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }}
+        .ww-meta {{
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }}
+        .btn-group {{
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }}
+        .btn {{
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.1rem;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }}
+        .btn-primary {{
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }}
+        .btn-primary:hover {{
+            background: linear-gradient(135deg, #0369a1, #075985);
+            transform: translateY(-1px);
+        }}
+        .btn-secondary {{
+            background: var(--bg-subcard);
+            color: var(--text-highlight);
+            border-color: var(--border);
+        }}
+        .btn-secondary:hover {{
+            background: var(--border);
+            color: #fff;
+            transform: translateY(-1px);
+        }}
+        .btn-csv {{
+            background: rgba(74, 222, 128, 0.1);
+            color: var(--green);
+            border-color: rgba(74, 222, 128, 0.25);
+        }}
+        .btn-csv:hover {{
+            background: rgba(74, 222, 128, 0.2);
+            transform: translateY(-1px);
+        }}
+        .file-list {{
+            margin-top: 1rem;
+            padding-top: 0.75rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }}
+        .file-list code {{
+            background: var(--code-bg);
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            color: #cbd5e1;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+        }}
+    </style>
+    <script>
+        function filterCards() {{
+            const filter = document.getElementById('filterInput').value.toLowerCase();
+            const cards = document.getElementsByClassName('ww-card');
+            for (let i = 0; i < cards.length; i++) {{
+                const text = cards[i].textContent.toLowerCase();
+                cards[i].style.display = text.includes(filter) ? '' : 'none';
+            }}
+        }}
+    </script>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div>
+            <h1>📊 ATPG Coverage & Analysis Portal</h1>
+            <div class="subtitle">Siemens Tessent Automated Coverage, AU Breakdown & Cross-Run Comparison Dashboards</div>
+        </div>
+        <div>
+            <input type="text" id="filterInput" class="search-box" onkeyup="filterCards()" placeholder="🔍 Filter by WorkWeek, partition, or recipe...">
+        </div>
+    </header>
+
+    <div class="portal-grid">
+"""
+
+        for entry in ww_entries:
+            ww_name = entry["name"]
+            if base_depth == 0:
+                prefix = f"results/{ww_name}/"
+            elif base_depth == 1:
+                prefix = f"{ww_name}/"
+            else:
+                prefix = ""
+
+            html += f"""
+        <div class="ww-card">
+            <div class="ww-card-header">
+                <div class="ww-title-area">
+                    <span class="ww-badge">{html_lib.escape(ww_name)}</span>
+                    <span class="ww-desc">{html_lib.escape(entry["mode_desc"])}</span>
+                </div>
+                <div class="ww-meta">Generated: {entry["mtime"]}</div>
+            </div>
+
+            <div class="btn-group">
+"""
+            if entry["comp_report"]:
+                comp_url = prefix + entry["comp_report"]["filename"]
+                html += f"""                <a href="{html_lib.escape(comp_url)}" class="btn btn-primary">📊 Cross-Run Comparison Report</a>\n"""
+
+            if entry["run1_report"]:
+                r1_url = prefix + entry["run1_report"]["filename"]
+                html += f"""                <a href="{html_lib.escape(r1_url)}" class="btn btn-secondary">📄 Run 1 Coverage Report</a>\n"""
+
+            if entry["run2_report"]:
+                r2_url = prefix + entry["run2_report"]["filename"]
+                html += f"""                <a href="{html_lib.escape(r2_url)}" class="btn btn-secondary">📄 Run 2 Coverage Report</a>\n"""
+
+            if entry["single_report"] and not entry["comp_report"]:
+                s_url = prefix + entry["single_report"]["filename"]
+                html += f"""                <a href="{html_lib.escape(s_url)}" class="btn btn-primary">📄 ATPG Coverage Report</a>\n"""
+
+            for csv_f in entry["csv_files"]:
+                csv_url = prefix + csv_f
+                label = "Deltas CSV" if "delta" in csv_f.lower() else "AU Breakdown CSV"
+                html += f"""                <a href="{html_lib.escape(csv_url)}" class="btn btn-csv">📥 {label}</a>\n"""
+
+            html += f"""            </div>
+
+            <div class="file-list">
+                <span>Available artifacts:</span>
+"""
+            for h in entry["html_files"]:
+                html += f"""                <code>{html_lib.escape(h["filename"])}</code>\n"""
+            for c in entry["csv_files"]:
+                html += f"""                <code>{html_lib.escape(c)}</code>\n"""
+
+            html += """            </div>
+        </div>
+"""
+
+        html += """
+    </div>
+
+    <footer style="margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-dim); font-size: 0.85rem;">
+        ATPG Coverage Report Agent Portal &bull; Intel CTH DFT Automation &bull; Siemens Tessent Shell
+    </footer>
+</div>
+</body>
+</html>
+"""
+        return html
+
+    generated_paths = []
+    # 1. Root index.html
+    root_index_path = os.path.join(git_repo_dir, "index.html")
+    with open(root_index_path, "w") as f:
+        f.write(render_portal(base_depth=0))
+    generated_paths.append(root_index_path)
+
+    # 2. results/index.html
+    results_index_path = os.path.join(results_dir, "index.html")
+    with open(results_index_path, "w") as f:
+        f.write(render_portal(base_depth=1))
+    generated_paths.append(results_index_path)
+
+    # 3. results/<WW>/index.html
+    for entry in ww_entries:
+        ww_index_path = os.path.join(entry["path"], "index.html")
+        with open(ww_index_path, "w") as f:
+            f.write(render_portal(base_depth=2))
+        generated_paths.append(ww_index_path)
+
+    print(f"[*] Updated Portal Menu pages in Git repo:")
+    print(f"    • Root Portal:    {root_index_path}")
+    print(f"    • Results Menu:   {results_index_path}")
+    return generated_paths
+
+
+def save_to_git_results(report_files, ww_tag, git_repo_dir=None, commit_msg=None, push=True, results_subdir="results"):
+    """
+    Copies report files into <git_repo>/<results_subdir>/<ww_tag>/, updates menu pages, commits, and pushes to git.
     """
     if not git_repo_dir:
+        env_repo = os.environ.get("ATPG_RESULTS_REPO") or os.environ.get("ATPG_GIT_REPO")
         candidates = [
+            env_repo,
             "/nfs/site/disks/umark_wa01/gitprivateumark01/Agents",
             os.path.join(os.getcwd(), "Agents"),
             os.getcwd()
         ]
         for c in candidates:
-            if os.path.isdir(os.path.join(c, ".git")):
+            if c and os.path.isdir(os.path.join(c, ".git")):
                 git_repo_dir = c
                 break
+
+    if git_repo_dir:
+        git_repo_dir = os.path.abspath(os.path.expanduser(git_repo_dir))
 
     if not git_repo_dir or not os.path.isdir(os.path.join(git_repo_dir, ".git")):
         print(f"[!] Warning: Git repository not found at '{git_repo_dir}'. Skipping git load.")
         return False
 
-    target_dir = os.path.join(git_repo_dir, "results", ww_tag)
+    target_dir = os.path.join(git_repo_dir, results_subdir, ww_tag)
     os.makedirs(target_dir, exist_ok=True)
     print(f"\n[*] Storing reports to Git results folder: {target_dir}")
 
@@ -1995,17 +2376,21 @@ def save_to_git_results(report_files, ww_tag, git_repo_dir=None, commit_msg=None
             copied_files.append(dst)
             print(f"    • Loaded into results: {os.path.basename(src)}")
 
+    # Update the interactive Menu pages
+    menu_files = generate_menu_pages(git_repo_dir, results_subdir=results_subdir)
+
     if push:
-        print(f"[*] Committing and pushing results to Git ({git_repo_dir})...")
+        print(f"[*] Committing and pushing results and menu portal to Git ({git_repo_dir})...")
         try:
-            rel_folder = f"results/{ww_tag}"
-            subprocess.run(["git", "add", rel_folder], cwd=git_repo_dir, check=True)
+            rel_folder = f"{results_subdir}/{ww_tag}"
+            subprocess.run(["git", "add", rel_folder, f"{results_subdir}/index.html", "index.html"], cwd=git_repo_dir, check=True)
             msg = commit_msg if commit_msg else f"Add ATPG coverage reports for {ww_tag}"
             res = subprocess.run(["git", "commit", "-m", msg], cwd=git_repo_dir, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
             if "nothing to commit" in res.stdout:
                 print(f"[*] Git: Nothing new to commit (already up to date).")
             else:
                 print(f"[✓] Git commit created: {msg}")
+                subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=git_repo_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 push_res = subprocess.run(["git", "push", "origin", "main"], cwd=git_repo_dir, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
                 if push_res.returncode == 0:
                     print(f"[✓] Git push to origin main successful.")
@@ -2019,8 +2404,10 @@ def save_to_git_results(report_files, ww_tag, git_repo_dir=None, commit_msg=None
 
 
 def main():
+    default_repo = os.environ.get("ATPG_RESULTS_REPO") or os.environ.get("ATPG_GIT_REPO") or "/nfs/site/disks/umark_wa01/gitprivateumark01/Agents"
+
     parser = argparse.ArgumentParser(description="Automated ATPG Coverage & AU Breakdown Reporter")
-    parser.add_argument("--run-dir", "-r", required=True, help="Path to ATPG run directory (Run 1)")
+    parser.add_argument("--run-dir", "-r", help="Path to ATPG run directory (Run 1)")
     parser.add_argument("--compare-run-dir", "--run-dir2", "-c", help="Path to second ATPG run directory for comparison (Run 2)")
     parser.add_argument("--label1", help="Custom display label for Run 1")
     parser.add_argument("--label2", help="Custom display label for Run 2")
@@ -2039,9 +2426,42 @@ def main():
     parser.add_argument("--ww", nargs="?", const="auto", help="Save reports by WorkWeek and day folder (e.g., WW42.Wed). Pass without value for current WW, or specify explicitly.")
     parser.add_argument("--save-ww", action="store_true", help="Enable saving reports under WorkWeek and day folder (e.g. results/WW42.Wed/)")
     parser.add_argument("--load-git", "--git-push", action="store_true", help="Copy reports to git results folder, commit, and push to remote origin")
-    parser.add_argument("--git-repo", default="/nfs/site/disks/umark_wa01/gitprivateumark01/Agents", help="Path to local git repository (defaults to /nfs/site/disks/umark_wa01/gitprivateumark01/Agents)")
+    parser.add_argument("--update-menu", action="store_true", help="Scan results folder and generate/update the interactive Menu portal pages (index.html)")
+    parser.add_argument(
+        "--results-repo", "--repo-path", "--git-repo",
+        dest="results_repo",
+        default=default_repo,
+        help="Path to local git repository for results (defaults to $ATPG_RESULTS_REPO or /nfs/site/disks/umark_wa01/gitprivateumark01/Agents)"
+    )
+    parser.add_argument(
+        "--results-subdir",
+        default="results",
+        help="Subdirectory inside git repository where reports are stored (default: 'results')"
+    )
 
     args = parser.parse_args()
+
+    # Handle standalone menu update
+    if args.update_menu and not args.run_dir:
+        print("[*] Generating and updating Portal Menu pages...")
+        generate_menu_pages(args.results_repo, results_subdir=args.results_subdir)
+        try:
+            rel_idx = f"{args.results_subdir}/index.html"
+            subprocess.run(["git", "add", rel_idx, "index.html"], cwd=args.results_repo, check=True)
+            res = subprocess.run(["git", "commit", "-m", "Update ATPG coverage portal menu index"], cwd=args.results_repo, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            if "nothing to commit" not in res.stdout:
+                subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=args.results_repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                subprocess.run(["git", "push", "origin", "main"], cwd=args.results_repo, check=True)
+                print("[✓] Pushed menu portal updates to GitHub.")
+            else:
+                print("[*] Menu index already up to date on Git.")
+        except Exception as e:
+            print(f"[!] Git warning: {e}")
+        print("[✓] Portal menu update complete.")
+        return
+
+    if not args.run_dir:
+        parser.error("Either --run-dir / -r or --update-menu is required.")
 
     # Determine WorkWeek tag
     ww_tag = None
@@ -2140,9 +2560,10 @@ def main():
             save_to_git_results(
                 report_files=files_to_sync,
                 ww_tag=active_ww,
-                git_repo_dir=args.git_repo,
+                git_repo_dir=args.results_repo,
                 commit_msg=commit_title,
-                push=True
+                push=True,
+                results_subdir=args.results_subdir
             )
 
     # Single Run Mode
@@ -2188,9 +2609,10 @@ def main():
             save_to_git_results(
                 report_files=files_to_sync,
                 ww_tag=active_ww,
-                git_repo_dir=args.git_repo,
+                git_repo_dir=args.results_repo,
                 commit_msg=commit_title,
-                push=True
+                push=True,
+                results_subdir=args.results_subdir
             )
 
 
