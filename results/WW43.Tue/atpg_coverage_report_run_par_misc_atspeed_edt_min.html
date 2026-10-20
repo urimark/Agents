@@ -287,12 +287,12 @@
                 <h1>ATPG Coverage & AU Breakdown Report: par_misc</h1>
                 <div class="meta">
                     Recipe: <code>atspeed_edt_min</code> &nbsp;|&nbsp;
-                    Generated on: <code>2026-10-20 00:27:42</code> &nbsp;|&nbsp;
+                    Generated on: <code>2026-10-20 01:01:05</code> &nbsp;|&nbsp;
                     Run Folder: <code>/nfs/site/disks/umark_wa01/Pandora_ttlc_atpg1/rzlparmiscWW26_ParMiscAtSpeed/par_misc_wa/runs/par_misc/n2p_htall_conf7/sage_atpg/sage/WORK/atspeed_edt_min</code>
                 </div>
             </div>
             <div>
-                <span class="badge badge-red">Health: CRITICAL HOLES (85.96% TC)</span>
+                <span class="badge badge-yellow">Health: FAIR (90.06% TC)</span>
             </div>
         </div>
     </header>
@@ -301,25 +301,25 @@
     <div class="kpi-grid">
         <div class="kpi-card">
             <div class="kpi-title">Test Coverage</div>
-            <div class="kpi-val val-red">85.96%</div>
+            <div class="kpi-val val-yellow">90.06%</div>
             <div class="kpi-sub">Target: ≥95.00%</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-title">Total Faults</div>
-            <div class="kpi-val val-blue">1,950,015</div>
+            <div class="kpi-val val-blue">668,389</div>
             <div class="kpi-sub">Total design fault universe</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-title">Total AU (Untestable)</div>
-            <div class="kpi-val val-red">271,561</div>
-            <div class="kpi-sub">13.93% AU Rate</div>
+            <div class="kpi-val val-red">63,539</div>
+            <div class="kpi-sub">9.51% AU Rate</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-title">Top Coverage Hole</div>
             <div class="kpi-val val-purple" style="font-size: 1.5rem; word-break: break-all;">
-                d2d_cfi_mux_wrapper
+                cdie_fusehip
             </div>
-            <div class="kpi-sub">74,734 AU (27.5% of total)</div>
+            <div class="kpi-sub">35,629 AU (56.1% of total)</div>
         </div>
     </div>
 
@@ -327,14 +327,25 @@
     <div class="card">
         <h2>
             <span>Actionable Next Steps to Increase Test Coverage</span>
-            <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-dim);">3 Targeted Initiatives</span>
+            <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-dim);">4 Targeted Initiatives</span>
         </h2>
         <p>Follow these prioritized engineering recommendations to eliminate untestable fault bottlenecks and bring test coverage to target:</p>
+
+        <div class="action-card p1">
+            <div class="action-header">
+                <span class="action-title">P1 - Critical: Target Primary Partition Hotspots: /cdie_fusehip &amp; /cdie_fuse_wrap</span>
+                <span class="action-impact">48,700 AU (76.6% of entire design AU)</span>
+            </div>
+            <div style="font-size: 0.92rem; color: var(--text-dim); margin-top: 0.4rem;">
+                Partitions <code>/cdie_fusehip</code> (35,629 AU) and <code>/cdie_fuse_wrap</code> (13,071 AU) dominate design AU. Drill down into their respective <code>santa_cclk_arrays</code> and clock distribution hierarchies. Synchronous clock list or clock domain crossing isolation will prevent ATPG from aborting on inter-clock paths.
+            </div>
+            <div class="action-code">report_clocks -matrix; report_drc_rules -violations</div>
+        </div>
 
         <div class="action-card p2">
             <div class="action-header">
                 <span class="action-title">P2 - High: Enable Clock &amp; Reset Scan Bypasses for Asynchronous/Double-Sync Flops</span>
-                <span class="action-impact">Resolves 101,776 AU across clock/reset control units</span>
+                <span class="action-impact">Resolves 3,958 AU across clock/reset control units</span>
             </div>
             <div style="font-size: 0.92rem; color: var(--text-dim); margin-top: 0.4rem;">
                 Uncontrolled asynchronous resets and double-synchronizer flops block downstream logic cones. Verify that scan reset bypass signals (e.g., <code>fscan_bypx_rst</code>, <code>fscan_mode</code>) are constrained to active state in <code>par_santa.resets.do</code> or via <code>add_cell_constraints</code>.
@@ -395,541 +406,307 @@
                     <tr>
                         <td class="text-center font-mono">1</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/d2d_cfi_mux_wrapper</strong>
+                            <strong>/cdie_fusehip</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_x_d2d_cfi_mux_wrapper
+                            par_fuse_fusehiptopwrapper
                         </td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">74,760</td>
+                        <td class="text-right font-mono">49,557</td>
                         <td class="text-right font-mono">
-                            <span class="val-red">0.03%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 0.0%;"></div></div>
+                            <span class="val-red">27.50%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 27.5%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>74,734</strong></td>
-                        <td class="text-right font-mono">27.52%</td>
+                        <td class="text-right font-mono val-red"><strong>35,629</strong></td>
+                        <td class="text-right font-mono">56.07%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">2</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/d2d_tx_rpt_misc_wrap</strong>
+                            <strong>/cdie_fuse_wrap</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_d2d_tx_rpt_misc_wrap
+                            par_fuse_cdie_fuse_wrap
                         </td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">66,885</td>
+                        <td class="text-right font-mono">415,512</td>
                         <td class="text-right font-mono">
-                            <span class="val-red">27.78%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 27.8%;"></div></div>
+                            <span class="val-green">96.33%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 96.3%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>48,236</strong></td>
-                        <td class="text-right font-mono">17.76%</td>
+                        <td class="text-right font-mono val-red"><strong>13,071</strong></td>
+                        <td class="text-right font-mono">20.57%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">3</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx</strong>
+                            <strong>/cdie_fuse_wrap/cdie_fuse</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            cdu_dfd_misc_infdfx
+                            par_fuse_fuse_top_7_0000040001000200_ffffffffffffffff_0000040001000200_14_16_0000cb000000_1
                         </td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">377,481</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">414,608</td>
                         <td class="text-right font-mono">
-                            <span class="val-yellow">92.71%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-yellow" style="width: 92.7%;"></div></div>
+                            <span class="val-green">96.54%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 96.5%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>27,476</strong></td>
-                        <td class="text-right font-mono">10.12%</td>
+                        <td class="text-right font-mono val-red"><strong>12,207</strong></td>
+                        <td class="text-right font-mono">19.21%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">4</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/d2d_rx_rpt_misc_wrap</strong>
+                            <strong>/cdie_fuse_wrap/cdie_fuse/i_chassis_fuse_controller_top</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_d2d_rx_rpt_misc_wrap
+                            par_fuse_fuse_controller_top_h_4_899_307
                         </td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">36,747</td>
+                        <td><span class="tag tag-control">Control / FSM / Arbiter</span></td>
+                        <td class="text-right font-mono">270,264</td>
                         <td class="text-right font-mono">
-                            <span class="val-red">29.76%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 29.8%;"></div></div>
+                            <span class="val-green">97.28%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 97.3%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>25,749</strong></td>
-                        <td class="text-right font-mono">9.48%</td>
+                        <td class="text-right font-mono val-red"><strong>6,226</strong></td>
+                        <td class="text-right font-mono">9.80%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">5</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdie_endebug</strong>
+                            <strong>/sbrcfuse</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_endebug_400
+                            par_fuse_sbrcfuse_sbr_generic
                         </td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">217,005</td>
+                        <td class="text-right font-mono">122,190</td>
                         <td class="text-right font-mono">
-                            <span class="val-yellow">91.85%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-yellow" style="width: 91.8%;"></div></div>
+                            <span class="val-green">95.96%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 96.0%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>17,343</strong></td>
-                        <td class="text-right font-mono">6.39%</td>
+                        <td class="text-right font-mono val-red"><strong>4,800</strong></td>
+                        <td class="text-right font-mono">7.55%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">6</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdie_endebug/i_gated_wrapper_i_endebug_tap</strong>
+                            <strong>/cdu_dfd_fuse_infvnn</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_endebug_tap_2_8_0_0_30_0_15_0_1_1
+                            cdu_dfd_fuse_infvnn
                         </td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">145,593</td>
+                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">18,218</td>
                         <td class="text-right font-mono">
-                            <span class="val-yellow">91.50%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-yellow" style="width: 91.5%;"></div></div>
+                            <span class="val-red">83.73%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 83.7%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>12,100</strong></td>
-                        <td class="text-right font-mono">4.46%</td>
+                        <td class="text-right font-mono val-red"><strong>2,932</strong></td>
+                        <td class="text-right font-mono">4.61%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">7</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx_pg</strong>
+                            <strong>/cdie_fuse_wrap/cdie_fuse/w_drng_i_chassis_fuse_ctrl_south_complec_drng</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            cdu_dfd_misc_infdfx_pg
+                            par_fuse_fuse_drng_top_1_4_0_3_1_2_0_1_6db6dbede719_0000cb000000_0_2_1_3_9_3_9_1_1_01000200_00000400_ffffffff_ffffffff_01000200_00000400_0_0_0_4_4_7_3_3_0_0_1_1_0_1_1_7_3_0_0_14_14_16_0_1_1_0_00_256_0_0_06fa_0_0_0_1_1_00_0
                         </td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">703,031</td>
+                        <td><span class="tag tag-control">Control / FSM / Arbiter</span></td>
+                        <td class="text-right font-mono">54,859</td>
                         <td class="text-right font-mono">
-                            <span class="val-green">98.46%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 98.5%;"></div></div>
+                            <span class="val-yellow">94.56%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-yellow" style="width: 94.6%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>10,249</strong></td>
-                        <td class="text-right font-mono">3.77%</td>
+                        <td class="text-right font-mono val-red"><strong>2,736</strong></td>
+                        <td class="text-right font-mono">4.31%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">8</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx_pg/odd_top</strong>
+                            <strong>/pmsbrcfuse</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_odd_top_6_282200_900000_000004000100020a_000004000100020a_0000040001000208_000004000300021f_000004000300021f_0000040001000208_3072_36_1b5ad6b5ad695bc2f065_14_0
+                            par_fuse_pmsbrcfuse_sbr_generic
                         </td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">702,338</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">57,371</td>
                         <td class="text-right font-mono">
-                            <span class="val-green">98.50%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 98.5%;"></div></div>
+                            <span class="val-green">95.48%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 95.5%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>9,983</strong></td>
-                        <td class="text-right font-mono">3.68%</td>
+                        <td class="text-right font-mono val-red"><strong>2,532</strong></td>
+                        <td class="text-right font-mono">3.98%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">9</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx/dtf_arb_d2d</strong>
+                            <strong>/cdie_fuse_wrap/cdie_fuse/i_fuse_clock_power_cntrl</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_dtf_arb_top_0_0_0_0_9
+                            par_fuse_fuse_clock_power_cntrl_80_80_4_5_7_4_32_16_11_6_08_00_8_8_8_8_8_8_0_1_1_0_1_0_4_11_1_00000008_5
                         </td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">47,685</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">81,339</td>
                         <td class="text-right font-mono">
-                            <span class="val-red">85.63%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 85.6%;"></div></div>
+                            <span class="val-green">96.81%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 96.8%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>6,837</strong></td>
-                        <td class="text-right font-mono">2.52%</td>
+                        <td class="text-right font-mono val-red"><strong>2,303</strong></td>
+                        <td class="text-right font-mono">3.62%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">10</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx/dtf_arb_misc</strong>
+                            <strong>/cdu_dfd_fuse_infvnn/dtf_rpt_par_fovl_pre_r0</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_dtf_arb_top_1_0_0_64_64_64_64_0_19_1_21_1_8_1_8
+                            par_fuse_par_fuse_dtf_repeater_0
                         </td>
                         <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">133,018</td>
+                        <td class="text-right font-mono">2,255</td>
                         <td class="text-right font-mono">
-                            <span class="val-yellow">94.96%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-yellow" style="width: 95.0%;"></div></div>
+                            <span class="val-red">53.98%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 54.0%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>6,703</strong></td>
-                        <td class="text-right font-mono">2.47%</td>
+                        <td class="text-right font-mono val-red"><strong>1,026</strong></td>
+                        <td class="text-right font-mono">1.61%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">11</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/pmsbrd2d_cdie</strong>
+                            <strong>/cdu_dfd_fuse_infvnn/sb_snf_0_dmu_fuse_pm_snf_wrap_fuse_pmsb_par_fuse_rpt_0</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_pmsbrd2d_cdie_sbr_generic
+                            par_fuse_par_fuse_dfd_generic_repeater_32_1_0
                         </td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">138,918</td>
+                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">737</td>
                         <td class="text-right font-mono">
-                            <span class="val-green">95.31%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 95.3%;"></div></div>
+                            <span class="val-red">60.66%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 60.7%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>6,472</strong></td>
-                        <td class="text-right font-mono">2.38%</td>
+                        <td class="text-right font-mono val-red"><strong>286</strong></td>
+                        <td class="text-right font-mono">0.45%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">12</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx/dtf_arb_d2d/gf_a_GENERIC_FIFO_GF_fifo_gf</strong>
+                            <strong>/cdu_dfd_fuse_infvnn/sb_snf_1_dmu_fuse_gp_snf_wrap_fuse_gpsb_par_fuse_rpt_0</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_par_misc_generic_gfifo__mcr_dtf___8_1_0_no_no_no_868242_0
+                            par_fuse_par_fuse_dfd_generic_repeater_32_1_1
                         </td>
                         <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">13,229</td>
+                        <td class="text-right font-mono">564</td>
                         <td class="text-right font-mono">
-                            <span class="val-red">53.06%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 53.1%;"></div></div>
+                            <span class="val-red">54.12%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 54.1%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>6,196</strong></td>
-                        <td class="text-right font-mono">2.28%</td>
+                        <td class="text-right font-mono val-red"><strong>256</strong></td>
+                        <td class="text-right font-mono">0.40%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">13</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx/dtf_arb_d2d/gf_a_GENERIC_FIFO_GF_fifo_gf/generic_gfifo_write</strong>
+                            <strong>/cdie_fuse_wrap/cdie_fuse/i_chassis_fuse_controller_top/i_fuse_socfusegen</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_par_misc_generic_gfifo_write__mcr_dtf___8_0_1_0_no_0_yes_0_2_no_0_no_868242_0
+                            par_fuse_fuse_socfusegen
                         </td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">10,611</td>
+                        <td><span class="tag tag-control">Control / FSM / Arbiter</span></td>
+                        <td class="text-right font-mono">23,411</td>
                         <td class="text-right font-mono">
-                            <span class="val-red">42.37%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 42.4%;"></div></div>
+                            <span class="val-green">98.91%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 98.9%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>6,106</strong></td>
-                        <td class="text-right font-mono">2.25%</td>
+                        <td class="text-right font-mono val-red"><strong>190</strong></td>
+                        <td class="text-right font-mono">0.30%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">14</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx/dtf_arb_misc/gf_a_GENERIC_FIFO_GF_fifo_gf</strong>
+                            <strong>/fuse_pcg_sbclk</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_par_misc_generic_gfifo__mcr_dtf___8_1_0_no_no_no_868242_1
+                            par_fuse_scu_CTECH_EXP_0_0_4_5_3_1_8_0_1_1_0_1_1_0_5_5_7_1_1_1_3_1_0_0_12_30
                         </td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">12,806</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">883</td>
                         <td class="text-right font-mono">
-                            <span class="val-red">53.01%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 53.0%;"></div></div>
+                            <span class="val-red">78.93%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 78.9%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>6,007</strong></td>
-                        <td class="text-right font-mono">2.21%</td>
+                        <td class="text-right font-mono val-red"><strong>169</strong></td>
+                        <td class="text-right font-mono">0.27%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">15</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx/dtf_arb_misc/gf_a_GENERIC_FIFO_GF_fifo_gf/generic_gfifo_write</strong>
+                            <strong>/cdu_dfd_fuse_infvnn/dtf_rpt_par_fovl_r2</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_par_misc_generic_gfifo_write__mcr_dtf___8_0_1_0_no_0_yes_0_2_no_0_no_868242_1
+                            par_fuse_par_fuse_dtf_repeater_5
                         </td>
                         <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">10,150</td>
+                        <td class="text-right font-mono">2,227</td>
                         <td class="text-right font-mono">
-                            <span class="val-red">41.45%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 41.5%;"></div></div>
+                            <span class="val-yellow">92.13%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-yellow" style="width: 92.1%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>5,935</strong></td>
-                        <td class="text-right font-mono">2.19%</td>
+                        <td class="text-right font-mono val-red"><strong>167</strong></td>
+                        <td class="text-right font-mono">0.26%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">16</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/pmsbrd2d_cdie/pmsbrd2d_cdie_inst</strong>
+                            <strong>/fuse_pcg_sbclk/scu_post_glbdrv</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_iosfsbr_pm_pmsbrd2d_cdie_3
+                            par_fuse_scu_post_glbdrv_5_3_12_01e_1_0_5_5_1_1_0_0
                         </td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">137,720</td>
+                        <td class="text-right font-mono">793</td>
                         <td class="text-right font-mono">
-                            <span class="val-green">95.90%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 95.9%;"></div></div>
+                            <span class="val-red">77.85%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 77.8%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>5,604</strong></td>
-                        <td class="text-right font-mono">2.06%</td>
+                        <td class="text-right font-mono val-red"><strong>161</strong></td>
+                        <td class="text-right font-mono">0.25%</td>
                     </tr>
 
                     <tr>
                         <td class="text-center font-mono">17</td>
                         <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/sbrd2d_cdie</strong>
+                            <strong>/cdie_fuse_wrap/cdie_fuse/i_fuse_aon_mod</strong>
                         </td>
                         <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_sbrd2d_cdie_sbr_generic
+                            par_fuse_fuse_aon_mod_45_79_1_2_start_MCP_2_start_MCP
                         </td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">125,708</td>
+                        <td class="text-right font-mono">2,011</td>
                         <td class="text-right font-mono">
-                            <span class="val-green">96.11%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 96.1%;"></div></div>
+                            <span class="val-red">82.28%</span>
+                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 82.3%;"></div></div>
                         </td>
-                        <td class="text-right font-mono val-red"><strong>4,865</strong></td>
-                        <td class="text-right font-mono">1.79%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">18</td>
-                        <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/sbrmisc</strong>
-                        </td>
-                        <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_sbrmisc_sbr_generic
-                        </td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">152,458</td>
-                        <td class="text-right font-mono">
-                            <span class="val-green">96.97%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 97.0%;"></div></div>
-                        </td>
-                        <td class="text-right font-mono val-red"><strong>4,568</strong></td>
-                        <td class="text-right font-mono">1.68%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">19</td>
-                        <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/sbrmisc/sbrmisc_inst</strong>
-                        </td>
-                        <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_iosfsbr_nvl_sbrmisc_3
-                        </td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">151,705</td>
-                        <td class="text-right font-mono">
-                            <span class="val-green">97.17%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 97.2%;"></div></div>
-                        </td>
-                        <td class="text-right font-mono val-red"><strong>4,248</strong></td>
-                        <td class="text-right font-mono">1.56%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">20</td>
-                        <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx/dtf_rpt_slice_r0</strong>
-                        </td>
-                        <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_par_misc_dtf_repeater_11
-                        </td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">5,326</td>
-                        <td class="text-right font-mono">
-                            <span class="val-red">21.46%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 21.5%;"></div></div>
-                        </td>
-                        <td class="text-right font-mono val-red"><strong>4,164</strong></td>
-                        <td class="text-right font-mono">1.53%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">21</td>
-                        <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/sbrd2d_cdie/sbrd2d_cdie_inst</strong>
-                        </td>
-                        <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_iosfsbr_nvl_sbrd2d_cdie_3
-                        </td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">124,411</td>
-                        <td class="text-right font-mono">
-                            <span class="val-green">96.77%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 96.8%;"></div></div>
-                        </td>
-                        <td class="text-right font-mono val-red"><strong>4,005</strong></td>
-                        <td class="text-right font-mono">1.47%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">22</td>
-                        <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx/dtf_rpt_fromccu_r0</strong>
-                        </td>
-                        <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_par_misc_dtf_repeater_7
-                        </td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">4,004</td>
-                        <td class="text-right font-mono">
-                            <span class="val-red">22.83%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 22.8%;"></div></div>
-                        </td>
-                        <td class="text-right font-mono val-red"><strong>3,087</strong></td>
-                        <td class="text-right font-mono">1.14%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">23</td>
-                        <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/d2d_pmsb_mux_wrapper</strong>
-                        </td>
-                        <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_d2d_pmsb_mux_wrapper
-                        </td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">3,148</td>
-                        <td class="text-right font-mono">
-                            <span class="val-red">3.12%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 3.1%;"></div></div>
-                        </td>
-                        <td class="text-right font-mono val-red"><strong>3,046</strong></td>
-                        <td class="text-right font-mono">1.12%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">24</td>
-                        <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx/dtf_arb_cdie</strong>
-                        </td>
-                        <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_dtf_arb_top_1_1_1_64_64_64_64_1_15_1_13_1_11_1_8
-                        </td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">155,011</td>
-                        <td class="text-right font-mono">
-                            <span class="val-green">98.18%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 98.2%;"></div></div>
-                        </td>
-                        <td class="text-right font-mono val-red"><strong>2,812</strong></td>
-                        <td class="text-right font-mono">1.04%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">25</td>
-                        <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/d2d_gpsb_mux_wrapper</strong>
-                        </td>
-                        <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_d2d_gpsb_mux_wrapper
-                        </td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">2,899</td>
-                        <td class="text-right font-mono">
-                            <span class="val-red">4.31%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 4.3%;"></div></div>
-                        </td>
-                        <td class="text-right font-mono val-red"><strong>2,774</strong></td>
-                        <td class="text-right font-mono">1.02%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">26</td>
-                        <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infvnn</strong>
-                        </td>
-                        <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            cdu_dfd_misc_infvnn
-                        </td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">3,852</td>
-                        <td class="text-right font-mono">
-                            <span class="val-red">35.50%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 35.5%;"></div></div>
-                        </td>
-                        <td class="text-right font-mono val-red"><strong>2,456</strong></td>
-                        <td class="text-right font-mono">0.90%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">27</td>
-                        <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx_pg/odd_top/en_dvp_odd_dvp_dvp</strong>
-                        </td>
-                        <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_dvp_6_6_4_1_4_0_1_0_0_0_1_839949
-                        </td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">385,246</td>
-                        <td class="text-right font-mono">
-                            <span class="val-green">99.35%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-green" style="width: 99.3%;"></div></div>
-                        </td>
-                        <td class="text-right font-mono val-red"><strong>2,028</strong></td>
-                        <td class="text-right font-mono">0.75%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">28</td>
-                        <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/d2d_pm_mux_wrapper</strong>
-                        </td>
-                        <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_d2d_pm_mux_wrapper
-                        </td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">1,198</td>
-                        <td class="text-right font-mono">
-                            <span class="val-red">10.35%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 10.3%;"></div></div>
-                        </td>
-                        <td class="text-right font-mono val-red"><strong>1,074</strong></td>
-                        <td class="text-right font-mono">0.40%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">29</td>
-                        <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx/dtf_rpt_bot_misc_r0</strong>
-                        </td>
-                        <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_par_misc_dtf_repeater_0
-                        </td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">1,802</td>
-                        <td class="text-right font-mono">
-                            <span class="val-red">50.95%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 51.0%;"></div></div>
-                        </td>
-                        <td class="text-right font-mono val-red"><strong>882</strong></td>
-                        <td class="text-right font-mono">0.32%</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center font-mono">30</td>
-                        <td class="font-mono" style="max-width: 420px; word-break: break-all;">
-                            <strong>/cdu_dfd_misc_infdfx/dtf_rpt_top_misc_r0</strong>
-                        </td>
-                        <td class="font-mono" style="max-width: 250px; word-break: break-all; color: #94a3b8;">
-                            par_misc_par_misc_dtf_repeater_13
-                        </td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">1,906</td>
-                        <td class="text-right font-mono">
-                            <span class="val-red">55.05%</span>
-                            <div class="progress-bar"><div class="progress-fill fill-red" style="width: 55.0%;"></div></div>
-                        </td>
-                        <td class="text-right font-mono val-red"><strong>855</strong></td>
-                        <td class="text-right font-mono">0.31%</td>
+                        <td class="text-right font-mono val-red"><strong>108</strong></td>
+                        <td class="text-right font-mono">0.17%</td>
                     </tr>
 
                 </tbody>
@@ -941,7 +718,7 @@
     <div class="card">
         <h2>
             <span>Primary Partition (Depth-1) Breakdown</span>
-            <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-dim);">119 Functional Partitions</span>
+            <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-dim);">71 Functional Partitions</span>
         </h2>
         <p>Comprehensive overview of all top-level partition instantiations and unassigned boundary glue logic.</p>
 
@@ -964,684 +741,144 @@
                 <tbody>
 
                     <tr>
-                        <td class="font-mono"><strong>/d2d_cfi_mux_wrapper</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_x_d2d_cfi_mux_wrapper</td>
+                        <td class="font-mono"><strong>/cdie_fusehip</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_fusehiptopwrapper</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">74,760</td>
+                        <td class="text-right font-mono">49,557</td>
                         <td class="text-right font-mono val-red">
-                            0.03%
+                            27.50%
                         </td>
                         <td class="text-right font-mono val-red">
-                            74,734
+                            35,629
                         </td>
-                        <td class="text-right font-mono">27.52%</td>
+                        <td class="text-right font-mono">56.07%</td>
                         <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/d2d_tx_rpt_misc_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_tx_rpt_misc_wrap</td>
+                        <td class="font-mono"><strong>/cdie_fuse_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_cdie_fuse_wrap</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">66,885</td>
-                        <td class="text-right font-mono val-red">
-                            27.78%
+                        <td class="text-right font-mono">415,512</td>
+                        <td class="text-right font-mono val-green">
+                            96.33%
                         </td>
                         <td class="text-right font-mono val-red">
-                            48,236
+                            13,071
                         </td>
-                        <td class="text-right font-mono">17.76%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
+                        <td class="text-right font-mono">20.57%</td>
+                        <td class="text-center"><span class="tag" style="background:var(--blue-bg); color:var(--blue);">PASS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/sbrcfuse</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_sbrcfuse_sbr_generic</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">122,190</td>
+                        <td class="text-right font-mono val-green">
+                            95.96%
+                        </td>
+                        <td class="text-right font-mono val-red">
+                            4,800
+                        </td>
+                        <td class="text-right font-mono">7.55%</td>
+                        <td class="text-center"><span class="tag" style="background:var(--blue-bg); color:var(--blue);">PASS</span></td>
                     </tr>
 
                     <tr>
                         <td class="font-mono"><strong>[Top-Level Boundary / Glue Logic]</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc (unassigned to D1)</td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse (unassigned to D1)</td>
                         <td><span class="tag tag-other">Buffer / Repeater / Glue</span></td>
-                        <td class="text-right font-mono">40,112</td>
+                        <td class="text-right font-mono">4,446</td>
                         <td class="text-right font-mono val-red">
-                            2.63%
+                            2.88%
                         </td>
                         <td class="text-right font-mono val-red">
-                            39,058
+                            4,318
                         </td>
-                        <td class="text-right font-mono">14.38%</td>
+                        <td class="text-right font-mono">6.80%</td>
                         <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/cdu_dfd_misc_infdfx</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">cdu_dfd_misc_infdfx</td>
+                        <td class="font-mono"><strong>/cdu_dfd_fuse_infvnn</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">cdu_dfd_fuse_infvnn</td>
                         <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">377,481</td>
-                        <td class="text-right font-mono val-yellow">
-                            92.71%
+                        <td class="text-right font-mono">18,218</td>
+                        <td class="text-right font-mono val-red">
+                            83.73%
                         </td>
                         <td class="text-right font-mono val-red">
-                            27,476
+                            2,932
                         </td>
-                        <td class="text-right font-mono">10.12%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--yellow-bg); color:var(--yellow);">WARNING</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/d2d_rx_rpt_misc_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_rx_rpt_misc_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">36,747</td>
-                        <td class="text-right font-mono val-red">
-                            29.76%
-                        </td>
-                        <td class="text-right font-mono val-red">
-                            25,749
-                        </td>
-                        <td class="text-right font-mono">9.48%</td>
+                        <td class="text-right font-mono">4.61%</td>
                         <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/cdie_endebug</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_endebug_400</td>
+                        <td class="font-mono"><strong>/pmsbrcfuse</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_pmsbrcfuse_sbr_generic</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">217,005</td>
-                        <td class="text-right font-mono val-yellow">
-                            91.85%
-                        </td>
-                        <td class="text-right font-mono val-red">
-                            17,343
-                        </td>
-                        <td class="text-right font-mono">6.39%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--yellow-bg); color:var(--yellow);">WARNING</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/cdu_dfd_misc_infdfx_pg</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">cdu_dfd_misc_infdfx_pg</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">703,031</td>
+                        <td class="text-right font-mono">57,371</td>
                         <td class="text-right font-mono val-green">
-                            98.46%
+                            95.48%
                         </td>
                         <td class="text-right font-mono val-red">
-                            10,249
+                            2,532
                         </td>
-                        <td class="text-right font-mono">3.77%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--green-bg); color:var(--green);">EXCELLENT</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/pmsbrd2d_cdie</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_pmsbrd2d_cdie_sbr_generic</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">138,918</td>
-                        <td class="text-right font-mono val-green">
-                            95.31%
-                        </td>
-                        <td class="text-right font-mono val-red">
-                            6,472
-                        </td>
-                        <td class="text-right font-mono">2.38%</td>
+                        <td class="text-right font-mono">3.98%</td>
                         <td class="text-center"><span class="tag" style="background:var(--blue-bg); color:var(--blue);">PASS</span></td>
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/sbrd2d_cdie</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_sbrd2d_cdie_sbr_generic</td>
+                        <td class="font-mono"><strong>/fuse_pcg_sbclk</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_scu_CTECH_EXP_0_0_4_5_3_1_8_0_1_1_0_1_1_0_5_5_7_1_1_1_3_1_0_0_12_30</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">125,708</td>
-                        <td class="text-right font-mono val-green">
-                            96.11%
-                        </td>
+                        <td class="text-right font-mono">883</td>
                         <td class="text-right font-mono val-red">
-                            4,865
-                        </td>
-                        <td class="text-right font-mono">1.79%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--blue-bg); color:var(--blue);">PASS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/sbrmisc</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_sbrmisc_sbr_generic</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">152,458</td>
-                        <td class="text-right font-mono val-green">
-                            96.97%
-                        </td>
-                        <td class="text-right font-mono val-red">
-                            4,568
-                        </td>
-                        <td class="text-right font-mono">1.68%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--blue-bg); color:var(--blue);">PASS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/d2d_pmsb_mux_wrapper</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_pmsb_mux_wrapper</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">3,148</td>
-                        <td class="text-right font-mono val-red">
-                            3.12%
-                        </td>
-                        <td class="text-right font-mono val-red">
-                            3,046
-                        </td>
-                        <td class="text-right font-mono">1.12%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/d2d_gpsb_mux_wrapper</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_gpsb_mux_wrapper</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">2,899</td>
-                        <td class="text-right font-mono val-red">
-                            4.31%
-                        </td>
-                        <td class="text-right font-mono val-red">
-                            2,774
-                        </td>
-                        <td class="text-right font-mono">1.02%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/cdu_dfd_misc_infvnn</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">cdu_dfd_misc_infvnn</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">3,852</td>
-                        <td class="text-right font-mono val-red">
-                            35.50%
-                        </td>
-                        <td class="text-right font-mono val-red">
-                            2,456
-                        </td>
-                        <td class="text-right font-mono">0.90%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/d2d_pm_mux_wrapper</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_pm_mux_wrapper</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">1,198</td>
-                        <td class="text-right font-mono val-red">
-                            10.35%
-                        </td>
-                        <td class="text-right font-mono val-red">
-                            1,074
-                        </td>
-                        <td class="text-right font-mono">0.40%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/d2d_glb_aon_mux_wrapper</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_glb_aon_mux_wrapper</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">480</td>
-                        <td class="text-right font-mono val-red">
-                            10.83%
+                            78.93%
                         </td>
                         <td class="text-right font-mono val-yellow">
-                            428
+                            169
                         </td>
-                        <td class="text-right font-mono">0.16%</td>
+                        <td class="text-right font-mono">0.27%</td>
                         <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/d2d_dfx_mux_wrapper</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_dfx_mux_wrapper</td>
+                        <td class="font-mono"><strong>/cdie_fusero_clk_req_agg</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_fusero_clk_req_agg</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">370</td>
-                        <td class="text-right font-mono val-red">
-                            3.24%
-                        </td>
-                        <td class="text-right font-mono val-yellow">
-                            358
-                        </td>
-                        <td class="text-right font-mono">0.13%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/fast_imon_rptr_to_punit</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_fast_imon_rptr_to_punit</td>
-                        <td><span class="tag tag-other">Buffer / Repeater / Glue</span></td>
-                        <td class="text-right font-mono">747</td>
-                        <td class="text-right font-mono val-red">
-                            58.05%
-                        </td>
-                        <td class="text-right font-mono val-yellow">
-                            310
-                        </td>
-                        <td class="text-right font-mono">0.11%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/soc_dmu_d2d_clken_demux_1to2</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_demux_1to2_4_4_4_0</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">230</td>
+                        <td class="text-right font-mono">40</td>
                         <td class="text-right font-mono val-red">
                             0.00%
                         </td>
-                        <td class="text-right font-mono val-yellow">
-                            226
-                        </td>
-                        <td class="text-right font-mono">0.08%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_pcg_sbclk</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_scu_CTECH_EXP_0_0_2_6_1_1_8_0_1_1_0_1_1_0_5_5_7_1_1_1_3_1_0_0_12_30</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">985</td>
-                        <td class="text-right font-mono val-red">
-                            74.23%
-                        </td>
-                        <td class="text-right font-mono val-yellow">
-                            223
-                        </td>
-                        <td class="text-right font-mono">0.08%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/soc_cfi_glb_mux_2to1</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_mux_2to1_4_4_4_0</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">222</td>
-                        <td class="text-right font-mono val-red">
-                            1.83%
-                        </td>
-                        <td class="text-right font-mono val-yellow">
-                            214
-                        </td>
-                        <td class="text-right font-mono">0.08%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/soc_santa0_to_fov_demux_1to2</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_demux_1to2_4_4_4_1</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">254</td>
-                        <td class="text-right font-mono val-red">
-                            16.26%
-                        </td>
-                        <td class="text-right font-mono val-yellow">
-                            206
-                        </td>
-                        <td class="text-right font-mono">0.08%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/soc_fov_to_santa1_mux_1to2</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_mux_2to1_4_4_4_4</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">222</td>
-                        <td class="text-right font-mono val-red">
-                            10.09%
-                        </td>
-                        <td class="text-right font-mono val-yellow">
-                            196
-                        </td>
-                        <td class="text-right font-mono">0.07%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/soc_fov_to_santa0_mux_1to2</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_mux_2to1_4_4_4_3</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">206</td>
-                        <td class="text-right font-mono val-red">
-                            10.10%
-                        </td>
-                        <td class="text-right font-mono val-yellow">
-                            178
-                        </td>
-                        <td class="text-right font-mono">0.07%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/soc_santa1_to_fov_demux_1to2</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_demux_1to2_4_4_4_2</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">214</td>
-                        <td class="text-right font-mono val-red">
-                            17.14%
-                        </td>
-                        <td class="text-right font-mono val-yellow">
-                            174
+                        <td class="text-right font-mono ">
+                            40
                         </td>
                         <td class="text-right font-mono">0.06%</td>
                         <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/d2d_sb_dmu_mux_wrapper</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_sb_dmu_mux_wrapper</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">167</td>
-                        <td class="text-right font-mono val-red">
-                            18.56%
-                        </td>
-                        <td class="text-right font-mono val-yellow">
-                            136
-                        </td>
-                        <td class="text-right font-mono">0.05%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/cdie_pulse_gen_block</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_pulse_gen_block</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">124</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono val-yellow">
-                            120
-                        </td>
-                        <td class="text-right font-mono">0.04%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/cfi1_link_rst_b_synced_vnn_rpt_cnoc1</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_fdio_repeater_flops_cycle_path_1_1_1_1_3</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">348</td>
-                        <td class="text-right font-mono val-red">
-                            74.70%
-                        </td>
-                        <td class="text-right font-mono ">
-                            84
-                        </td>
-                        <td class="text-right font-mono">0.03%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/soc_d2d_cfi1_vnn_rpt_rst_b_mux_2to1</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_mux_2to1_4_4_4_2</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">152</td>
-                        <td class="text-right font-mono val-red">
-                            47.30%
-                        </td>
-                        <td class="text-right font-mono ">
-                            78
-                        </td>
-                        <td class="text-right font-mono">0.03%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/d2d_clk_mux_wrapper</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_clk_mux_wrapper</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">72</td>
+                        <td class="font-mono"><strong>/ctech_buf_dfxagg_early_boot_debug_exit</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_nvlc_buf</td>
+                        <td><span class="tag tag-other">Buffer / Repeater / Glue</span></td>
+                        <td class="text-right font-mono">14</td>
                         <td class="text-right font-mono val-red">
                             0.00%
                         </td>
                         <td class="text-right font-mono ">
-                            72
-                        </td>
-                        <td class="text-right font-mono">0.03%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/zz_cdie_id_strap_hip_ovrd_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_zz_cdie_id_strap_hip_ovrd_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">44</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            44
+                            14
                         </td>
                         <td class="text-right font-mono">0.02%</td>
                         <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/soc_d2d_dmu_integrity_e_mux_2to1</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_mux_2to1_2_2_2_0</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">42</td>
-                        <td class="text-right font-mono val-red">
-                            10.53%
-                        </td>
-                        <td class="text-right font-mono ">
-                            34
-                        </td>
-                        <td class="text-right font-mono">0.01%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/cfi0_link_rst_b_synced_vnn_rpt_cnoc1</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_fdio_repeater_flops_cycle_path_1_1_1_1_1</td>
+                        <td class="font-mono"><strong>/ctech_lib_clk_buf_fuse_ro_clk</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_nvlc_clk_buf</td>
                         <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">94</td>
-                        <td class="text-right font-mono val-red">
-                            55.41%
-                        </td>
-                        <td class="text-right font-mono ">
-                            33
-                        </td>
-                        <td class="text-right font-mono">0.01%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/cfi0_link_rst_b_synced_vnn_rpt_cnoc0</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_fdio_repeater_flops_cycle_path_1_1_1_1_0</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">82</td>
-                        <td class="text-right font-mono val-red">
-                            60.26%
-                        </td>
-                        <td class="text-right font-mono ">
-                            31
-                        </td>
-                        <td class="text-right font-mono">0.01%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_c2hclk_rst_posedge_detector_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_c2hclk_rst_posedge_detector_wrap</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">44</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            30
-                        </td>
-                        <td class="text-right font-mono">0.01%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/soc_d2d_cfi0_vnn_rpt_rst_b_mux_2to1</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_mux_2to1_4_4_4_1</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">54</td>
-                        <td class="text-right font-mono val-red">
-                            40.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            30
-                        </td>
-                        <td class="text-right font-mono">0.01%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/cfi1_link_rst_b_synced_vnn_rpt_cnoc0</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_fdio_repeater_flops_cycle_path_1_1_1_1_2</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">84</td>
-                        <td class="text-right font-mono val-red">
-                            61.84%
-                        </td>
-                        <td class="text-right font-mono ">
-                            29
-                        </td>
-                        <td class="text-right font-mono">0.01%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_c2hclk_clkdist_flop_repeater_0_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_c2hclk_clkdist_flop_repeater_0_wrap</td>
-                        <td><span class="tag tag-other">Buffer / Repeater / Glue</span></td>
-                        <td class="text-right font-mono">38</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            28
-                        </td>
-                        <td class="text-right font-mono">0.01%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/pmsbrd2d_cdie_sbr_pmc_idle_ff</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_soc_ff_2</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">52</td>
-                        <td class="text-right font-mono val-red">
-                            58.33%
-                        </td>
-                        <td class="text-right font-mono ">
-                            20
-                        </td>
-                        <td class="text-right font-mono">0.01%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/sbrmisc_sbr_pmc_idle_ff</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_soc_ff_1</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">52</td>
-                        <td class="text-right font-mono val-red">
-                            58.33%
-                        </td>
-                        <td class="text-right font-mono ">
-                            20
-                        </td>
-                        <td class="text-right font-mono">0.01%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/zz_cdie_fdi_select_hip_ovrd_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_zz_cdie_fdi_select_hip_ovrd_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">18</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            17
-                        </td>
-                        <td class="text-right font-mono">0.01%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_c2hclk_clkdist_flop_repeater_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_c2hclk_clkdist_flop_repeater_wrap</td>
-                        <td><span class="tag tag-other">Buffer / Repeater / Glue</span></td>
-                        <td class="text-right font-mono">26</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            16
-                        </td>
-                        <td class="text-right font-mono">0.01%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/cdie_id_decode_ovrd_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_cdie_id_decode_ovrd_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">18</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            14
-                        </td>
-                        <td class="text-right font-mono">0.01%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/cdie_idcoded</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_idcoded</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">82</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            14
-                        </td>
-                        <td class="text-right font-mono">0.01%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/fscan_tpi_fdi_select_dummy_flop</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_nvlc_ctech_lib_msff_async_rstb</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">44</td>
-                        <td class="text-right font-mono val-red">
-                            69.23%
-                        </td>
-                        <td class="text-right font-mono ">
-                            12
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/sbrd2d_cdie_sbr_pmc_idle_ff</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_soc_ff_0</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">50</td>
-                        <td class="text-right font-mono val-red">
-                            73.91%
-                        </td>
-                        <td class="text-right font-mono ">
-                            12
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/testmode_pin_latch</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_latch_p_1</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
                         <td class="text-right font-mono">10</td>
                         <td class="text-right font-mono val-red">
                             0.00%
@@ -1649,14 +886,14 @@
                         <td class="text-right font-mono ">
                             10
                         </td>
-                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.02%</td>
                         <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/dfx_hvm_mux_epd_on_h2c</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_mux_2to1_1</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="font-mono"><strong>/cdu_dfd_fuse_infst</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">cdu_dfd_fuse_infst</td>
+                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
                         <td class="text-right font-mono">8</td>
                         <td class="text-right font-mono val-red">
                             0.00%
@@ -1664,178 +901,148 @@
                         <td class="text-right font-mono ">
                             8
                         </td>
-                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.01%</td>
                         <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/pri_pwrgd_epdon_powergood_mux</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_mux_2to1_8</td>
+                        <td class="font-mono"><strong>/pmsbrcfuse_sbr_pmc_idle_ff</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_par_fuse_soc_ff_1</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">8</td>
+                        <td class="text-right font-mono">60</td>
                         <td class="text-right font-mono val-red">
-                            0.00%
+                            85.71%
                         </td>
                         <td class="text-right font-mono ">
                             8
                         </td>
-                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.01%</td>
                         <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/vnnaon_epdon_powergood_mux</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_mux_2to1_9</td>
+                        <td class="font-mono"><strong>/sbrcfuse_sbr_pmc_idle_ff</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_par_fuse_soc_ff_0</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">8</td>
+                        <td class="text-right font-mono">60</td>
                         <td class="text-right font-mono val-red">
-                            0.00%
+                            85.71%
                         </td>
                         <td class="text-right font-mono ">
                             8
                         </td>
-                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.01%</td>
                         <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/a0_debug_en_core_h2c_latch</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_latch_p_0</td>
+                        <td class="font-mono"><strong>/cdie_dfxagg</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_dfxagg_top</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdie_fuse_drng_pmc_pfet_en_ack_b_iso_buf</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_bus_buf</td>
+                        <td><span class="tag tag-other">Buffer / Repeater / Glue</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdie_fuse_mem_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_cdie_fuse_mem_wrap</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdie_fuse_rng_es1_gen5_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_cdie_fuse_rng_es1_gen5_wrap</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdu_fuse_vnnaon</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">cdu_fuse_vnnaon</td>
+                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/clst_ultiscan_fuse_pd_vccvnn_pg_fuse</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_clst_ultiscan_fuse_pd_vccvnn_pg_fuse_ult_scan_ctlr</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/ctech_lib_buf_fuse_fscan_mode_syn</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_dfx_ultiscan_ctech_buf</td>
+                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
                         <td class="text-right font-mono">6</td>
                         <td class="text-right font-mono val-red">
                             0.00%
                         </td>
                         <td class="text-right font-mono ">
-                            6
+                            0
                         </td>
                         <td class="text-right font-mono">0.00%</td>
                         <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/cdie_dfd_mid</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_dfd_die_id_mux</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">32</td>
-                        <td class="text-right font-mono val-red">
-                            81.25%
-                        </td>
-                        <td class="text-right font-mono ">
-                            6
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/dfx_hvm_mux_cold_boot_trigger_h2c</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_mux_2to1_0</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">6</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            6
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/fscan_tpi_fdi_select_mux</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_mux_2to1_7</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">6</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            6
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/a0_debug_only_and</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_lib_and_0</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">4</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            4
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/aonpwrgood_buf</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_buf_0</td>
-                        <td><span class="tag tag-other">Buffer / Repeater / Glue</span></td>
-                        <td class="text-right font-mono">4</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            4
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/ctech_buf_zz_cdie_fdi_select_hip_ovrd_en</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_nvlc_buf_2</td>
-                        <td><span class="tag tag-other">Buffer / Repeater / Glue</span></td>
-                        <td class="text-right font-mono">4</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            4
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/h2c_epd_on_buf</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_buf_1</td>
-                        <td><span class="tag tag-other">Buffer / Repeater / Glue</span></td>
-                        <td class="text-right font-mono">4</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            4
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag" style="background:var(--red-bg); color:var(--red);">CRITICAL</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/aux_tap_repeater_misc</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_cdie_free_tap_repeater</td>
-                        <td><span class="tag tag-other">Buffer / Repeater / Glue</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/cdie_cltapc</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_cltapc</td>
+                        <td class="font-mono"><strong>/dfx_soup_fuse</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_dfx_soup_fuse</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
                         <td class="text-right font-mono">0</td>
                         <td class="text-right font-mono val-red">
@@ -1849,8 +1056,8 @@
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/cdie_id_decode</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_cdie_id_decode</td>
+                        <td class="font-mono"><strong>/dfx_soup_fuse_vccst</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_dfx_soup_fuse_vccst</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
                         <td class="text-right font-mono">0</td>
                         <td class="text-right font-mono val-red">
@@ -1864,533 +1071,8 @@
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/cdu_misc_host_vnnaon</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">cdu_misc_host_vnnaon</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/cdu_misc_vnnaon</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">cdu_misc_vnnaon</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/cdu_misc_vnnaon_tms_and</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_lib_and_1</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/clst_ultiscan_misc_pd_vnnaon</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_clst_ultiscan_misc_pd_vnnaon_ult_scan_ctlr</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/ctech_buf_a0_debug_strap_force_disable</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_nvlc_buf_0</td>
-                        <td><span class="tag tag-other">Buffer / Repeater / Glue</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/ctech_buf_cdie_id_decode_ovrd_en</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_nvlc_buf_1</td>
-                        <td><span class="tag tag-other">Buffer / Repeater / Glue</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/ctech_lib_buf_misc_fscan_mode_syn</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_buf_2</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/ctech_lib_clk_buf_view_nvlc_dig_misc_dl_c2hclk_trunk_clkout</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_nvlc_clk_buf_0</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/ctech_lib_clk_buf_view_nvlc_dig_misc_pm_rx_mux_2to1_out_data_8</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_nvlc_clk_buf_1</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/dfx_hvm_mux_mbpout_h2c_0</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_mux_2to1_2</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/dfx_hvm_mux_mbpout_h2c_1</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_mux_2to1_3</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/dfx_hvm_mux_tap_tck_s2c</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_dfx_ultiscan_ctech_clk_mux_2to1</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/dfx_hvm_mux_tap_tdi_s2c</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_mux_2to1_4</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/dfx_hvm_mux_tap_tms_s2c</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_mux_2to1_5</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/dfx_hvm_mux_tap_trst_b_s2c</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_mux_2to1_6</td>
-                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/dfx_soup_misc</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_dfx_soup_misc</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/dfx_soup_misc_vnnaon</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_dfx_soup_misc_vnnaon</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_d2d_cfi_misc_dual_ps</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_cdie_dual_ps_0</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_d2d_cfi_misc_dual_ps_rtdr</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_rtdr_ps_wrapper_1_0</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_dfx_misc_dual_ps</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_cdie_dual_ps_1</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_dfx_misc_dual_ps_rtdr</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_rtdr_ps_wrapper_1_1</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_0 (BB)</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_1 (BB)</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_10 (BB)</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_2 (BB)</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_3 (BB)</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_4 (BB)</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_5 (BB)</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_6 (BB)</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_7 (BB)</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_8 (BB)</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_9 (BB)</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_rtdr</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_rtdr_pgt_wrapper_11</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_vnn_misc_dual_ps</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_cdie_dual_ps</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/inf_vnn_misc_dual_ps_rtdr</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_rtdr_ps_wrapper_1_2</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/ipfdi_cdie_id_strap_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_ipfdi_cdie_id_strap_wrap</td>
+                        <td class="font-mono"><strong>/dfxagg_dam_or</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_par_fuse_dfx_ultiscan_ctech_or2_0</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
                         <td class="text-right font-mono">4</td>
                         <td class="text-right font-mono val-green">
@@ -2404,8 +1086,8 @@
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/ipfdi_sort_rx_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_ipfdi_sort_rx_wrap</td>
+                        <td class="font-mono"><strong>/dfxagg_dam_or_a0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_par_fuse_dfx_ultiscan_ctech_or2_1</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
                         <td class="text-right font-mono">0</td>
                         <td class="text-right font-mono val-red">
@@ -2419,8 +1101,38 @@
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/ipfdi_sort_tx_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_ipfdi_sort_tx_wrap</td>
+                        <td class="font-mono"><strong>/dfxagg_reset_b_final</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_par_fuse_dfx_ultiscan_ctech_or2_2</td>
+                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/dfxagg_trstb_and_powergood</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_par_fuse_cdie_htap_powergood_resetb_0</td>
+                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/fuse_dtf1xclk_glbdrv_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_fuse_dtf1xclk_glbdrv_wrap</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
                         <td class="text-right font-mono">0</td>
                         <td class="text-right font-mono val-red">
@@ -2434,8 +1146,8 @@
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/misc_c2hclk_glbdrv_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_x_misc_c2hclk_glbdrv_wrap</td>
+                        <td class="font-mono"><strong>/fuse_dtf2xclk_glbdrv_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_fuse_dtf2xclk_glbdrv_wrap</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
                         <td class="text-right font-mono">0</td>
                         <td class="text-right font-mono val-red">
@@ -2449,23 +1161,8 @@
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/misc_c2hclk_glbdrvbuf_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_x_misc_c2hclk_glbdrvbuf_wrap</td>
-                        <td><span class="tag tag-other">Buffer / Repeater / Glue</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_c2hclk_glbdrvdiv2_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_x_misc_c2hclk_glbdrvdiv2_wrap</td>
+                        <td class="font-mono"><strong>/fuse_sbclk_glbdrv_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_fuse_sbclk_glbdrv_wrap</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
                         <td class="text-right font-mono">0</td>
                         <td class="text-right font-mono val-red">
@@ -2479,8 +1176,8 @@
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/misc_dtf1xclk_glbdrv_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_dtf1xclk_glbdrv_wrap</td>
+                        <td class="font-mono"><strong>/fuse_scan_i_ult_clkctl_vccst_pg_fuse_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_fuse_scan_i_ult_clkctl_vccst_pg_fuse_wrap</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
                         <td class="text-right font-mono">0</td>
                         <td class="text-right font-mono val-red">
@@ -2494,8 +1191,8 @@
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/misc_dtf1xclk_misc_dmu_ucc_bypass_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_dtf1xclk_misc_dmu_ucc_bypass_wrap</td>
+                        <td class="font-mono"><strong>/fuse_scan_i_ult_clkctl_vccvnn_pg_fuse_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_fuse_scan_i_ult_clkctl_vccvnn_pg_fuse_wrap</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
                         <td class="text-right font-mono">0</td>
                         <td class="text-right font-mono val-red">
@@ -2509,8 +1206,8 @@
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/misc_dtf1xclk_misc_fov0_ucc_bypass_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_dtf1xclk_misc_fov0_ucc_bypass_wrap</td>
+                        <td class="font-mono"><strong>/fuse_scan_i_ult_clkctl_vnnaon_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_fuse_scan_i_ult_clkctl_vnnaon_wrap</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
                         <td class="text-right font-mono">0</td>
                         <td class="text-right font-mono val-red">
@@ -2524,175 +1221,10 @@
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/misc_dtf1xclk_misc_fov1_ucc_bypass_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_dtf1xclk_misc_fov1_ucc_bypass_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_dtf2xclk_glbdrv_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_dtf2xclk_glbdrv_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_dtf2xclk_misc_dmu_ucc_bypass_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_dtf2xclk_misc_dmu_ucc_bypass_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_dtf2xclk_misc_fov1_ucc_bypass_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_dtf2xclk_misc_fov1_ucc_bypass_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_sbclk_glbdrv_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_sbclk_glbdrv_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_sbclk_misc_bcslice_ucc_bypass_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_sbclk_misc_bcslice_ucc_bypass_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_sbclk_misc_dmu_ucc_bypass_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_sbclk_misc_dmu_ucc_bypass_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_sbclk_misc_fov0_ucc_bypass_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_sbclk_misc_fov0_ucc_bypass_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_sbclk_misc_fov1_ucc_bypass_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_sbclk_misc_fov1_ucc_bypass_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_scan_i_ult_clkctl_vnnaon_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_scan_i_ult_clkctl_vnnaon_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/misc_xtalclk_glbdrv_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_xtalclk_glbdrv_wrap</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/security_status_sync</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_cdie_dfx_metaflop_17</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">92</td>
+                        <td class="font-mono"><strong>/fuse_trstb_and_powergood</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_par_fuse_cdie_htap_powergood_resetb_1</td>
+                        <td><span class="tag tag-clock">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">10</td>
                         <td class="text-right font-mono val-red">
                             0.00%
                         </td>
@@ -2704,53 +1236,578 @@
                     </tr>
 
                     <tr>
-                        <td class="font-mono"><strong>/sense_vcc_misc_psvnnd2d_cfi (BB)</strong></td>
+                        <td class="font-mono"><strong>/fuse_xtalclk_glbdrv_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_fuse_xtalclk_glbdrv_wrap</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_0 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_1 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_10 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_11 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_12 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_13 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_14 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_15 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_16 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_17 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_18 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_19 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_2 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_20 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_21 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_22 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_23 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_24 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_25 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_26 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_27 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_28 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_29 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_3 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_4 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_5 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_6 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_7 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_8 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_9 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_st_fuse_pgt_h_rtdr</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_rtdr_pgt_wrapper_30</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_vnn_fuse_pgt_h_0 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_vnn_fuse_pgt_h_1 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_vnn_fuse_pgt_h_2 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_vnn_fuse_pgt_h_3 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_vnn_fuse_pgt_h_4 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_vnn_fuse_pgt_h_rtdr</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_fuse_rtdr_pgt_wrapper_5</td>
+                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red">
+                            0.00%
+                        </td>
+                        <td class="text-right font-mono ">
+                            0
+                        </td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/sense_vcc_fuse_pgvnnfuse (BB)</strong></td>
                         <td class="font-mono" style="color: #94a3b8;">sense_vcc_resistor</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/sense_vcc_misc_psvnnmisc (BB)</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">sense_vcc_resistor</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/view_misc_ana</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_view_misc_ana</td>
-                        <td><span class="tag tag-other">Core Logic / Datapath</span></td>
-                        <td class="text-right font-mono">0</td>
-                        <td class="text-right font-mono val-red">
-                            0.00%
-                        </td>
-                        <td class="text-right font-mono ">
-                            0
-                        </td>
-                        <td class="text-right font-mono">0.00%</td>
-                        <td class="text-center"><span class="tag tag-other">NO FAULTS</span></td>
-                    </tr>
-
-                    <tr>
-                        <td class="font-mono"><strong>/zz_cdie_paired_with_hub_type_hip_ovrd_wrap</strong></td>
-                        <td class="font-mono" style="color: #94a3b8;">par_misc_zz_cdie_paired_with_hub_type_hip_ovrd_wrap</td>
                         <td><span class="tag tag-other">Core Logic / Datapath</span></td>
                         <td class="text-right font-mono">0</td>
                         <td class="text-right font-mono val-red">
