@@ -1,0 +1,2804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATPG Coverage Comparison Report: TTLC_PARMISC_ATSPEED vs RZL_PARMISC_ATSPEED</title>
+    <style>
+        :root {
+            --bg-page: #0f172a;
+            --bg-card: #1e293b;
+            --bg-subcard: #243247;
+            --bg-hover: rgba(255, 255, 255, 0.04);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --text-highlight: #38bdf8;
+            --border: #334155;
+            --red: #f87171;
+            --red-bg: rgba(248, 113, 113, 0.12);
+            --green: #4ade80;
+            --green-bg: rgba(74, 222, 128, 0.12);
+            --yellow: #facc15;
+            --yellow-bg: rgba(250, 204, 21, 0.12);
+            --blue: #60a5fa;
+            --blue-bg: rgba(96, 165, 250, 0.12);
+            --purple: #c084fc;
+            --purple-bg: rgba(192, 132, 252, 0.12);
+            --code-bg: #0b1120;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 1.5rem;
+        }
+        .container { max-width: 1520px; margin: 0 auto; }
+        header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-highlight);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .meta {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.9;
+        }
+        .meta code {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            background: var(--code-bg);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #7dd3fc;
+            border: 1px solid var(--border);
+        }
+        .nav-links {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 0.9rem;
+            background: var(--bg-subcard);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-highlight);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover {
+            background: var(--border);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.9rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
+        .badge-blue { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue); }
+        .badge-yellow { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow); }
+        .badge-red { background: var(--red-bg); color: var(--red); border: 1px solid var(--red); }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+        }
+        .kpi-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--text-dim);
+            margin-bottom: 0.4rem;
+        }
+        .kpi-val {
+            font-size: 1.85rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+        }
+        .kpi-sub {
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+        .val-red { color: var(--red); }
+        .val-green { color: var(--green); }
+        .val-yellow { color: var(--yellow); }
+        .val-blue { color: var(--blue); }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+        }
+        h2 {
+            font-size: 1.35rem;
+            color: var(--text-highlight);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.75rem;
+        }
+        h3 {
+            font-size: 1.15rem;
+            color: var(--text-main);
+            margin: 1.25rem 0 0.5rem 0;
+        }
+        p { margin-bottom: 0.75rem; color: var(--text-dim); }
+
+        .split-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 960px) {
+            .split-grid { grid-template-columns: 1fr; }
+        }
+
+        .action-card {
+            background: var(--bg-subcard);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--blue);
+            border-radius: 6px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .action-card.p1 { border-left-color: var(--red); }
+        .action-card.p2 { border-left-color: var(--yellow); }
+        .action-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+        }
+        .action-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .action-impact {
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.15rem 0.55rem;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-highlight);
+        }
+        .action-code {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.45rem 0.7rem;
+            margin-top: 0.6rem;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 0.84rem;
+            color: #7dd3fc;
+            overflow-x: auto;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+        th {
+            background: #162032;
+            color: var(--text-main);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.85rem 1rem;
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+        }
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-dim);
+        }
+        tr:hover td {
+            background-color: var(--bg-hover);
+            color: var(--text-main);
+        }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .font-mono {
+            font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+            font-size: 0.84rem;
+            color: #cbd5e1;
+        }
+        .tag {
+            display: inline-block;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .tag-improved { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
+        .tag-regressed { background: var(--red-bg); color: var(--red); border: 1px solid var(--red); }
+        .tag-neutral { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; border: 1px solid #475569; }
+
+        .search-box {
+            width: 100%;
+            max-width: 450px;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-main);
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            outline: none;
+        }
+        .search-box:focus { border-color: var(--text-highlight); }
+    </style>
+    <script>
+        function filterTable(inputId, tableId) {
+            const filter = document.getElementById(inputId).value.toLowerCase();
+            const rows = document.getElementById(tableId).getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            for (let i = 0; i < rows.length; i++) {
+                const text = rows[i].textContent.toLowerCase();
+                rows[i].style.display = text.includes(filter) ? '' : 'none';
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h1>ATPG Coverage Comparison: TTLC_PARMISC_ATSPEED vs RZL_PARMISC_ATSPEED</h1>
+                <div class="meta">
+                    Generated on: <code>2026-10-20 00:27:42</code> &nbsp;|&nbsp;
+                    Run 1: <code>/nfs/site/disks/umark_wa01/Pandora_ttlc_atpg3/ww42aS/par_misc/par_misc_wa/runs/par_misc/1278.7/sage_atpg/sage/WORK/stuckat_edt_min</code> &nbsp;|&nbsp;
+                    Run 2: <code>/nfs/site/disks/umark_wa01/Pandora_ttlc_atpg1/rzlparmiscWW26_ParMiscAtSpeed/par_misc_wa/runs/par_misc/n2p_htall_conf7/sage_atpg/sage/WORK/atspeed_edt_min</code>
+                </div>
+                <div class="nav-links">
+                    <a href="atpg_coverage_report_run_par_misc_stuckat_edt_min.html" class="nav-btn">📄 Report 1: TTLC_PARMISC_ATSPEED Coverage Report</a>
+                    <a href="atpg_coverage_report_run_par_misc_atspeed_edt_min.html" class="nav-btn">📄 Report 2: RZL_PARMISC_ATSPEED Coverage Report</a>
+                    <a href="au_comparison_deltas.csv" class="nav-btn">📊 Download Deltas CSV</a>
+                </div>
+            </div>
+            <div>
+                <span class="badge badge-green">TTLC_PARMISC_ATSPEED Leads: +8.95% Coverage (AU Delta: -189,667)</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- KPI Grid -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-title">Test Coverage (TC)</div>
+            <div class="kpi-val val-green">
+                +8.95%
+            </div>
+            <div class="kpi-sub">TTLC_PARMISC_ATSPEED: 94.91% vs RZL_PARMISC_ATSPEED: 85.96%</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">AU Delta (TTLC_PARMISC_ATSPEED - RZL_PARMISC_ATSPEED)</div>
+            <div class="kpi-val val-green">
+                -189,667
+            </div>
+            <div class="kpi-sub">TTLC_PARMISC_ATSPEED: 81,894 vs RZL_PARMISC_ATSPEED: 271,561 (-69.8%)</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">Fault Universe Delta</div>
+            <div class="kpi-val val-blue">
+                -263,477
+            </div>
+            <div class="kpi-sub">TTLC_PARMISC_ATSPEED: 1,686,538 vs RZL_PARMISC_ATSPEED: 1,950,015 (-13.5%)</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">AU Rate Delta</div>
+            <div class="kpi-val val-green">
+                -9.07%
+            </div>
+            <div class="kpi-sub">TTLC_PARMISC_ATSPEED: 4.86% vs RZL_PARMISC_ATSPEED: 13.93%</div>
+        </div>
+    </div>
+
+    <!-- Dual-Run Actionable Advisory -->
+    <div class="card">
+        <h2>
+            <span>Actionable Advisory: How to Improve Coverage in Both Runs</span>
+            <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-dim);">Targeted Dual-Run Guidance</span>
+        </h2>
+        <p>Specific engineering recommendations derived from cross-run divergence, identifying where each run lags and how each can achieve optimal test coverage:</p>
+
+        <div class="split-grid">
+            <!-- Advice for Run 1 -->
+            <div>
+                <h3>1. How to Improve TTLC_PARMISC_ATSPEED Coverage</h3>
+                <p style="font-size: 0.9rem;">Initiatives addressing areas where TTLC_PARMISC_ATSPEED regressed or lags behind RZL_PARMISC_ATSPEED:</p>
+
+                <div class="action-card p1">
+                    <div class="action-header">
+                        <span class="action-title">P1 - Critical Regression: Recover AU in /cdie_endebug/i_gated_wrapper (Core Logic / Datapath)</span>
+                        <span class="action-impact">TTLC_PARMISC_ATSPEED has +12,684 more AU than RZL_PARMISC_ATSPEED</span>
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
+                        In TTLC_PARMISC_ATSPEED, instance <code>/cdie_endebug/i_gated_wrapper</code> carries 12,684 AU compared to only 0 in RZL_PARMISC_ATSPEED. Inspect module <code>par_misc_endebug_gated_wrapper_0000040001000200_8_2_0_0_0_13_6_15_0_1_0_1_1_1_0</code> constraints, clock gating bypasses, or missing test waivers in TTLC_PARMISC_ATSPEED.
+                    </div>
+                    <div class="action-code">report_faults /cdie_endebug/i_gated_wrapper/* -au -summary</div>
+                </div>
+
+                <div class="action-card p2">
+                    <div class="action-header">
+                        <span class="action-title">P2 - Alignment: Audit Clock &amp; Reset Bypass Rules against RZL_PARMISC_ATSPEED</span>
+                        <span class="action-impact">Harmonizes ATPG constraints across both runs</span>
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
+                        Compare DO-files (resets.do, synchronous_clock_list.do) between TTLC_PARMISC_ATSPEED and RZL_PARMISC_ATSPEED to identify missing pin constraints or inactive scan bypass signals in TTLC_PARMISC_ATSPEED.
+                    </div>
+                    <div class="action-code">report_clocks -matrix; report_drc_rules -violations</div>
+                </div>
+
+            </div>
+
+            <!-- Advice for Run 2 -->
+            <div>
+                <h3>2. How to Improve RZL_PARMISC_ATSPEED Coverage</h3>
+                <p style="font-size: 0.9rem;">Initiatives backporting TTLC_PARMISC_ATSPEED victories and closing RZL_PARMISC_ATSPEED gaps:</p>
+
+                <div class="action-card p1">
+                    <div class="action-header">
+                        <span class="action-title">P1 - Critical: Backport TTLC_PARMISC_ATSPEED Fixes to /d2d_cfi_mux_wrapper in RZL_PARMISC_ATSPEED</span>
+                        <span class="action-impact">RZL_PARMISC_ATSPEED has +58,556 more AU than TTLC_PARMISC_ATSPEED</span>
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
+                        In RZL_PARMISC_ATSPEED, instance <code>/d2d_cfi_mux_wrapper</code> has 74,734 AU, whereas TTLC_PARMISC_ATSPEED achieved 16,178 AU (-78.4% reduction). Backport TTLC_PARMISC_ATSPEED's model, blackboxing, or DRC waivers to RZL_PARMISC_ATSPEED.
+                    </div>
+                    <div class="action-code">report_statistics -instance /d2d_cfi_mux_wrapper</div>
+                </div>
+
+                <div class="action-card p2">
+                    <div class="action-header">
+                        <span class="action-title">P2 - Alignment: Synchronize Fault Disposition Lists with TTLC_PARMISC_ATSPEED</span>
+                        <span class="action-impact">Excludes structurally tied/redundant logic from {label2}</span>
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
+                        Ensure the disposition file used in TTLC_PARMISC_ATSPEED is applied to RZL_PARMISC_ATSPEED to delete known architectural untestable faults.
+                    </div>
+                    <div class="action-code">read_faults $disp_file -delete</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Shared Advice -->
+        <h3 style="margin-top: 1.5rem;">3. Shared Initiatives for Both Runs</h3>
+        <p style="font-size: 0.9rem;">Common bottlenecks identified across both designs:</p>
+
+        <div class="action-card p2">
+            <div class="action-header">
+                <span class="action-title">P2 - Core Health: Resolve Asynchronous Reset Synchronizers (CDU / Double-Sync)</span>
+                <span class="action-impact">Improves testability across clock/reset domains in both runs</span>
+            </div>
+            <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
+                Both runs carry residual AU in clock distribution and reset synchronizer chains (e.g. <code>cdu_</code>, <code>ctech_lib_doublesync_rst</code>). Verify that scan reset bypass signals (such as <code>fscan_bypx_rst</code>) are asserted during capture.
+            </div>
+            <div class="action-code">add_cell_constraints -inst &lt;doublesync_inst&gt; -value 0</div>
+        </div>
+
+        <div class="action-card p2">
+            <div class="action-header">
+                <span class="action-title">P3 - Test Points: Evaluate Test Point Insertion (TPI) for Deep Combinational Logic</span>
+                <span class="action-impact">Breaks long observability chains to raise maximum coverage ceiling</span>
+            </div>
+            <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.3rem;">
+                For deep logic cones with high fan-in where coverage saturates below 95%, test points (controllability and observability points) will raise the upper coverage bound for both runs.
+            </div>
+            <div class="action-code">report_test_points -summary</div>
+        </div>
+
+    </div>
+
+    <!-- Depth-1 Partitions Comparison Table -->
+    <div class="card">
+        <h2>
+            <span>Primary Partition (Depth-1) Delta Comparison</span>
+            <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-dim);">128 Partitions</span>
+        </h2>
+        <p>Comparison of fault totals, test coverage %, and AU delta across all Depth-1 partition instances.</p>
+
+        <input type="text" id="d1CompSearch" class="search-box" onkeyup="filterTable('d1CompSearch', 'd1CompTable')" placeholder="Search partitions by name or module...">
+
+        <div class="table-responsive">
+            <table id="d1CompTable">
+                <thead>
+                    <tr>
+                        <th>Partition Instance</th>
+                        <th>Module</th>
+                        <th class="text-right">TTLC_PARMISC_ATSPEED AU</th>
+                        <th class="text-right">RZL_PARMISC_ATSPEED AU</th>
+                        <th class="text-right">AU Delta</th>
+                        <th class="text-right">% Change</th>
+                        <th class="text-right">TTLC_PARMISC_ATSPEED TC</th>
+                        <th class="text-right">RZL_PARMISC_ATSPEED TC</th>
+                        <th class="text-right">TC Delta</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="font-mono"><strong>/d2d_cfi_mux_wrapper</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_cfi_mux_wrapper</td>
+                        <td class="text-right font-mono">16,178</td>
+                        <td class="text-right font-mono">74,734</td>
+                        <td class="text-right font-mono val-green"><strong>-58,556</strong></td>
+                        <td class="text-right font-mono val-green">-78.4%</td>
+                        <td class="text-right font-mono">2.78%</td>
+                        <td class="text-right font-mono">0.03%</td>
+                        <td class="text-right font-mono val-green"><strong>+2.75%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>[Top-Level Boundary / Glue Logic]</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc (unassigned to D1)</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">39,058</td>
+                        <td class="text-right font-mono val-green"><strong>-39,058</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">100.00%</td>
+                        <td class="text-right font-mono">2.63%</td>
+                        <td class="text-right font-mono val-green"><strong>+97.37%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/d2d_tx_rpt_misc_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_tx_rpt_misc_wrap</td>
+                        <td class="text-right font-mono">10,785</td>
+                        <td class="text-right font-mono">48,236</td>
+                        <td class="text-right font-mono val-green"><strong>-37,451</strong></td>
+                        <td class="text-right font-mono val-green">-77.6%</td>
+                        <td class="text-right font-mono">72.99%</td>
+                        <td class="text-right font-mono">27.78%</td>
+                        <td class="text-right font-mono val-green"><strong>+45.21%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdu_dfd_misc_infdfx</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">cdu_dfd_misc_infdfx</td>
+                        <td class="text-right font-mono">10,465</td>
+                        <td class="text-right font-mono">27,476</td>
+                        <td class="text-right font-mono val-green"><strong>-17,011</strong></td>
+                        <td class="text-right font-mono val-green">-61.9%</td>
+                        <td class="text-right font-mono">94.58%</td>
+                        <td class="text-right font-mono">92.71%</td>
+                        <td class="text-right font-mono val-green"><strong>+1.87%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/d2d_rx_rpt_misc_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_rx_rpt_misc_wrap</td>
+                        <td class="text-right font-mono">12,578</td>
+                        <td class="text-right font-mono">25,749</td>
+                        <td class="text-right font-mono val-green"><strong>-13,171</strong></td>
+                        <td class="text-right font-mono val-green">-51.2%</td>
+                        <td class="text-right font-mono">14.23%</td>
+                        <td class="text-right font-mono">29.76%</td>
+                        <td class="text-right font-mono val-red"><strong>-15.53%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdu_dfd_misc_infdfx_pg</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">cdu_dfd_misc_infdfx_pg</td>
+                        <td class="text-right font-mono">2,786</td>
+                        <td class="text-right font-mono">10,249</td>
+                        <td class="text-right font-mono val-green"><strong>-7,463</strong></td>
+                        <td class="text-right font-mono val-green">-72.8%</td>
+                        <td class="text-right font-mono">99.33%</td>
+                        <td class="text-right font-mono">98.46%</td>
+                        <td class="text-right font-mono val-green"><strong>+0.87%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/pmsbrd2d_cdie</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_pmsbrd2d_cdie_sbr_generic</td>
+                        <td class="text-right font-mono">1,869</td>
+                        <td class="text-right font-mono">6,472</td>
+                        <td class="text-right font-mono val-green"><strong>-4,603</strong></td>
+                        <td class="text-right font-mono val-green">-71.1%</td>
+                        <td class="text-right font-mono">98.43%</td>
+                        <td class="text-right font-mono">95.31%</td>
+                        <td class="text-right font-mono val-green"><strong>+3.12%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdie_endebug</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_endebug_400</td>
+                        <td class="text-right font-mono">12,964</td>
+                        <td class="text-right font-mono">17,343</td>
+                        <td class="text-right font-mono val-green"><strong>-4,379</strong></td>
+                        <td class="text-right font-mono val-green">-25.2%</td>
+                        <td class="text-right font-mono">94.67%</td>
+                        <td class="text-right font-mono">91.85%</td>
+                        <td class="text-right font-mono val-green"><strong>+2.82%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/sbrd2d_cdie</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_sbrd2d_cdie_sbr_generic</td>
+                        <td class="text-right font-mono">1,381</td>
+                        <td class="text-right font-mono">4,865</td>
+                        <td class="text-right font-mono val-green"><strong>-3,484</strong></td>
+                        <td class="text-right font-mono val-green">-71.6%</td>
+                        <td class="text-right font-mono">98.66%</td>
+                        <td class="text-right font-mono">96.11%</td>
+                        <td class="text-right font-mono val-green"><strong>+2.55%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/sbrmisc</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_sbrmisc_sbr_generic</td>
+                        <td class="text-right font-mono">1,195</td>
+                        <td class="text-right font-mono">4,568</td>
+                        <td class="text-right font-mono val-green"><strong>-3,373</strong></td>
+                        <td class="text-right font-mono val-green">-73.8%</td>
+                        <td class="text-right font-mono">99.10%</td>
+                        <td class="text-right font-mono">96.97%</td>
+                        <td class="text-right font-mono val-green"><strong>+2.13%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/d2d_pmsb_mux_wrapper</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_pmsb_mux_wrapper</td>
+                        <td class="text-right font-mono">564</td>
+                        <td class="text-right font-mono">3,046</td>
+                        <td class="text-right font-mono val-green"><strong>-2,482</strong></td>
+                        <td class="text-right font-mono val-green">-81.5%</td>
+                        <td class="text-right font-mono">63.51%</td>
+                        <td class="text-right font-mono">3.12%</td>
+                        <td class="text-right font-mono val-green"><strong>+60.39%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/d2d_gpsb_mux_wrapper</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_gpsb_mux_wrapper</td>
+                        <td class="text-right font-mono">473</td>
+                        <td class="text-right font-mono">2,774</td>
+                        <td class="text-right font-mono val-green"><strong>-2,301</strong></td>
+                        <td class="text-right font-mono val-green">-82.9%</td>
+                        <td class="text-right font-mono">70.42%</td>
+                        <td class="text-right font-mono">4.31%</td>
+                        <td class="text-right font-mono val-green"><strong>+66.11%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdu_dfd_misc_infvnn</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">cdu_dfd_misc_infvnn</td>
+                        <td class="text-right font-mono">3,909</td>
+                        <td class="text-right font-mono">2,456</td>
+                        <td class="text-right font-mono val-red"><strong>+1,453</strong></td>
+                        <td class="text-right font-mono val-red">+59.2%</td>
+                        <td class="text-right font-mono">59.77%</td>
+                        <td class="text-right font-mono">35.50%</td>
+                        <td class="text-right font-mono val-green"><strong>+24.27%</strong></td>
+                        <td class="text-center"><span class="tag tag-regressed">REGRESSED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/sbrcfuse_to_sbrccu_rep0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_sbr_rpt_32_0_0</td>
+                        <td class="text-right font-mono">898</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+898</strong></td>
+                        <td class="text-right font-mono val-red">+100.0%</td>
+                        <td class="text-right font-mono">50.36%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-regressed">REGRESSED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/pmsbrccu_to_pmsbrfuse_rep0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_sbr_rpt_32_0_3</td>
+                        <td class="text-right font-mono">873</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+873</strong></td>
+                        <td class="text-right font-mono val-red">+100.0%</td>
+                        <td class="text-right font-mono">50.59%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-regressed">REGRESSED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/d2d_pm_mux_wrapper</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_pm_mux_wrapper</td>
+                        <td class="text-right font-mono">274</td>
+                        <td class="text-right font-mono">1,074</td>
+                        <td class="text-right font-mono val-green"><strong>-800</strong></td>
+                        <td class="text-right font-mono val-green">-74.5%</td>
+                        <td class="text-right font-mono">66.67%</td>
+                        <td class="text-right font-mono">10.35%</td>
+                        <td class="text-right font-mono val-green"><strong>+56.32%</strong></td>
+                        <td class="text-center"><span class="tag tag-improved">IMPROVED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/pmsbrccu_to_pmsbrfuse_rep1</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_sbr_rpt_32_0_4</td>
+                        <td class="text-right font-mono">755</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+755</strong></td>
+                        <td class="text-right font-mono val-red">+100.0%</td>
+                        <td class="text-right font-mono">56.91%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-regressed">REGRESSED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cri_pd_rptr_misc_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_cri_pd_rptr_misc_wrap</td>
+                        <td class="text-right font-mono">742</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+742</strong></td>
+                        <td class="text-right font-mono val-red">+100.0%</td>
+                        <td class="text-right font-mono">11.88%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-regressed">REGRESSED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/sbrcfuse_to_sbrccu_rep1</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_sbr_rpt_32_0_1</td>
+                        <td class="text-right font-mono">628</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+628</strong></td>
+                        <td class="text-right font-mono val-red">+100.0%</td>
+                        <td class="text-right font-mono">61.23%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-regressed">REGRESSED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/sbrd2d_cdie_to_sbrdmu_rep0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_sbr_rpt_32_0_2</td>
+                        <td class="text-right font-mono">621</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+621</strong></td>
+                        <td class="text-right font-mono val-red">+100.0%</td>
+                        <td class="text-right font-mono">58.05%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-regressed">REGRESSED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/pmsbrd2d_cdie_to_pmsbrdmu_rep0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_sbr_rpt_32_0_5</td>
+                        <td class="text-right font-mono">598</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+598</strong></td>
+                        <td class="text-right font-mono val-red">+100.0%</td>
+                        <td class="text-right font-mono">59.18%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-regressed">REGRESSED IN TTLC_PARMISC_ATSPEED</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/d2d_dfx_mux_wrapper</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_dfx_mux_wrapper</td>
+                        <td class="text-right font-mono">1</td>
+                        <td class="text-right font-mono">358</td>
+                        <td class="text-right font-mono val-green"><strong>-357</strong></td>
+                        <td class="text-right font-mono val-green">-99.7%</td>
+                        <td class="text-right font-mono">96.97%</td>
+                        <td class="text-right font-mono">3.24%</td>
+                        <td class="text-right font-mono val-green"><strong>+93.73%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/d2d_glb_aon_mux_wrapper</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_glb_aon_mux_wrapper</td>
+                        <td class="text-right font-mono">193</td>
+                        <td class="text-right font-mono">428</td>
+                        <td class="text-right font-mono val-green"><strong>-235</strong></td>
+                        <td class="text-right font-mono val-green">-54.9%</td>
+                        <td class="text-right font-mono">65.96%</td>
+                        <td class="text-right font-mono">10.83%</td>
+                        <td class="text-right font-mono val-green"><strong>+55.13%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/soc_cfi_glb_mux_2to1</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_mux_2to1_4_4_4_0</td>
+                        <td class="text-right font-mono">45</td>
+                        <td class="text-right font-mono">214</td>
+                        <td class="text-right font-mono val-green"><strong>-169</strong></td>
+                        <td class="text-right font-mono val-green">-79.0%</td>
+                        <td class="text-right font-mono">68.53%</td>
+                        <td class="text-right font-mono">1.83%</td>
+                        <td class="text-right font-mono val-green"><strong>+66.70%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/soc_dmu_d2d_clken_demux_1to2</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_demux_1to2_4_4_4</td>
+                        <td class="text-right font-mono">65</td>
+                        <td class="text-right font-mono">226</td>
+                        <td class="text-right font-mono val-green"><strong>-161</strong></td>
+                        <td class="text-right font-mono val-green">-71.2%</td>
+                        <td class="text-right font-mono">52.21%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono val-green"><strong>+52.21%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/soc_fov_to_santa1_mux_1to2</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_mux_2to1_4_4_4_4</td>
+                        <td class="text-right font-mono">35</td>
+                        <td class="text-right font-mono">196</td>
+                        <td class="text-right font-mono val-green"><strong>-161</strong></td>
+                        <td class="text-right font-mono val-green">-82.1%</td>
+                        <td class="text-right font-mono">72.11%</td>
+                        <td class="text-right font-mono">10.09%</td>
+                        <td class="text-right font-mono val-green"><strong>+62.02%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/soc_santa0_to_fov_demux_1to2</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_demux_1to2_4_4_4</td>
+                        <td class="text-right font-mono">69</td>
+                        <td class="text-right font-mono">206</td>
+                        <td class="text-right font-mono val-green"><strong>-137</strong></td>
+                        <td class="text-right font-mono val-green">-66.5%</td>
+                        <td class="text-right font-mono">57.93%</td>
+                        <td class="text-right font-mono">16.26%</td>
+                        <td class="text-right font-mono val-green"><strong>+41.67%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/soc_fov_to_santa0_mux_1to2</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_mux_2to1_4_4_4_3</td>
+                        <td class="text-right font-mono">44</td>
+                        <td class="text-right font-mono">178</td>
+                        <td class="text-right font-mono val-green"><strong>-134</strong></td>
+                        <td class="text-right font-mono val-green">-75.3%</td>
+                        <td class="text-right font-mono">69.86%</td>
+                        <td class="text-right font-mono">10.10%</td>
+                        <td class="text-right font-mono val-green"><strong>+59.76%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/d2d_sb_dmu_mux_wrapper</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_sb_dmu_mux_wrapper</td>
+                        <td class="text-right font-mono">11</td>
+                        <td class="text-right font-mono">136</td>
+                        <td class="text-right font-mono val-green"><strong>-125</strong></td>
+                        <td class="text-right font-mono val-green">-91.9%</td>
+                        <td class="text-right font-mono">90.52%</td>
+                        <td class="text-right font-mono">18.56%</td>
+                        <td class="text-right font-mono val-green"><strong>+71.96%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/soc_santa1_to_fov_demux_1to2</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_demux_1to2_4_4_4</td>
+                        <td class="text-right font-mono">70</td>
+                        <td class="text-right font-mono">174</td>
+                        <td class="text-right font-mono val-green"><strong>-104</strong></td>
+                        <td class="text-right font-mono val-green">-59.8%</td>
+                        <td class="text-right font-mono">57.06%</td>
+                        <td class="text-right font-mono">17.14%</td>
+                        <td class="text-right font-mono val-green"><strong>+39.92%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cfi1_link_rst_b_synced_vnn_rpt_cnoc1</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_fdio_repeater_flops_</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">84</td>
+                        <td class="text-right font-mono val-green"><strong>-84</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">74.70%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">RZL_PARMISC_ATSPEED Only</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/soc_d2d_cfi1_vnn_rpt_rst_b_mux_2to1</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_mux_2to1_4_4_4_2</td>
+                        <td class="text-right font-mono">2</td>
+                        <td class="text-right font-mono">78</td>
+                        <td class="text-right font-mono val-green"><strong>-76</strong></td>
+                        <td class="text-right font-mono val-green">-97.4%</td>
+                        <td class="text-right font-mono">95.00%</td>
+                        <td class="text-right font-mono">47.30%</td>
+                        <td class="text-right font-mono val-green"><strong>+47.70%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/d2d_clk_mux_wrapper</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_clk_mux_wrapper</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">72</td>
+                        <td class="text-right font-mono val-green"><strong>-72</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/fast_imon_rptr_to_punit</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_fast_imon_rptr_to_punit</td>
+                        <td class="text-right font-mono">375</td>
+                        <td class="text-right font-mono">310</td>
+                        <td class="text-right font-mono val-red"><strong>+65</strong></td>
+                        <td class="text-right font-mono val-red">+21.0%</td>
+                        <td class="text-right font-mono">31.52%</td>
+                        <td class="text-right font-mono">58.05%</td>
+                        <td class="text-right font-mono val-red"><strong>-26.53%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_pcg_sbclk</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_scu_CTECH_EXP_0_0_2_6_1_1_8_0</td>
+                        <td class="text-right font-mono">162</td>
+                        <td class="text-right font-mono">223</td>
+                        <td class="text-right font-mono val-green"><strong>-61</strong></td>
+                        <td class="text-right font-mono val-green">-27.4%</td>
+                        <td class="text-right font-mono">81.27%</td>
+                        <td class="text-right font-mono">74.23%</td>
+                        <td class="text-right font-mono val-green"><strong>+7.04%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/zz_cdie_id_strap_hip_ovrd_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_zz_cdie_id_strap_hip_ovrd_wra</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">44</td>
+                        <td class="text-right font-mono val-green"><strong>-44</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cfi0_link_rst_b_synced_vnn_rpt_cnoc1</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_fdio_repeater_flops_</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">33</td>
+                        <td class="text-right font-mono val-green"><strong>-33</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">55.41%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">RZL_PARMISC_ATSPEED Only</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cfi0_link_rst_b_synced_vnn_rpt_cnoc0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_fdio_repeater_flops_</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">31</td>
+                        <td class="text-right font-mono val-green"><strong>-31</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">100.00%</td>
+                        <td class="text-right font-mono">60.26%</td>
+                        <td class="text-right font-mono val-green"><strong>+39.74%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/soc_d2d_cfi0_vnn_rpt_rst_b_mux_2to1</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_mux_2to1_4_4_4_1</td>
+                        <td class="text-right font-mono">2</td>
+                        <td class="text-right font-mono">30</td>
+                        <td class="text-right font-mono val-green"><strong>-28</strong></td>
+                        <td class="text-right font-mono val-green">-93.3%</td>
+                        <td class="text-right font-mono">94.29%</td>
+                        <td class="text-right font-mono">40.00%</td>
+                        <td class="text-right font-mono val-green"><strong>+54.29%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/security_status_sync</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_cdie_dfx_metaflop_17</td>
+                        <td class="text-right font-mono">24</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+24</strong></td>
+                        <td class="text-right font-mono val-red">+100.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/soc_d2d_dmu_integrity_e_mux_2to1</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_d2d_mux_2to1_2_2_2_0</td>
+                        <td class="text-right font-mono">13</td>
+                        <td class="text-right font-mono">34</td>
+                        <td class="text-right font-mono val-green"><strong>-21</strong></td>
+                        <td class="text-right font-mono val-green">-61.8%</td>
+                        <td class="text-right font-mono">84.71%</td>
+                        <td class="text-right font-mono">10.53%</td>
+                        <td class="text-right font-mono val-green"><strong>+74.18%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cfi1_link_rst_b_synced_vnn_rpt_cnoc0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_fdio_repeater_flops_</td>
+                        <td class="text-right font-mono">10</td>
+                        <td class="text-right font-mono">29</td>
+                        <td class="text-right font-mono val-green"><strong>-19</strong></td>
+                        <td class="text-right font-mono val-green">-65.5%</td>
+                        <td class="text-right font-mono">80.00%</td>
+                        <td class="text-right font-mono">61.84%</td>
+                        <td class="text-right font-mono val-green"><strong>+18.16%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/zz_cdie_fdi_select_hip_ovrd_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_zz_cdie_fdi_select_hip_ovrd_w</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">17</td>
+                        <td class="text-right font-mono val-green"><strong>-17</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">100.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono val-green"><strong>+100.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/sbrmisc_sbr_pmc_idle_ff</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_soc_ff_1</td>
+                        <td class="text-right font-mono">5</td>
+                        <td class="text-right font-mono">20</td>
+                        <td class="text-right font-mono val-green"><strong>-15</strong></td>
+                        <td class="text-right font-mono val-green">-75.0%</td>
+                        <td class="text-right font-mono">85.71%</td>
+                        <td class="text-right font-mono">58.33%</td>
+                        <td class="text-right font-mono val-green"><strong>+27.38%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdie_id_decode_ovrd_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_cdie_id_decode_ovrd_wrap</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">14</td>
+                        <td class="text-right font-mono val-green"><strong>-14</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">100.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono val-green"><strong>+100.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdie_idcoded</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_idcoded</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">14</td>
+                        <td class="text-right font-mono val-green"><strong>-14</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/fscan_tpi_fdi_select_dummy_flop</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_nvlc_ctech_lib_msff_async_rst</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">12</td>
+                        <td class="text-right font-mono val-green"><strong>-12</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">100.00%</td>
+                        <td class="text-right font-mono">69.23%</td>
+                        <td class="text-right font-mono val-green"><strong>+30.77%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_c2hclk_clkdist_flop_repeater_0_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_c2hclk_clkdist_flop_repe</td>
+                        <td class="text-right font-mono">39</td>
+                        <td class="text-right font-mono">28</td>
+                        <td class="text-right font-mono val-red"><strong>+11</strong></td>
+                        <td class="text-right font-mono val-red">+39.3%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/dfx_hvm_mux_epd_on_h2c</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_m</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">8</td>
+                        <td class="text-right font-mono val-green"><strong>-8</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">100.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono val-green"><strong>+100.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/pri_pwrgd_epdon_powergood_mux</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_m</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">8</td>
+                        <td class="text-right font-mono val-green"><strong>-8</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">100.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono val-green"><strong>+100.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/testmode_pin_latch</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_l</td>
+                        <td class="text-right font-mono">2</td>
+                        <td class="text-right font-mono">10</td>
+                        <td class="text-right font-mono val-green"><strong>-8</strong></td>
+                        <td class="text-right font-mono val-green">-80.0%</td>
+                        <td class="text-right font-mono">95.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono val-green"><strong>+95.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/pmsbrd2d_cdie_sbr_pmc_idle_ff</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_soc_ff_2</td>
+                        <td class="text-right font-mono">13</td>
+                        <td class="text-right font-mono">20</td>
+                        <td class="text-right font-mono val-green"><strong>-7</strong></td>
+                        <td class="text-right font-mono val-green">-35.0%</td>
+                        <td class="text-right font-mono">66.67%</td>
+                        <td class="text-right font-mono">58.33%</td>
+                        <td class="text-right font-mono val-green"><strong>+8.34%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdie_dfd_mid</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_dfd_die_id_mux</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">6</td>
+                        <td class="text-right font-mono val-green"><strong>-6</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">100.00%</td>
+                        <td class="text-right font-mono">81.25%</td>
+                        <td class="text-right font-mono val-green"><strong>+18.75%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/dfx_hvm_mux_cold_boot_trigger_h2c</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_m</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">6</td>
+                        <td class="text-right font-mono val-green"><strong>-6</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/fscan_tpi_fdi_select_mux</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_m</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">6</td>
+                        <td class="text-right font-mono val-green"><strong>-6</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">100.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono val-green"><strong>+100.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/vnnaon_epdon_powergood_mux</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_m</td>
+                        <td class="text-right font-mono">2</td>
+                        <td class="text-right font-mono">8</td>
+                        <td class="text-right font-mono val-green"><strong>-6</strong></td>
+                        <td class="text-right font-mono val-green">-75.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_c2hclk_rst_posedge_detector_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_c2hclk_rst_posedge_detec</td>
+                        <td class="text-right font-mono">25</td>
+                        <td class="text-right font-mono">30</td>
+                        <td class="text-right font-mono val-green"><strong>-5</strong></td>
+                        <td class="text-right font-mono val-green">-16.7%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/a0_debug_en_core_h2c_latch</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_l</td>
+                        <td class="text-right font-mono">2</td>
+                        <td class="text-right font-mono">6</td>
+                        <td class="text-right font-mono val-green"><strong>-4</strong></td>
+                        <td class="text-right font-mono val-green">-66.7%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/a0_debug_only_and</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_l</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">4</td>
+                        <td class="text-right font-mono val-green"><strong>-4</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/ctech_buf_zz_cdie_fdi_select_hip_ovrd_en</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_nvlc_buf_2</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">4</td>
+                        <td class="text-right font-mono val-green"><strong>-4</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/h2c_epd_on_buf</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_b</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">4</td>
+                        <td class="text-right font-mono val-green"><strong>-4</strong></td>
+                        <td class="text-right font-mono val-green">-100.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdie_pulse_gen_block</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_pulse_gen_block</td>
+                        <td class="text-right font-mono">117</td>
+                        <td class="text-right font-mono">120</td>
+                        <td class="text-right font-mono val-green"><strong>-3</strong></td>
+                        <td class="text-right font-mono val-green">-2.5%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_c2hclk_clkdist_flop_repeater_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_c2hclk_clkdist_flop_repe</td>
+                        <td class="text-right font-mono">15</td>
+                        <td class="text-right font-mono">16</td>
+                        <td class="text-right font-mono val-green"><strong>-1</strong></td>
+                        <td class="text-right font-mono val-green">-6.2%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/sbrd2d_cdie_sbr_pmc_idle_ff</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_soc_ff_0</td>
+                        <td class="text-right font-mono">13</td>
+                        <td class="text-right font-mono">12</td>
+                        <td class="text-right font-mono val-red"><strong>+1</strong></td>
+                        <td class="text-right font-mono val-red">+8.3%</td>
+                        <td class="text-right font-mono">66.67%</td>
+                        <td class="text-right font-mono">73.91%</td>
+                        <td class="text-right font-mono val-red"><strong>-7.24%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/aonpwrgood_buf</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_b</td>
+                        <td class="text-right font-mono">4</td>
+                        <td class="text-right font-mono">4</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/aux_tap_repeater_misc</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_cdie_free_tap_repeater</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdie_cltapc</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_cltapc</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdie_id_decode</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_cdie_id_decode</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdu_misc_host_vnnaon</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">cdu_misc_host_vnnaon</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdu_misc_vnnaon</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">cdu_misc_vnnaon</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/cdu_misc_vnnaon_tms_and</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_l</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/clst_ultiscan_misc_pd_vnnaon</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_clst_ultiscan_misc_pd_vnnaon_</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/ctech_buf_a0_debug_strap_force_disable</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_nvlc_buf_0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/ctech_buf_cdie_id_decode_ovrd_en</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_nvlc_buf_1</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/ctech_lib_buf_misc_fscan_mode_syn</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_b</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/ctech_lib_clk_buf_view_nvlc_dig_misc_dl_c2hclk_trunk_clkout</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_nvlc_clk_buf_0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/ctech_lib_clk_buf_view_nvlc_dig_misc_pm_rx_mux_2to1_out_data_8</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_nvlc_clk_buf_1</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/dfx_hvm_mux_epd_on_h2c_b</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_soc_inv</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">TTLC_PARMISC_ATSPEED Only</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/dfx_hvm_mux_mbpout_h2c_0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_m</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/dfx_hvm_mux_mbpout_h2c_1</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_m</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/dfx_hvm_mux_tap_tck_s2c</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_dfx_ultiscan_ctech_clk_mux_2t</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/dfx_hvm_mux_tap_tdi_s2c</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_m</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/dfx_hvm_mux_tap_tms_s2c</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_m</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/dfx_hvm_mux_tap_trst_b_s2c</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dfx_ultiscan_ctech_m</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">100.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/dfx_soup_misc</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_dfx_soup_misc</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/dfx_soup_misc_vnnaon</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_dfx_soup_misc_vnnaon</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_d2d_cfi_misc_dual_ps</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_cdie_dual_ps</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_d2d_cfi_misc_dual_ps_rtdr</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_rtdr_ps_wrapper_1_0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_dfx_misc_dual_ps</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_cdie_dual_ps_1</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_dfx_misc_dual_ps_rtdr</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_rtdr_ps_wrapper_1_1</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_0 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h_chain</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_1 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h_chain</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_10 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">RZL_PARMISC_ATSPEED Only</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_2 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h_chain</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_3 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h_chain</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_4 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h_chain</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_5 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">RZL_PARMISC_ATSPEED Only</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_6 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">RZL_PARMISC_ATSPEED Only</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_7 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">RZL_PARMISC_ATSPEED Only</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_8 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">RZL_PARMISC_ATSPEED Only</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_9 (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">pgt1p00cbb_h</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">RZL_PARMISC_ATSPEED Only</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_dfx_misc_pgt_h_rtdr</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_rtdr_pgt_wrapper_5</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_vnn_misc_dual_ps</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_cdie_dual_ps_0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/inf_vnn_misc_dual_ps_rtdr</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_rtdr_ps_wrapper_1_2</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/ipfdi_cdie_id_strap_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_ipfdi_cdie_id_strap_wrap</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">100.00%</td>
+                        <td class="text-right font-mono">100.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/ipfdi_sort_rx_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_ipfdi_sort_rx_wrap</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/ipfdi_sort_tx_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_ipfdi_sort_tx_wrap</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_c2hclk_glbdrv_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_c2hclk_glbdrv_wrap</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_c2hclk_glbdrvbuf_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_c2hclk_glbdrvbuf_wrap</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_c2hclk_glbdrvdiv2_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_c2hclk_glbdrvdiv2_wrap</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_dtf1xclk_glbdrv_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_dtf1xclk_glbdrv_wrap</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_dtf1xclk_misc_dmu_ucc_bypass_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_dtf1xclk_misc_dmu_ucc_by</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_dtf1xclk_misc_fov0_ucc_bypass_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_dtf1xclk_misc_fov0_ucc_b</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_dtf1xclk_misc_fov1_ucc_bypass_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_dtf1xclk_misc_fov1_ucc_b</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">RZL_PARMISC_ATSPEED Only</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_dtf2xclk_glbdrv_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_dtf2xclk_glbdrv_wrap</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_dtf2xclk_misc_dmu_ucc_bypass_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_dtf2xclk_misc_dmu_ucc_by</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_dtf2xclk_misc_fov1_ucc_bypass_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_dtf2xclk_misc_fov1_ucc_b</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">RZL_PARMISC_ATSPEED Only</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_sbclk_glbdrv_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_sbclk_glbdrv_wrap</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_sbclk_misc_bcslice_ucc_bypass_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_sbclk_misc_bcslice_ucc_b</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_sbclk_misc_dmu_ucc_bypass_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_sbclk_misc_dmu_ucc_bypas</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_sbclk_misc_fov0_ucc_bypass_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_sbclk_misc_fov0_ucc_bypa</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_sbclk_misc_fov1_ucc_bypass_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_sbclk_misc_fov1_ucc_bypa</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">RZL_PARMISC_ATSPEED Only</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_scan_i_ult_clkctl_vnnaon_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_scan_i_ult_clkctl_vnnaon</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/misc_xtalclk_glbdrv_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_misc_xtalclk_glbdrv_wrap</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/sense_vcc_misc_psvnnd2d_cfi (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">sense_vcc_resistor</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/sense_vcc_misc_psvnnmisc (BB)</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">sense_vcc_resistor</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/view_misc_ana</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_view_misc_ana</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="font-mono"><strong>/zz_cdie_paired_with_hub_type_hip_ovrd_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_zz_cdie_paired_with_hub_type_</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono "><strong>+0</strong></td>
+                        <td class="text-right font-mono ">+0.0%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono "><strong>+0.00%</strong></td>
+                        <td class="text-center"><span class="tag tag-neutral">Common</span></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Top Regressions Table -->
+    <div class="card">
+        <h2>
+            <span>Top AU Regressions in TTLC_PARMISC_ATSPEED (TTLC_PARMISC_ATSPEED AU &gt; RZL_PARMISC_ATSPEED AU)</span>
+            <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-dim);">50 High Delta Instances</span>
+        </h2>
+        <p>Sub-instances where TTLC_PARMISC_ATSPEED introduced more untestable faults than RZL_PARMISC_ATSPEED. These represent prime opportunities to recover coverage in TTLC_PARMISC_ATSPEED.</p>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Instance Path</th>
+                        <th>Module</th>
+                        <th>Category</th>
+                        <th class="text-right">TTLC_PARMISC_ATSPEED AU</th>
+                        <th class="text-right">RZL_PARMISC_ATSPEED AU</th>
+                        <th class="text-right">AU Delta</th>
+                        <th class="text-right">TTLC_PARMISC_ATSPEED TC</th>
+                        <th class="text-right">RZL_PARMISC_ATSPEED TC</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="text-center font-mono">1</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdie_endebug/i_gated_wrapper</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_endebug_gated_wrapper_0000040001000200_8_2_0_0_0_13_6_15_0_1_0_1_1_1_0</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>12,684</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+12,684</strong></td>
+                        <td class="text-right font-mono">93.54%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">2</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdie_endebug/i_gated_wrapper/i_endebug_tap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_endebug_tap_2_8_0_0_30_0_15_0_1_1</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>12,559</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+12,559</strong></td>
+                        <td class="text-right font-mono">92.01%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">3</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx/dtf_arb_cdie</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_dtf_arb_top_1_1_1_64_64_64_64_1_23_1_13_1_11_1_8</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono val-red"><strong>8,122</strong></td>
+                        <td class="text-right font-mono">2,812</td>
+                        <td class="text-right font-mono val-red"><strong>+5,310</strong></td>
+                        <td class="text-right font-mono">90.23%</td>
+                        <td class="text-right font-mono">98.18%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">4</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/d2d_rx_rpt_misc_wrap/cfi1_rx_data_to_gfifo_vnn_rpt</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_fdio_repeater_flops_cycle_path_rst_325_2_1_1_1</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono val-red"><strong>2,198</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+2,198</strong></td>
+                        <td class="text-right font-mono">15.07%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">5</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/d2d_tx_rpt_misc_wrap/gfifo_vnn_to_cfi0_tx_data_rpt_cnoc0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_fdio_repeater_flops_cycle_path_rst_325_2_1_1_2</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono val-red"><strong>2,174</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+2,174</strong></td>
+                        <td class="text-right font-mono">80.66%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">6</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/d2d_rx_rpt_misc_wrap/cfi0_rx_data_to_gfifo_vnn_rpt</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_fdio_repeater_flops_cycle_path_rst_325_2_1_1_0</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono val-red"><strong>1,624</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+1,624</strong></td>
+                        <td class="text-right font-mono">19.44%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">7</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/d2d_tx_rpt_misc_wrap/gfifo_vnn_to_cfi1_tx_data_rpt_cnoc0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_fdio_repeater_flops_cycle_path_rst_325_2_1_1_3</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono val-red"><strong>1,472</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+1,472</strong></td>
+                        <td class="text-right font-mono">86.28%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">8</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infvnn</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">cdu_dfd_misc_infvnn</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono val-red"><strong>3,909</strong></td>
+                        <td class="text-right font-mono">2,456</td>
+                        <td class="text-right font-mono val-red"><strong>+1,453</strong></td>
+                        <td class="text-right font-mono">59.77%</td>
+                        <td class="text-right font-mono">35.50%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">9</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx_pg/odd_top/en_rtb_odd_rtb</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_odd_rtb_wrapper_1_63_10_70_0842a_02040c6_08430_16_1_0_0_1_0_0_4_0_0_0_0_2_6_0_1_16_4_3_0_2_2_4_45_3_0_0_0_1_1_1_0_0_0_1_1_1_0_0_0_3_1_2_0_01_1b5ad6b5ad695bc2f065_000000000000_6_00</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono val-red"><strong>1,228</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+1,228</strong></td>
+                        <td class="text-right font-mono">98.99%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">10</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx_pg/odd_top/en_rtb_odd_rtb/i_rtb_top</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_rtb_top_1_63_10_70_0842a_02040c6_08430_16_0_0_0_1_6_0_4_0_0_0_0_2_1_16_4_3_0_2_2_4_45_3_0_0_0_1_1_1_0_0_0_1_1_1_0_0_0_3_1_2_0_01_1b5ad6b5ad695bc2f065</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono val-red"><strong>1,165</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+1,165</strong></td>
+                        <td class="text-right font-mono">98.22%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">11</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx_pg/odd_top/en_rtb_odd_rtb/i_rtb_top/i_rtb</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_region_trigger_block_1_63_10_46_01_01_01_1_10_01_01_01_0a_01_01_01_0_6_16_0_16_4_3_2_2_4_45_3_0_0_0_0_1_1_1_0_0_1_1_1_0_0_0_0_4_0_0_0_0_2_01_1b5ad6b5ad695bc2f065</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono val-red"><strong>1,091</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+1,091</strong></td>
+                        <td class="text-right font-mono">98.33%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">12</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx_pg/odd_top/en_rtb_odd_rtb/i_rtb_top/i_rtb/cts_to_tfb</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_cts_tfb_ifc_0</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono val-red"><strong>903</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+903</strong></td>
+                        <td class="text-right font-mono">82.37%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">13</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbrcfuse_to_sbrccu_rep0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_sbr_rpt_32_0_0</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>898</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+898</strong></td>
+                        <td class="text-right font-mono">50.36%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">14</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/pmsbrccu_to_pmsbrfuse_rep0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_sbr_rpt_32_0_3</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>873</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+873</strong></td>
+                        <td class="text-right font-mono">50.59%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">15</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/d2d_tx_rpt_misc_wrap/gfifo_vnn_to_cfi0_tx_req_rpt_cnoc0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_fdio_repeater_flops_cycle_path_rst_102_2_1_1_2</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono val-red"><strong>792</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+792</strong></td>
+                        <td class="text-right font-mono">78.10%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">16</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/pmsbrccu_to_pmsbrfuse_rep1</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_sbr_rpt_32_0_4</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>755</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+755</strong></td>
+                        <td class="text-right font-mono">56.91%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">17</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbrd2d_cdie/sbrd2d_cdie_inst/sbcport2</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_iosfsbr_nvl_sbcport_31_31_31_0_7_7_0_0_1_0_0_0_1_1_1_1_1_0_0_1_0_0_0_0_f0_1_1_1_0_00_0_00_0_0_1_1_0_0_0_1</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>744</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+744</strong></td>
+                        <td class="text-right font-mono">96.30%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">18</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cri_pd_rptr_misc_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_cri_pd_rptr_misc_wrap</td>
+                        <td><span class="tag tag-neutral">Buffer / Repeater / Glue</span></td>
+                        <td class="text-right font-mono val-red"><strong>742</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+742</strong></td>
+                        <td class="text-right font-mono">11.88%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">19</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbrmisc/sbrmisc_inst/sbcport1</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_iosfsbr_nvl_sbcport_31_31_31_0_7_7_0_0_1_0_0_0_1_1_1_1_1_0_0_1_0_0_0_0_f0_1_1_1_0_00_0_00_0_0_1_1_0_0_0_3</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>718</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+718</strong></td>
+                        <td class="text-right font-mono">96.47%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">20</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/pmsbrd2d_cdie/pmsbrd2d_cdie_inst/sbcport3</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_iosfsbr_pm_sbcport_31_31_31_0_9_9_0_0_1_0_0_0_1_1_1_1_1_0_0_1_0_0_0_0_f0_1_1_1_0_00_0_00_0_0_1_1_0_0_0_1</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>714</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+714</strong></td>
+                        <td class="text-right font-mono">96.80%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">21</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/d2d_rx_rpt_misc_wrap/cfi1_rx_req_to_gfifo_vnn_rpt</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_fdio_repeater_flops_cycle_path_rst_102_2_1_1_1</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono val-red"><strong>632</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+632</strong></td>
+                        <td class="text-right font-mono">22.93%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">22</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbrcfuse_to_sbrccu_rep1</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_sbr_rpt_32_0_1</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>628</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+628</strong></td>
+                        <td class="text-right font-mono">61.23%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">23</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbrd2d_cdie_to_sbrdmu_rep0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_sbr_rpt_32_0_2</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>621</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+621</strong></td>
+                        <td class="text-right font-mono">58.05%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">24</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx_pg/odd_top/en_dvp_odd_dvp</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_odd_dvp_wrapper_6_6_4_1_4_1_1_000000000000_6_00_839949</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono val-red"><strong>616</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+616</strong></td>
+                        <td class="text-right font-mono">99.52%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">25</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/pmsbrd2d_cdie_to_pmsbrdmu_rep0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_sbr_rpt_32_0_5</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono val-red"><strong>598</strong></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>+598</strong></td>
+                        <td class="text-right font-mono">59.18%</td>
+                        <td class="text-right font-mono">0.00%</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Top Improvements Table -->
+    <div class="card">
+        <h2>
+            <span>Top AU Improvements in TTLC_PARMISC_ATSPEED (TTLC_PARMISC_ATSPEED AU &lt; RZL_PARMISC_ATSPEED AU)</span>
+            <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-dim);">44 Resolved Blocks</span>
+        </h2>
+        <p>Sub-instances where TTLC_PARMISC_ATSPEED successfully eliminated untestable faults compared to RZL_PARMISC_ATSPEED. Apply these techniques to improve RZL_PARMISC_ATSPEED.</p>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Instance Path</th>
+                        <th>Module</th>
+                        <th>Category</th>
+                        <th class="text-right">TTLC_PARMISC_ATSPEED AU</th>
+                        <th class="text-right">RZL_PARMISC_ATSPEED AU</th>
+                        <th class="text-right">AU Delta</th>
+                        <th class="text-right">TTLC_PARMISC_ATSPEED TC</th>
+                        <th class="text-right">RZL_PARMISC_ATSPEED TC</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="text-center font-mono">1</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/d2d_cfi_mux_wrapper</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_cfi_mux_wrapper</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">16,178</td>
+                        <td class="text-right font-mono val-red"><strong>74,734</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-58,556</strong></td>
+                        <td class="text-right font-mono">2.78%</td>
+                        <td class="text-right font-mono">0.03%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">2</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/d2d_tx_rpt_misc_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_tx_rpt_misc_wrap</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">10,785</td>
+                        <td class="text-right font-mono val-red"><strong>48,236</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-37,451</strong></td>
+                        <td class="text-right font-mono">72.99%</td>
+                        <td class="text-right font-mono">27.78%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">3</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">cdu_dfd_misc_infdfx</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">10,465</td>
+                        <td class="text-right font-mono val-red"><strong>27,476</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-17,011</strong></td>
+                        <td class="text-right font-mono">94.58%</td>
+                        <td class="text-right font-mono">92.71%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">4</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/d2d_rx_rpt_misc_wrap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_rx_rpt_misc_wrap</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">12,578</td>
+                        <td class="text-right font-mono val-red"><strong>25,749</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-13,171</strong></td>
+                        <td class="text-right font-mono">14.23%</td>
+                        <td class="text-right font-mono">29.76%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">5</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdie_endebug/i_gated_wrapper_i_endebug_tap</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_endebug_tap_2_8_0_0_30_0_15_0_1_1</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>12,100</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-12,100</strong></td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">91.50%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">6</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx_pg</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">cdu_dfd_misc_infdfx_pg</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">2,786</td>
+                        <td class="text-right font-mono val-red"><strong>10,249</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-7,463</strong></td>
+                        <td class="text-right font-mono">99.33%</td>
+                        <td class="text-right font-mono">98.46%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">7</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx_pg/odd_top</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_odd_top_6_282200_900000_000004000100020a_000004000100020a_0000040001000208_000004000300021f_000004000300021f_0000040001000208_3072_36_1b5ad6b5ad695bc2f065_14_0</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">2,773</td>
+                        <td class="text-right font-mono val-red"><strong>9,983</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-7,210</strong></td>
+                        <td class="text-right font-mono">99.33%</td>
+                        <td class="text-right font-mono">98.50%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">8</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx/dtf_arb_d2d</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_dtf_arb_top_0_0_0_0_9</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">33</td>
+                        <td class="text-right font-mono val-red"><strong>6,837</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-6,804</strong></td>
+                        <td class="text-right font-mono">99.77%</td>
+                        <td class="text-right font-mono">85.63%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">9</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx/dtf_arb_misc</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_dtf_arb_top_1_0_0_64_64_64_64_0_19_1_15_1_8_1_8</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">47</td>
+                        <td class="text-right font-mono val-red"><strong>6,703</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-6,656</strong></td>
+                        <td class="text-right font-mono">99.89%</td>
+                        <td class="text-right font-mono">94.96%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">10</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx/dtf_arb_d2d/gf_a_GENERIC_FIFO_GF_fifo_gf</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_generic_gfifo__mcr_dtf___8_1_0_no_no_no_868242_0</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>6,196</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-6,196</strong></td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">53.06%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">11</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx/dtf_arb_d2d/gf_a_GENERIC_FIFO_GF_fifo_gf/generic_gfifo_write</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_generic_gfifo_write__mcr_dtf___8_0_1_0_no_0_yes_0_2_no_0_no_868242_0</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>6,106</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-6,106</strong></td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">42.37%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">12</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx/dtf_arb_misc/gf_a_GENERIC_FIFO_GF_fifo_gf</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_generic_gfifo__mcr_dtf___8_1_0_no_no_no_868242_1</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>6,007</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-6,007</strong></td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">53.01%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">13</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx/dtf_arb_misc/gf_a_GENERIC_FIFO_GF_fifo_gf/generic_gfifo_write</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_generic_gfifo_write__mcr_dtf___8_0_1_0_no_0_yes_0_2_no_0_no_868242_1</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>5,935</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-5,935</strong></td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">41.45%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">14</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/pmsbrd2d_cdie</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_pmsbrd2d_cdie_sbr_generic</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">1,869</td>
+                        <td class="text-right font-mono val-red"><strong>6,472</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-4,603</strong></td>
+                        <td class="text-right font-mono">98.43%</td>
+                        <td class="text-right font-mono">95.31%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">15</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdie_endebug</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_endebug_400</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">12,964</td>
+                        <td class="text-right font-mono val-red"><strong>17,343</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-4,379</strong></td>
+                        <td class="text-right font-mono">94.67%</td>
+                        <td class="text-right font-mono">91.85%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">16</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/pmsbrd2d_cdie/pmsbrd2d_cdie_inst</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_iosfsbr_pm_pmsbrd2d_cdie_3</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">1,422</td>
+                        <td class="text-right font-mono val-red"><strong>5,604</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-4,182</strong></td>
+                        <td class="text-right font-mono">98.75%</td>
+                        <td class="text-right font-mono">95.90%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">17</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx/dtf_rpt_slice_r0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dtf_repeater_9</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">196</td>
+                        <td class="text-right font-mono val-red"><strong>4,164</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-3,968</strong></td>
+                        <td class="text-right font-mono">89.15%</td>
+                        <td class="text-right font-mono">21.46%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">18</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbrd2d_cdie</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_sbrd2d_cdie_sbr_generic</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">1,381</td>
+                        <td class="text-right font-mono val-red"><strong>4,865</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-3,484</strong></td>
+                        <td class="text-right font-mono">98.66%</td>
+                        <td class="text-right font-mono">96.11%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">19</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbrmisc</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_sbrmisc_sbr_generic</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">1,195</td>
+                        <td class="text-right font-mono val-red"><strong>4,568</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-3,373</strong></td>
+                        <td class="text-right font-mono">99.10%</td>
+                        <td class="text-right font-mono">96.97%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">20</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbrmisc/sbrmisc_inst</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_iosfsbr_nvl_sbrmisc_3</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">977</td>
+                        <td class="text-right font-mono val-red"><strong>4,248</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-3,271</strong></td>
+                        <td class="text-right font-mono">99.25%</td>
+                        <td class="text-right font-mono">97.17%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">21</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx/dtf_rpt_fromccu_r0</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_par_misc_dtf_repeater_5</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">191</td>
+                        <td class="text-right font-mono val-red"><strong>3,087</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-2,896</strong></td>
+                        <td class="text-right font-mono">89.45%</td>
+                        <td class="text-right font-mono">22.83%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">22</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/sbrd2d_cdie/sbrd2d_cdie_inst</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_iosfsbr_nvl_sbrd2d_cdie_3</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">1,159</td>
+                        <td class="text-right font-mono val-red"><strong>4,005</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-2,846</strong></td>
+                        <td class="text-right font-mono">98.86%</td>
+                        <td class="text-right font-mono">96.77%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">23</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/d2d_pmsb_mux_wrapper</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_pmsb_mux_wrapper</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">564</td>
+                        <td class="text-right font-mono val-red"><strong>3,046</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-2,482</strong></td>
+                        <td class="text-right font-mono">63.51%</td>
+                        <td class="text-right font-mono">3.12%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">24</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/d2d_gpsb_mux_wrapper</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_d2d_gpsb_mux_wrapper</td>
+                        <td><span class="tag tag-neutral">Core Logic / Datapath</span></td>
+                        <td class="text-right font-mono">473</td>
+                        <td class="text-right font-mono val-red"><strong>2,774</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-2,301</strong></td>
+                        <td class="text-right font-mono">70.42%</td>
+                        <td class="text-right font-mono">4.31%</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center font-mono">25</td>
+                        <td class="font-mono" style="max-width: 440px; word-break: break-all;"><strong>/cdu_dfd_misc_infdfx_pg/odd_top/en_dvp_odd_dvp_dvp</strong></td>
+                        <td class="font-mono" style="color: #94a3b8;">par_misc_dvp_6_6_4_1_4_0_1_0_0_0_1_839949</td>
+                        <td><span class="tag tag-neutral">Clock &amp; Reset Control</span></td>
+                        <td class="text-right font-mono">0</td>
+                        <td class="text-right font-mono val-red"><strong>2,028</strong></td>
+                        <td class="text-right font-mono val-green"><strong>-2,028</strong></td>
+                        <td class="text-right font-mono">0.00%</td>
+                        <td class="text-right font-mono">99.35%</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-dim); font-size: 0.85rem;">
+        Generated by <strong>ATPG Coverage Report Agent</strong> &bull; Cross-Run Comparison Flow &bull; Intel CTH DFT Automation
+    </footer>
+</div>
+</body>
+</html>
