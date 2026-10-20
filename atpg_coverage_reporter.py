@@ -18,6 +18,8 @@ import os
 import sys
 import glob
 import csv
+import re
+import getpass
 import argparse
 import subprocess
 import html as html_lib
@@ -2332,30 +2334,241 @@ def generate_menu_pages(git_repo_dir, results_subdir="results"):
     return generated_paths
 
 
+def get_current_user():
+    """
+    Returns the current username on the Linux system.
+    """
+    return os.environ.get("USER") or os.environ.get("LOGNAME") or getpass.getuser()
+
+
+def check_git_repo(path):
+    """
+    Checks if path exists, is a directory, and contains a .git folder.
+    Returns canonical path if valid, otherwise None.
+    """
+    if not path:
+        return None
+    expanded = os.path.abspath(os.path.expanduser(str(path).strip()))
+    if os.path.isdir(expanded) and os.path.isdir(os.path.join(expanded, ".git")):
+        return expanded
+    return None
+
+
+def get_git_remote_url(git_repo_dir):
+    """
+    Returns the remote origin URL for a given git repository directory, or empty string.
+    """
+    if not git_repo_dir or not os.path.isdir(os.path.join(git_repo_dir, ".git")):
+        return ""
+    try:
+        res = subprocess.run(
+            ["git", "-C", git_repo_dir, "config", "--get", "remote.origin.url"],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True
+        )
+        if res.returncode == 0:
+            return res.stdout.strip()
+    except Exception:
+        pass
+    return ""
+
+
+def get_github_web_url(git_repo_dir, ww_tag=None, results_subdir="results", page_name="index.html"):
+    """
+    Constructs the Windows / GitHub Pages web URL for the given repository and workweek.
+    Example: https://urimark.github.io/Agents/results/WW43.Tue/index.html
+    """
+    env_web = os.environ.get("ATPG_WEB_URL") or os.environ.get("ATPG_PAGES_BASE_URL")
+    sub = f"{results_subdir}/{ww_tag}/{page_name}" if ww_tag else page_name
+    if env_web:
+        base = env_web.rstrip("/")
+        return f"{base}/{sub}"
+
+    remote = get_git_remote_url(git_repo_dir) if git_repo_dir else ""
+    m = re.search(r"github\.com[:/](?:443/)?(?P<owner>[^/]+)/(?P<repo>[^/\.]+)(?:\.git)?", remote, re.IGNORECASE)
+    if m:
+        owner = m.group("owner")
+        repo = m.group("repo")
+        return f"https://{owner}.github.io/{repo}/{sub}"
+
+    current_user = get_current_user()
+    if current_user == "umark":
+        return f"https://urimark.github.io/Agents/{sub}"
+
+    return f"https://<github_user>.github.io/<repo>/{sub}"
+
+
+def get_report_urls(git_repo_dir, ww_tag=None, results_subdir="results", page_name="index.html"):
+    """
+    Computes both the Linux/Firefox file:// URL and Windows/Web (GitHub Pages) URL
+    for the generated results index or report.
+    """
+    if git_repo_dir:
+        if ww_tag:
+            local_path = os.path.abspath(os.path.join(git_repo_dir, results_subdir, ww_tag, page_name))
+        else:
+            local_path = os.path.abspath(os.path.join(git_repo_dir, page_name))
+    else:
+        local_path = os.path.abspath(page_name)
+    firefox_url = f"file://{local_path}"
+    windows_url = get_github_web_url(git_repo_dir, ww_tag=ww_tag, results_subdir=results_subdir, page_name=page_name)
+    return {
+        "local_path": local_path,
+        "firefox_url": firefox_url,
+        "windows_url": windows_url
+    }
+
+
+def print_access_urls(firefox_url, windows_url, title="ACCESS URLS FOR REPORT & PORTAL:"):
+    print("\n" + "="*80)
+    print(f"  {title}")
+    print("="*80)
+    print(f"  Firefox Path (Linux):")
+    print(f"  {firefox_url}")
+    print(f"\n  Windows Path (Web / GitHub Pages):")
+    print(f"  {windows_url}")
+    print("="*80 + "\n")
+
+
+def resolve_user_git_repo(repo_arg=None, require_git=False):
+    """
+    Resolves the local git repository path, ensuring git loading is separated per user.
+    User 'urimark' (at /nfs/site/disks/umark_wa01/gitprivateumark01/Agents) is only for user=umark.
+    Checks if user has https://urimark.github.io/Agents/results/ path, otherwise requests user to define git location.
+    """
+    current_user = get_current_user()
+
+    # 1. Explicit CLI argument passed by user
+    if repo_arg:
+        valid = check_git_repo(repo_arg)
+        if valid:
+            if current_user != "umark":
+                remote = get_git_remote_url(valid)
+                if "urimark" in valid or "urimark" in remote:
+                    print(f"[!] Warning: 'urimark' repository is only for user 'umark'.")
+                    print(f"    Current user is '{current_user}'. Please define your own git location.")
+                else:
+                    return valid
+            else:
+                return valid
+        else:
+            print(f"[!] Specified --results-repo '{repo_arg}' is not a valid git repository.")
+
+    # 2. Environment variables: ATPG_RESULTS_REPO or ATPG_GIT_REPO
+    env_repo = os.environ.get("ATPG_RESULTS_REPO") or os.environ.get("ATPG_GIT_REPO")
+    if env_repo:
+        valid = check_git_repo(env_repo)
+        if valid:
+            if current_user != "umark":
+                remote = get_git_remote_url(valid)
+                if "urimark" in valid or "urimark" in remote:
+                    print(f"[!] Warning: ATPG_RESULTS_REPO points to 'urimark', which is only for user 'umark'.")
+                else:
+                    return valid
+            else:
+                return valid
+
+    # 3. Persistent user config file: ~/.atpg_git_repo
+    config_file = os.path.expanduser("~/.atpg_git_repo")
+    if os.path.isfile(config_file):
+        try:
+            with open(config_file, "r") as cf:
+                saved_path = cf.read().strip()
+            valid = check_git_repo(saved_path)
+            if valid:
+                if current_user != "umark":
+                    remote = get_git_remote_url(valid)
+                    if not ("urimark" in valid or "urimark" in remote):
+                        return valid
+                else:
+                    return valid
+        except Exception:
+            pass
+
+    # 4. Check if user is 'umark' and has urimark repo (corresponds to https://urimark.github.io/Agents/results/)
+    if current_user == "umark":
+        umark_repo = "/nfs/site/disks/umark_wa01/gitprivateumark01/Agents"
+        valid = check_git_repo(umark_repo)
+        if valid:
+            return valid
+        # Fallback candidate for umark
+        alt_umark = os.path.expanduser("~/gitprivateumark01/Agents")
+        valid = check_git_repo(alt_umark)
+        if valid:
+            return valid
+
+    # 5. User candidate directories for other users
+    if current_user != "umark":
+        user_candidates = [
+            f"/nfs/site/disks/{current_user}_wa01/gitprivate{current_user}01/Agents",
+            f"/nfs/site/disks/{current_user}_wa01/Agents",
+            os.path.expanduser(f"~/gitprivate{current_user}01/Agents"),
+            os.path.expanduser("~/Agents"),
+            os.path.join(os.getcwd(), "Agents")
+        ]
+        for c in user_candidates:
+            valid = check_git_repo(c)
+            if valid:
+                remote = get_git_remote_url(valid)
+                if not ("urimark" in valid or "urimark" in remote):
+                    return valid
+
+    # 6. Not resolved yet: if require_git is True, request user to define git location
+    if require_git:
+        if current_user == "umark":
+            print(f"\n[!] Repository path for 'urimark' (/nfs/site/disks/umark_wa01/gitprivateumark01/Agents) not found.")
+        else:
+            print(f"\n[!] Loading to Git must be separated for each user; 'urimark' is only for user=umark.")
+            print(f"    Current user: '{current_user}'")
+
+        # Interactive prompt if running in an interactive terminal
+        if sys.stdin.isatty():
+            try:
+                prompt_text = f"[*] Please define your Git repository location (e.g. /path/to/Agents): "
+                user_input = input(prompt_text).strip()
+                if user_input:
+                    valid = check_git_repo(user_input)
+                    if valid:
+                        try:
+                            with open(config_file, "w") as cf:
+                                cf.write(valid + "\n")
+                            print(f"[✓] Saved git location to {config_file}")
+                        except Exception:
+                            pass
+                        return valid
+                    else:
+                        print(f"[!] '{user_input}' is not a valid git repository (no .git found).")
+            except (KeyboardInterrupt, EOFError):
+                print("\n[!] Input cancelled.")
+
+        # Non-interactive error & guidance
+        print("\n" + "="*80)
+        print(f"  [!] ACTION REQUIRED: Git Repository Location Not Defined for User '{current_user}'")
+        print("="*80)
+        print(f"  Note: 'urimark' (https://urimark.github.io/Agents/results/) is only for user 'umark'.")
+        print(f"  Loading to Git must be separated for each user.")
+        print(f"\n  Please define your local Git repository location using one of the following:")
+        print(f"    1. CLI option:         --results-repo <path_to_your_git_repo>")
+        print(f"    2. Environment var:    export ATPG_RESULTS_REPO=<path_to_your_git_repo>")
+        print(f"    3. Config file:        echo '<path_to_your_git_repo>' > ~/.atpg_git_repo")
+        print("="*80 + "\n")
+        return None
+
+    return None
+
+
 def save_to_git_results(report_files, ww_tag, git_repo_dir=None, commit_msg=None, push=True, results_subdir="results"):
     """
     Copies report files into <git_repo>/<results_subdir>/<ww_tag>/, updates menu pages, commits, and pushes to git.
+    Displays Firefox and Windows access paths upon completion.
     """
     if not git_repo_dir:
-        env_repo = os.environ.get("ATPG_RESULTS_REPO") or os.environ.get("ATPG_GIT_REPO")
-        candidates = [
-            env_repo,
-            "/nfs/site/disks/umark_wa01/gitprivateumark01/Agents",
-            os.path.join(os.getcwd(), "Agents"),
-            os.getcwd()
-        ]
-        for c in candidates:
-            if c and os.path.isdir(os.path.join(c, ".git")):
-                git_repo_dir = c
-                break
-
-    if git_repo_dir:
-        git_repo_dir = os.path.abspath(os.path.expanduser(git_repo_dir))
+        git_repo_dir = resolve_user_git_repo(require_git=True)
 
     if not git_repo_dir or not os.path.isdir(os.path.join(git_repo_dir, ".git")):
-        print(f"[!] Warning: Git repository not found at '{git_repo_dir}'. Skipping git load.")
+        print(f"[!] Warning: Valid Git repository not found at '{git_repo_dir}'. Skipping git load.")
         return False
 
+    git_repo_dir = os.path.abspath(os.path.expanduser(git_repo_dir))
     target_dir = os.path.join(git_repo_dir, results_subdir, ww_tag)
     os.makedirs(target_dir, exist_ok=True)
     print(f"\n[*] Storing reports to Git results folder: {target_dir}")
@@ -2390,15 +2603,17 @@ def save_to_git_results(report_files, ww_tag, git_repo_dir=None, commit_msg=None
                     print(f"[✓] Git push to origin main successful.")
                 else:
                     print(f"[!] Git push warning: {push_res.stdout.strip()}")
-            return True
         except Exception as e:
             print(f"[!] Git operation error: {e}")
-            return False
+
+    # Compute and display access URLs for Firefox (Linux) and Windows (Web / GitHub Pages)
+    urls = get_report_urls(git_repo_dir, ww_tag=ww_tag, results_subdir=results_subdir, page_name="index.html")
+    print_access_urls(urls["firefox_url"], urls["windows_url"], title="ACCESS URLS FOR ATPG COVERAGE OPERATION & PORTAL:")
     return True
 
 
 def main():
-    default_repo = os.environ.get("ATPG_RESULTS_REPO") or os.environ.get("ATPG_GIT_REPO") or "/nfs/site/disks/umark_wa01/gitprivateumark01/Agents"
+    current_user = get_current_user()
 
     parser = argparse.ArgumentParser(description="Automated ATPG Coverage & AU Breakdown Reporter")
     parser.add_argument("--run-dir", "-r", help="Path to ATPG run directory (Run 1)")
@@ -2417,15 +2632,26 @@ def main():
     parser.add_argument("--tessent-bin", default=DEFAULT_TESSENT, help="Path to Tessent executable")
     parser.add_argument("--license-server", default=DEFAULT_LICENSE, help="SALT license server")
     parser.add_argument("--top-n", type=int, default=30, help="Number of top coverage holes to detail")
-    parser.add_argument("--ww", nargs="?", const="auto", help="Save reports by WorkWeek and day folder (e.g., WW42.Wed). Pass without value for current WW, or specify explicitly.")
-    parser.add_argument("--save-ww", action="store_true", help="Enable saving reports under WorkWeek and day folder (e.g. results/WW42.Wed/)")
+    parser.add_argument(
+        "--ww",
+        nargs="?",
+        const="auto",
+        default="auto",
+        help="Organize reports by WorkWeek and day folder (e.g., WW43.Tue). Enabled by default. Pass custom WW tag or use --no-ww to disable."
+    )
+    parser.add_argument(
+        "--no-ww",
+        action="store_true",
+        help="Disable automatic WorkWeek and day folder partitioning."
+    )
+    parser.add_argument("--save-ww", action="store_true", help="Enable saving reports under WorkWeek and day folder (e.g. results/WW43.Tue/)")
     parser.add_argument("--load-git", "--git-push", action="store_true", help="Copy reports to git results folder, commit, and push to remote origin")
     parser.add_argument("--update-menu", action="store_true", help="Scan results folder and generate/update the interactive Menu portal pages (index.html)")
     parser.add_argument(
         "--results-repo", "--repo-path", "--git-repo",
         dest="results_repo",
-        default=default_repo,
-        help="Path to local git repository for results (defaults to $ATPG_RESULTS_REPO or /nfs/site/disks/umark_wa01/gitprivateumark01/Agents)"
+        default=None,
+        help="Path to local git repository for results (default: user-separated repo; for 'umark': /nfs/site/disks/umark_wa01/gitprivateumark01/Agents)"
     )
     parser.add_argument(
         "--results-subdir",
@@ -2435,33 +2661,50 @@ def main():
 
     args = parser.parse_args()
 
+    # Determine WorkWeek tag (default is enabled unless --no-ww is given)
+    ww_tag = None
+    if not args.no_ww:
+        ww_val = args.ww if args.ww else "auto"
+        ww_tag = get_workweek_tag(ww_val)
+        print(f"[*] WorkWeek Partitioning Enabled: {ww_tag}")
+
+    # Resolve Git repository location per user
+    git_repo = None
+    if args.load_git or args.update_menu:
+        git_repo = resolve_user_git_repo(repo_arg=args.results_repo, require_git=True)
+        if not git_repo and args.update_menu and not args.run_dir:
+            sys.exit(1)
+    else:
+        git_repo = resolve_user_git_repo(repo_arg=args.results_repo, require_git=False)
+
     # Handle standalone menu update
     if args.update_menu and not args.run_dir:
         print("[*] Generating and updating Portal Menu pages...")
-        generate_menu_pages(args.results_repo, results_subdir=args.results_subdir)
+        if not git_repo:
+            print("[!] Error: Git repository location required for --update-menu.")
+            sys.exit(1)
+        generate_menu_pages(git_repo, results_subdir=args.results_subdir)
         try:
             rel_idx = f"{args.results_subdir}/index.html"
-            subprocess.run(["git", "add", rel_idx, "index.html"], cwd=args.results_repo, check=True)
-            res = subprocess.run(["git", "commit", "-m", "Update ATPG coverage portal menu index"], cwd=args.results_repo, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+            subprocess.run(["git", "add", rel_idx, "index.html"], cwd=git_repo, check=True)
+            res = subprocess.run(["git", "commit", "-m", "Update ATPG coverage portal menu index"], cwd=git_repo, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
             if "nothing to commit" not in res.stdout:
-                subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=args.results_repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-                subprocess.run(["git", "push", "origin", "main"], cwd=args.results_repo, check=True)
+                subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=git_repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+                subprocess.run(["git", "push", "origin", "main"], cwd=git_repo, check=True)
                 print("[✓] Pushed menu portal updates to GitHub.")
             else:
                 print("[*] Menu index already up to date on Git.")
         except Exception as e:
             print(f"[!] Git warning: {e}")
+
+        active_ww = ww_tag if ww_tag else get_workweek_tag("auto")
+        urls = get_report_urls(git_repo, ww_tag=active_ww, results_subdir=args.results_subdir, page_name="index.html")
+        print_access_urls(urls["firefox_url"], urls["windows_url"], title="ACCESS URLS FOR UPDATED PORTAL MENU:")
         print("[✓] Portal menu update complete.")
         return
 
     if not args.run_dir:
         parser.error("Either --run-dir / -r or --update-menu is required.")
-
-    # Determine WorkWeek tag
-    ww_tag = None
-    if args.ww or args.save_ww or args.load_git:
-        ww_tag = get_workweek_tag(args.ww)
-        print(f"[*] WorkWeek Partitioning Enabled: {ww_tag}")
 
     # Resolve output directory
     if ww_tag:
@@ -2556,18 +2799,29 @@ def main():
         print("="*80 + "\n")
 
         # Load into Git results folder if requested
-        if args.load_git or args.ww or args.save_ww:
+        if args.load_git or args.save_ww:
             active_ww = ww_tag if ww_tag else get_workweek_tag("auto")
             files_to_sync = [run1_data["html_path"], run2_data["html_path"], comp_html, comp_csv]
             commit_title = f"Add ATPG comparison reports for {active_ww} ({label1} vs {label2})"
-            save_to_git_results(
-                report_files=files_to_sync,
-                ww_tag=active_ww,
-                git_repo_dir=args.results_repo,
-                commit_msg=commit_title,
-                push=True,
-                results_subdir=args.results_subdir
-            )
+            if git_repo:
+                save_to_git_results(
+                    report_files=files_to_sync,
+                    ww_tag=active_ww,
+                    git_repo_dir=git_repo,
+                    commit_msg=commit_title,
+                    push=True,
+                    results_subdir=args.results_subdir
+                )
+            else:
+                print("[!] Skipping Git upload: Git repository location not defined.")
+        else:
+            local_report = comp_html
+            print("\n" + "="*80)
+            print("  LOCAL ACCESS URL:")
+            print("="*80)
+            print(f"  Firefox Path (Linux):")
+            print(f"  file://{local_report}")
+            print("="*80 + "\n")
 
     # Single Run Mode
     else:
@@ -2605,18 +2859,29 @@ def main():
         print("="*80 + "\n")
 
         # Load into Git results folder if requested
-        if args.load_git or args.ww or args.save_ww:
+        if args.load_git or args.save_ww:
             active_ww = ww_tag if ww_tag else get_workweek_tag("auto")
             files_to_sync = [run_data["html_path"], run_data["csv_path"]]
             commit_title = f"Add ATPG coverage report for {active_ww} ({artifacts['fub']} {artifacts['recipe']})"
-            save_to_git_results(
-                report_files=files_to_sync,
-                ww_tag=active_ww,
-                git_repo_dir=args.results_repo,
-                commit_msg=commit_title,
-                push=True,
-                results_subdir=args.results_subdir
-            )
+            if git_repo:
+                save_to_git_results(
+                    report_files=files_to_sync,
+                    ww_tag=active_ww,
+                    git_repo_dir=git_repo,
+                    commit_msg=commit_title,
+                    push=True,
+                    results_subdir=args.results_subdir
+                )
+            else:
+                print("[!] Skipping Git upload: Git repository location not defined.")
+        else:
+            local_report = run_data["html_path"]
+            print("\n" + "="*80)
+            print("  LOCAL ACCESS URL:")
+            print("="*80)
+            print(f"  Firefox Path (Linux):")
+            print(f"  file://{local_report}")
+            print("="*80 + "\n")
 
 
 if __name__ == "__main__":
