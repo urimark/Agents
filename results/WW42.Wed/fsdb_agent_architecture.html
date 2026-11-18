@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FsdbDebugAgent — Architecture, Flowcharts &amp; Deep-Dive Guide</title>
+  <style>
+    :root {
+      --bg-dark: #0b1020;
+      --bg-card: #131b31;
+      --bg-card-alt: #182340;
+      --border-subtle: #28365e;
+      --text-main: #eaf0ff;
+      --text-muted: #9eb0d8;
+      --accent-blue: #38bdf8;
+      --accent-indigo: #818cf8;
+      --accent-purple: #c084fc;
+      --accent-emerald: #34d399;
+      --accent-amber: #fbbf24;
+      --accent-rose: #fb7185;
+      --accent-cyan: #22d3ee;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: radial-gradient(circle at top right, #172554 0%, var(--bg-dark) 55%);
+      color: var(--text-main);
+      line-height: 1.65;
+      padding: 36px 24px 72px;
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    /* Header Banner */
+    .hero {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(192, 132, 252, 0.16), rgba(52, 211, 153, 0.12));
+      border: 1px solid rgba(129, 140, 248, 0.35);
+      border-radius: 18px;
+      padding: 36px 40px;
+      margin-bottom: 36px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero h1 {
+      font-size: 2.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      font-size: 1.08rem;
+      color: var(--text-muted);
+      max-width: 960px;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .badge {
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .badge-blue    { background: rgba(56, 189, 248, 0.16); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.4); }
+    .badge-purple  { background: rgba(192, 132, 252, 0.16); color: #d8b4fe; border: 1px solid rgba(192, 132, 252, 0.4); }
+    .badge-emerald { background: rgba(52, 211, 153, 0.16); color: #6ee7b7; border: 1px solid rgba(52, 211, 153, 0.4); }
+    .badge-amber   { background: rgba(251, 191, 36, 0.16); color: #fde68a; border: 1px solid rgba(251, 191, 36, 0.4); }
+    .badge-rose    { background: rgba(251, 113, 133, 0.16); color: #fda4af; border: 1px solid rgba(251, 113, 133, 0.4); }
+
+    /* Section Headings */
+    .section {
+      margin-bottom: 42px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.55rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .section-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      color: #0b1020;
+    }
+
+    /* Flowchart Containers */
+    .flowchart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+      overflow-x: auto;
+    }
+
+    .flowchart-caption {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    svg.diagram {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Layer Grid */
+    .layer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 22px;
+    }
+
+    .layer-card {
+      background: var(--bg-card);
+      border-radius: 14px;
+      padding: 24px;
+      border: 1px solid var(--border-subtle);
+      border-top-width: 4px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28);
+    }
+
+    .layer-card.l1 { border-top-color: var(--accent-blue); }
+    .layer-card.l2 { border-top-color: var(--accent-purple); }
+    .layer-card.l3 { border-top-color: var(--accent-amber); }
+    .layer-card.l4 { border-top-color: var(--accent-emerald); }
+    .layer-card.l5 { border-top-color: var(--accent-rose); }
+    .layer-card.l6 { border-top-color: var(--accent-cyan); }
+
+    .layer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .layer-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .file-pill {
+      font-family: "JetBrains Mono", "Fira Code", monospace;
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.07);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .layer-card ul {
+      padding-left: 18px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .layer-card li {
+      margin-bottom: 8px;
+    }
+
+    .layer-card li strong {
+      color: var(--text-main);
+    }
+
+    code {
+      font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+      font-size: 0.86em;
+      background: rgba(15, 23, 42, 0.75);
+      color: #7dd3fc;
+      padding: 2px 6px;
+      border-radius: 5px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    /* Tables */
+    .table-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.93rem;
+    }
+
+    th {
+      background: var(--bg-card-alt);
+      color: #93c5fd;
+      font-weight: 700;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+    }
+
+    td {
+      padding: 13px 18px;
+      border-bottom: 1px solid rgba(40, 54, 94, 0.55);
+      color: var(--text-muted);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(56, 189, 248, 0.04);
+    }
+
+    .cmd-tag {
+      display: inline-block;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 0.83rem;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: rgba(52, 211, 153, 0.15);
+      color: #6ee7b7;
+      border: 1px solid rgba(52, 211, 153, 0.35);
+    }
+
+    .cmd-tag.proxy {
+      background: rgba(251, 191, 36, 0.15);
+      color: #fde68a;
+      border-color: rgba(251, 191, 36, 0.35);
+    }
+
+    .CaseStudyGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+      gap: 22px;
+      margin-top: 16px;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin: 14px 0;
+    }
+
+    .stat-box {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    .stat-val {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--accent-blue);
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- HERO -->
+    <header class="hero">
+      <h1>FsdbDebugAgent — Architecture &amp; Execution Flow</h1>
+      <p>
+        High-speed, persistent FSDB waveform reader and signal-tracking agent built on top of Synopsys Verdi's native C++
+        <code>FsdbReader</code> library (<code>libnffr.so</code>). It indexes multi-gigabyte gate-level simulation (GLS) waveforms once,
+        hosts a shared TCP loopback session, and serves sub-second signal lookups, edge/interval queries, and ATPG pattern correlations.
+      </p>
+      <div class="badge-row">
+        <span class="badge badge-blue">Layer 1: fsdb_agent.py (Agent / CLI / MCP)</span>
+        <span class="badge badge-purple">Layer 2: gls_common.py &amp; fsdb_reader_frames.py</span>
+        <span class="badge badge-amber">Layer 3: fsdb_reader_client.py (Protocol Client)</span>
+        <span class="badge badge-emerald">Layer 4: fsdb_talk_server.py (TCP Loopback Proxy)</span>
+        <span class="badge badge-rose">Layer 5: fsdb_query.cpp (C++ Native Daemon)</span>
+      </div>
+    </header>
+
+    <!-- SECTION 1: SYSTEM ARCHITECTURE FLOWCHART -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="section-num">1</span>
+        Layered System Architecture Flowchart
+      </h2>
+      <div class="flowchart-card">
+        <p class="flowchart-caption">
+          Color-coded architecture showing how user requests flow from CLI / Python API / MCP Server through the persistent TCP session proxy into the native C++ <code>fsdb_query</code> daemon.
+        </p>
+
+        <svg class="diagram" viewBox="0 0 1160 690" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
+            </marker>
+            <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#c084fc"/>
+            </marker>
+            <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#fbbf24"/>
+            </marker>
+            <marker id="arrow-emerald" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#34d399"/>
+            </marker>
+            <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#fb7185"/>
+            </marker>
+          </defs>
+
+          <!-- LAYER 1 BAND: ENTRY POINTS -->
+          <rect x="20" y="15" width="1120" height="105" rx="14" fill="#0f243c" stroke="#38bdf8" stroke-width="2"/>
+          <text x="40" y="42" fill="#7dd3fc" font-size="14" font-weight="bold">LAYER 1 — ENTRY INTERFACES (fsdb_agent.py)</text>
+
+          <rect x="45" y="54" width="320" height="52" rx="8" fill="#163558" stroke="#38bdf8" stroke-width="1.5"/>
+          <text x="205" y="76" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">CLI Interface (main)</text>
+          <text x="205" y="95" fill="#bae6fd" font-size="11.5" text-anchor="middle">--fsdb  --signal  --glob  --times-ns  -o</text>
+
+          <rect x="420" y="54" width="320" height="52" rx="8" fill="#163558" stroke="#38bdf8" stroke-width="1.5"/>
+          <text x="580" y="76" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">Python Context Manager API</text>
+          <text x="580" y="95" fill="#bae6fd" font-size="11.5" text-anchor="middle">with FsdbAgent(fsdb_path) as agent:</text>
+
+          <rect x="795" y="54" width="320" height="52" rx="8" fill="#163558" stroke="#38bdf8" stroke-width="1.5"/>
+          <text x="955" y="76" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">MCP JSON-RPC 2.0 Server (serve_mcp)</text>
+          <text x="955" y="95" fill="#bae6fd" font-size="11.5" text-anchor="middle">tools/list &amp; tools/call over stdio</text>
+
+          <!-- Arrows Layer 1 -> Layer 2 -->
+          <line x1="205" y1="106" x2="430" y2="155" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-blue)"/>
+          <line x1="580" y1="106" x2="580" y2="155" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-blue)"/>
+          <line x1="955" y1="106" x2="730" y2="155" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+          <!-- LAYER 2 BAND: AGENT & HELPERS -->
+          <rect x="20" y="145" width="1120" height="125" rx="14" fill="#23173e" stroke="#c084fc" stroke-width="2"/>
+          <text x="40" y="172" fill="#d8b4fe" font-size="14" font-weight="bold">LAYER 2 — ORCHESTRATION &amp; WAVEFORM HELPERS</text>
+
+          <rect x="45" y="185" width="275" height="68" rx="8" fill="#33205a" stroke="#c084fc" stroke-width="1.5"/>
+          <text x="182" y="207" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">gls_common.py</text>
+          <text x="182" y="226" fill="#e9d5ff" font-size="11.5" text-anchor="middle">infer_top_from_verilog() (*.v / *.v.gz)</text>
+          <text x="182" y="243" fill="#e9d5ff" font-size="11.5" text-anchor="middle">fsdb_registry_dir() &amp; readline_with_timeout()</text>
+
+          <rect x="355" y="185" width="450" height="68" rx="8" fill="#3b236b" stroke="#e879f9" stroke-width="2"/>
+          <text x="580" y="207" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">FsdbAgent Core (fsdb_agent.py)</text>
+          <text x="580" y="226" fill="#f5d0fe" font-size="11.5" text-anchor="middle">open() • normalize_signal() • lookup_signal()</text>
+          <text x="580" y="243" fill="#f5d0fe" font-size="11.5" text-anchor="middle">track_signal() • pattern_windows() • signal_values()</text>
+
+          <rect x="840" y="185" width="275" height="68" rx="8" fill="#33205a" stroke="#c084fc" stroke-width="1.5"/>
+          <text x="977" y="207" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">fsdb_reader_frames.py</text>
+          <text x="977" y="226" fill="#e9d5ff" font-size="11.5" text-anchor="middle">clock_frame_code() (000 / 010 / 011)</text>
+          <text x="977" y="243" fill="#e9d5ff" font-size="11.5" text-anchor="middle">clock_transitions() &amp; align_clock_frames()</text>
+
+          <line x1="355" y1="219" x2="322" y2="219" stroke="#c084fc" stroke-width="1.8" marker-end="url(#arrow-purple)"/>
+          <line x1="805" y1="219" x2="838" y2="219" stroke="#c084fc" stroke-width="1.8" marker-end="url(#arrow-purple)"/>
+
+          <!-- Arrows Layer 2 -> Layer 3 -->
+          <line x1="470" y1="253" x2="310" y2="318" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow-amber)"/>
+          <line x1="690" y1="253" x2="820" y2="318" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow-amber)"/>
+
+          <!-- LAYER 3 BAND: CLIENT & SESSION DISCOVERY -->
+          <rect x="20" y="295" width="1120" height="115" rx="14" fill="#2e2310" stroke="#fbbf24" stroke-width="2"/>
+          <text x="40" y="320" fill="#fde68a" font-size="14" font-weight="bold">LAYER 3 — CLIENT &amp; SESSION REGISTRY (fsdb_reader_client.py)</text>
+
+          <rect x="45" y="330" width="330" height="66" rx="8" fill="#453314" stroke="#fbbf24" stroke-width="1.5"/>
+          <text x="210" y="352" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">ensure_persistent_session()</text>
+          <text x="210" y="370" fill="#fef3c7" font-size="11.5" text-anchor="middle">find_matching_session() + mtime &amp; PING check</text>
+          <text x="210" y="387" fill="#fef3c7" font-size="11.5" text-anchor="middle">Spawns fsdb_talk_server.py if none active</text>
+
+          <rect x="415" y="330" width="250" height="66" rx="8" fill="#3b2b10" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5,3"/>
+          <text x="540" y="352" fill="#fde68a" font-size="12.5" font-weight="bold" text-anchor="middle">Session Registry JSON</text>
+          <text x="540" y="370" fill="#fef3c7" font-size="11" text-anchor="middle">~/.cache/fsdb_talk_sessions/</text>
+          <text x="540" y="387" fill="#fef3c7" font-size="11" text-anchor="middle">fsdb_&lt;sid&gt;.json (host, port, pid)</text>
+
+          <rect x="705" y="330" width="410" height="66" rx="8" fill="#453314" stroke="#fbbf24" stroke-width="1.5"/>
+          <text x="910" y="352" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">FsdbReaderClient</text>
+          <text x="910" y="370" fill="#fef3c7" font-size="11.5" text-anchor="middle">Caches _id_cache &amp; _loaded_ids • _encode_target_to_bits()</text>
+          <text x="910" y="387" fill="#fef3c7" font-size="11.5" text-anchor="middle">list_signals() • add_signals() • load() • value_at() • clock_edges() • find_intervals()</text>
+
+          <line x1="375" y1="363" x2="413" y2="363" stroke="#fbbf24" stroke-width="1.8" marker-end="url(#arrow-amber)"/>
+
+          <!-- Arrows Layer 3 -> Layer 4 -->
+          <line x1="210" y1="396" x2="340" y2="462" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+          <line x1="910" y1="396" x2="780" y2="462" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+
+          <!-- LAYER 4 BAND: PERSISTENT TCP SERVER -->
+          <rect x="20" y="432" width="1120" height="105" rx="14" fill="#0d2e26" stroke="#34d399" stroke-width="2"/>
+          <text x="40" y="457" fill="#6ee7b7" font-size="14" font-weight="bold">LAYER 4 — SHARED TCP LOOPBACK PROXY (fsdb_talk_server.py)</text>
+
+          <rect x="140" y="468" width="410" height="56" rx="8" fill="#134639" stroke="#34d399" stroke-width="1.5"/>
+          <text x="345" y="490" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">SessionServer (127.0.0.1:&lt;port&gt;)</text>
+          <text x="345" y="509" fill="#a7f3d0" font-size="11.5" text-anchor="middle">Handles PING / STATUS / SHUTDOWN • Rewrites QUIT → PING</text>
+
+          <rect x="610" y="468" width="410" height="56" rx="8" fill="#134639" stroke="#34d399" stroke-width="1.5"/>
+          <text x="815" y="490" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">DaemonProxy (Mutex Serialized)</text>
+          <text x="815" y="509" fill="#a7f3d0" font-size="11.5" text-anchor="middle">Streams line protocol over stdin/stdout until "END\n"</text>
+
+          <line x1="550" y1="496" x2="608" y2="496" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+
+          <!-- Arrows Layer 4 -> Layer 5 -->
+          <line x1="815" y1="524" x2="600" y2="590" stroke="#fb7185" stroke-width="2.2" marker-end="url(#arrow-rose)"/>
+
+          <!-- LAYER 5 BAND: NATIVE C++ DAEMON -->
+          <rect x="20" y="560" width="1120" height="115" rx="14" fill="#331221" stroke="#fb7185" stroke-width="2"/>
+          <text x="40" y="585" fill="#fda4af" font-size="14" font-weight="bold">LAYER 5 — NATIVE C++ FSDB ENGINE (fsdb_daemon/fsdb_query.cpp + Synopsys libnffr.so)</text>
+
+          <rect x="45" y="596" width="330" height="64" rx="8" fill="#4c192f" stroke="#fb7185" stroke-width="1.5"/>
+          <text x="210" y="618" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">Scope/Var Tree Index (g_ctx.vars)</text>
+          <text x="210" y="636" fill="#fecdd3" font-size="11.5" text-anchor="middle">ffrReadScopeVarTree() → unordered_map</text>
+          <text x="210" y="652" fill="#fecdd3" font-size="11.5" text-anchor="middle">full/hier/path → (idcode, bit_size, bpb)</text>
+
+          <rect x="415" y="596" width="350" height="64" rx="8" fill="#4c192f" stroke="#fb7185" stroke-width="1.5"/>
+          <text x="590" y="618" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">Command Dispatcher &amp; VC Traversal</text>
+          <text x="590" y="636" fill="#fecdd3" font-size="11.5" text-anchor="middle">TSCALE • LIST • ADD • LOAD • MAX_TIME</text>
+          <text x="590" y="652" fill="#fecdd3" font-size="11.5" text-anchor="middle">VALUE • EDGES • INTERVAL (g_trvs handles)</text>
+
+          <rect x="805" y="596" width="310" height="64" rx="8" fill="#5b1d37" stroke="#f43f5e" stroke-width="2"/>
+          <text x="960" y="618" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">FSDB Waveform File on Disk</text>
+          <text x="960" y="636" fill="#ffe4e6" font-size="11.5" text-anchor="middle">ffrOpen3(".../inter.fsdb")</text>
+          <text x="960" y="652" fill="#ffe4e6" font-size="11.5" text-anchor="middle">ffrLoadSignals() • ffrGotoXTag()</text>
+
+          <line x1="415" y1="628" x2="377" y2="628" stroke="#fb7185" stroke-width="1.8" marker-end="url(#arrow-rose)"/>
+          <line x1="765" y1="628" x2="803" y2="628" stroke="#fb7185" stroke-width="1.8" marker-end="url(#arrow-rose)"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- SECTION 2: SIGNAL LOOKUP & TRACKING EXECUTION FLOWCHART -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="section-num">2</span>
+        Step-by-Step Signal Lookup &amp; Tracking Flowchart
+      </h2>
+      <div class="flowchart-card">
+        <p class="flowchart-caption">
+          Detailed control-flow graph when <code>agent.track_signal(signal, start_ns, end_ns)</code> is invoked.
+        </p>
+
+        <svg class="diagram" viewBox="0 0 1160 620" xmlns="http://www.w3.org/2000/svg">
+          <!-- Step 1: Start -->
+          <rect x="40" y="25" width="260" height="64" rx="32" fill="#163558" stroke="#38bdf8" stroke-width="2"/>
+          <text x="170" y="53" fill="#ffffff" font-size="13.5" font-weight="bold" text-anchor="middle">1. Request: track_signal()</text>
+          <text x="170" y="72" fill="#bae6fd" font-size="11.5" text-anchor="middle">Signal name + [start_ns, end_ns]</text>
+
+          <line x1="300" y1="57" x2="355" y2="57" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+          <!-- Step 2: Top Scope Inference -->
+          <rect x="360" y="25" width="330" height="64" rx="10" fill="#33205a" stroke="#c084fc" stroke-width="2"/>
+          <text x="525" y="49" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">2. Top-Scope Inference &amp; Normalization</text>
+          <text x="525" y="67" fill="#e9d5ff" font-size="11.5" text-anchor="middle">infer_top_from_verilog() → mentor_tb.par_misc_inst</text>
+          <text x="525" y="82" fill="#e9d5ff" font-size="11" text-anchor="middle">Convert dots (.) to slashes (/) for Verdi FSDB keys</text>
+
+          <line x1="690" y1="57" x2="745" y2="57" stroke="#c084fc" stroke-width="2" marker-end="url(#arrow-purple)"/>
+
+          <!-- Step 3: Session Check -->
+          <rect x="750" y="20" width="365" height="74" rx="10" fill="#453314" stroke="#fbbf24" stroke-width="2"/>
+          <text x="932" y="43" fill="#fde68a" font-size="13" font-weight="bold" text-anchor="middle">3. Persistent Session Discovery</text>
+          <text x="932" y="61" fill="#fef3c7" font-size="11.5" text-anchor="middle">Check ~/.cache/fsdb_talk_sessions/fsdb_*.json</text>
+          <text x="932" y="79" fill="#6ee7b7" font-size="11.5" text-anchor="middle">Hit: Reuse TCP port (0s wait) | Miss: Spawn server</text>
+
+          <!-- Down arrow from Step 3 to Step 4 -->
+          <path d="M 932 94 L 932 135 L 220 135 L 220 165" fill="none" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow-amber)"/>
+
+          <!-- Step 4: Lookup Signal via ADD -->
+          <rect x="40" y="170" width="360" height="80" rx="10" fill="#134639" stroke="#34d399" stroke-width="2"/>
+          <text x="220" y="195" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">4. Signal Resolution (lookup_signal)</text>
+          <text x="220" y="214" fill="#a7f3d0" font-size="11.5" text-anchor="middle">Send "ADD &lt;path&gt;" to fsdb_query:</text>
+          <text x="220" y="232" fill="#a7f3d0" font-size="11" text-anchor="middle">Tries exact path → leading '/' → unique '/leaf' tail</text>
+
+          <line x1="400" y1="210" x2="465" y2="210" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+
+          <!-- Decision Diamond: Resolved? -->
+          <polygon points="555,160 645,210 555,260 465,210" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="555" y="206" fill="#ffffff" font-size="12.5" font-weight="bold" text-anchor="middle">Resolved</text>
+          <text x="555" y="222" fill="#7dd3fc" font-size="11.5" text-anchor="middle">idcode?</text>
+
+          <!-- Miss Branch (Right) -->
+          <line x1="645" y1="210" x2="735" y2="210" stroke="#fb7185" stroke-width="2" marker-end="url(#arrow-rose)"/>
+          <text x="690" y="200" fill="#fda4af" font-size="11.5" font-weight="bold" text-anchor="middle">MISS</text>
+
+          <rect x="740" y="168" width="375" height="84" rx="10" fill="#4c192f" stroke="#fb7185" stroke-width="2"/>
+          <text x="927" y="192" fill="#fda4af" font-size="13" font-weight="bold" text-anchor="middle">Fallback Glob Search (LIST &lt;glob&gt;)</text>
+          <text x="927" y="211" fill="#fecdd3" font-size="11.5" text-anchor="middle">Lists sibling pins under *&lt;parent_scope&gt;/*</text>
+          <text x="927" y="229" fill="#fecdd3" font-size="11.5" text-anchor="middle">Returns candidate_matches &amp; sibling_signals</text>
+
+          <!-- Hit Branch (Down) -->
+          <line x1="555" y1="260" x2="555" y2="315" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+          <text x="580" y="292" fill="#6ee7b7" font-size="11.5" font-weight="bold">HIT (idcode, bit_size)</text>
+
+          <!-- Step 5: Activate Signal Value Changes -->
+          <rect x="355" y="320" width="400" height="72" rx="10" fill="#163558" stroke="#38bdf8" stroke-width="2"/>
+          <text x="555" y="345" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">5. Materialize Waveform VCs in Memory</text>
+          <text x="555" y="364" fill="#bae6fd" font-size="11.5" text-anchor="middle">Send "ADD &lt;sig&gt;" + "LOAD" → ffrLoadSignals()</text>
+          <text x="555" y="381" fill="#bae6fd" font-size="11.5" text-anchor="middle">Create cached VC traverse handle (ffrCreateVCTraverseHandle)</text>
+
+          <!-- Split to Scalar vs Vector & Edges -->
+          <line x1="355" y1="356" x2="220" y2="356" stroke="#38bdf8" stroke-width="2"/>
+          <line x1="220" y1="356" x2="220" y2="425" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+          <line x1="555" y1="392" x2="555" y2="425" stroke="#c084fc" stroke-width="2" marker-end="url(#arrow-purple)"/>
+
+          <line x1="755" y1="356" x2="930" y2="356" stroke="#fbbf24" stroke-width="2"/>
+          <line x1="930" y1="356" x2="930" y2="425" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow-amber)"/>
+
+          <!-- Box 6A: Endpoints & Edges -->
+          <rect x="40" y="430" width="350" height="82" rx="10" fill="#163558" stroke="#38bdf8" stroke-width="1.8"/>
+          <text x="215" y="454" fill="#7dd3fc" font-size="13" font-weight="bold" text-anchor="middle">6A. Endpoint Values &amp; Clock Edges</text>
+          <text x="215" y="473" fill="#e0f2fe" font-size="11.5" text-anchor="middle">MAX_TIME → fsdb_max_time_ns</text>
+          <text x="215" y="490" fill="#e0f2fe" font-size="11.5" text-anchor="middle">VALUE at start_ns &amp; end_ns + sample_times_ns</text>
+          <text x="215" y="505" fill="#e0f2fe" font-size="11.5" text-anchor="middle">EDGES start_ns end_ns → Rising (R) / Falling (F)</text>
+
+          <!-- Box 6B: Scalar 1-Bit State Intervals -->
+          <rect x="410" y="430" width="320" height="82" rx="10" fill="#33205a" stroke="#c084fc" stroke-width="1.8"/>
+          <text x="570" y="454" fill="#d8b4fe" font-size="13" font-weight="bold" text-anchor="middle">6B. Scalar (1-bit) State Intervals</text>
+          <text x="570" y="473" fill="#f3e8ff" font-size="11.5" text-anchor="middle">Runs INTERVAL for states '0', '1', 'x', 'z'</text>
+          <text x="570" y="490" fill="#f3e8ff" font-size="11.5" text-anchor="middle">Counts state intervals &amp; sorts all interval</text>
+          <text x="570" y="505" fill="#f3e8ff" font-size="11.5" text-anchor="middle">starts into chronological transitions[]</text>
+
+          <!-- Box 6C: Multi-Bit Vector / Pattern Windows -->
+          <rect x="750" y="430" width="365" height="82" rx="10" fill="#453314" stroke="#fbbf24" stroke-width="1.8"/>
+          <text x="932" y="454" fill="#fde68a" font-size="13" font-weight="bold" text-anchor="middle">6C. Multi-Bit Vectors &amp; ATPG Correlation</text>
+          <text x="932" y="473" fill="#fef3c7" font-size="11.5" text-anchor="middle">Vectors: samples VALUE at start, edges, end</text>
+          <text x="932" y="490" fill="#fef3c7" font-size="11.5" text-anchor="middle">pattern_windows(): INTERVAL on _procedure_string</text>
+          <text x="932" y="505" fill="#fef3c7" font-size="11.5" text-anchor="middle">(LOAD, SHIFT, LAUNCH_CAPTURE) &amp; _pat_num</text>
+
+          <!-- Merge into Final Report -->
+          <line x1="215" y1="512" x2="480" y2="555" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+          <line x1="570" y1="512" x2="570" y2="555" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+          <line x1="932" y1="512" x2="660" y2="555" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+
+          <rect x="340" y="555" width="460" height="52" rx="26" fill="#134639" stroke="#34d399" stroke-width="2.2"/>
+          <text x="570" y="579" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">7. Output Structured JSON Report (signal_report.json)</text>
+          <text x="570" y="597" fill="#a7f3d0" font-size="11.5" text-anchor="middle">idcode • bit_size • edges • state_intervals_ns • transitions • sampled_values</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- SECTION 3: DETAILED MODULE EXPLANATION -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="section-num">3</span>
+        Detailed Module-by-Module Explanation
+      </h2>
+
+      <div class="layer-grid">
+        <div class="layer-card l1">
+          <div class="layer-header">
+            <span class="layer-title" style="color: var(--accent-blue);">1. Agent &amp; Tool Server</span>
+            <span class="file-pill">fsdb_agent.py</span>
+          </div>
+          <ul>
+            <li><strong>Auto-Session Management (<code>ensure_persistent_session</code>)</strong>: Checks if a live <code>fsdb_talk_server</code> already exists for the target FSDB. If not, spawns one in the background and waits until indexing finishes.</li>
+            <li><strong>Smart Signal Resolution (<code>lookup_signal</code>)</strong>: Converts dotted paths to slash-separated FSDB paths, prepends the inferred top scope, attempts exact <code>ADD</code>, and lists sibling pins on the same cell instance.</li>
+            <li><strong>Complete Signal Tracking (<code>track_signal</code>)</strong>: Loads signal value changes, extracts initial/final values, rising/falling edges, full <code>0/1/x/z</code> state intervals, and chronological transitions.</li>
+            <li><strong>3 Execution Modes</strong>: Python context manager (<code>with FsdbAgent(...)</code>), CLI tool, and stdio JSON-RPC <strong>MCP Server</strong> (<code>--mcp-server</code>).</li>
+          </ul>
+        </div>
+
+        <div class="layer-card l2">
+          <div class="layer-header">
+            <span class="layer-title" style="color: var(--accent-purple);">2. Top Inference &amp; Frame Helpers</span>
+            <span class="file-pill">gls_common.py / fsdb_reader_frames.py</span>
+          </div>
+          <ul>
+            <li><strong>Top-Scope Inference (<code>infer_top_from_verilog</code>)</strong>: Scans testbench Verilog files (<code>*.v</code>, <code>*.v.gz</code>) next to the FSDB for the wrapper module (<code>mentor_tb</code>) and <code>SIM_INSTANCE_NAME</code> (e.g. <code>par_misc_inst</code>) to infer <code>mentor_tb.par_misc_inst</code>.</li>
+            <li><strong>Tessent Frame Sampling (<code>clock_frame_code</code>)</strong>: Samples signals <code>1 ps</code> before and after clock edges inside capture windows to generate 3-bit frame codes (<code>000</code> steady, <code>010</code> rising pulse, <code>011</code> half pulse).</li>
+            <li><strong>Glitch &amp; X-Pulse Detection (<code>clock_transitions</code>)</strong>: Detects intermediate <code>x</code>/<code>z</code> excursions between <code>0/1</code> edges.</li>
+          </ul>
+        </div>
+
+        <div class="layer-card l3">
+          <div class="layer-header">
+            <span class="layer-title" style="color: var(--accent-amber);">3. Line-Protocol Client</span>
+            <span class="file-pill">fsdb_reader_client.py</span>
+          </div>
+          <ul>
+            <li><strong>Stale-Proof Session Discovery (<code>find_matching_session</code>)</strong>: Compares canonical <code>realpath(fsdb_path)</code>, verifies that <code>session.started_at &gt;= fsdb_mtime</code> (preventing stale reads after a re-simulation), and sends <code>PING</code>.</li>
+            <li><strong>Client-Side Signal Cache</strong>: Caches <code>signal_path -&gt; (idcode, bit_size)</code> in <code>_id_cache</code> and tracks loaded IDCodes in <code>_loaded_ids</code> so repeated queries skip redundant <code>ADD</code> and <code>LOAD</code> calls.</li>
+            <li><strong>Condition Bit Encoding (<code>_encode_target_to_bits</code>)</strong>: Converts integers, bit-strings, or ASCII strings (like <code>"LOAD"</code> or <code>"LAUNCH_CAPTURE"</code>) into MSB-first bit strings for <code>INTERVAL</code> queries.</li>
+          </ul>
+        </div>
+
+        <div class="layer-card l4">
+          <div class="layer-header">
+            <span class="layer-title" style="color: var(--accent-emerald);">4. Shared TCP Loopback Proxy</span>
+            <span class="file-pill">fsdb_talk_server.py</span>
+          </div>
+          <ul>
+            <li><strong>Eliminates Repeated Tree Walks</strong>: A 30–50 GB post-synthesis FSDB takes ~60–90 seconds to index its scope tree. <code>fsdb_talk_server</code> keeps <code>fsdb_query</code> open in RAM so subsequent queries complete in milliseconds.</li>
+            <li><strong>Thread-Safe Serialization (<code>DaemonProxy</code>)</strong>: Protects the daemon's <code>stdin</code>/<code>stdout</code> pipe with a mutex lock so multiple concurrent clients can safely query the same daemon.</li>
+            <li><strong>Quit Protection</strong>: Rewrites client <code>QUIT</code> commands to <code>PING</code> so closing a client never kills the shared daemon; only explicit <code>SHUTDOWN</code> terminates the server.</li>
+          </ul>
+        </div>
+
+        <div class="layer-card l5">
+          <div class="layer-header">
+            <span class="layer-title" style="color: var(--accent-rose);">5. Native C++ FSDB Query Daemon</span>
+            <span class="file-pill">fsdb_daemon/fsdb_query.cpp</span>
+          </div>
+          <ul>
+            <li><strong>Fast Scope/Variable Indexing (<code>tree_cb</code>)</strong>: Uses <code>ffrReadScopeVarTree()</code> to index millions of signals into <code>std::unordered_map&lt;string, VarInfo&gt;</code>, stripping vector range suffixes (e.g. <code>[160:0]</code>) for clean lookup.</li>
+            <li><strong>Lazy Signal Loading (<code>cmd_add</code> / <code>cmd_load</code>)</strong>: Queues variable IDCodes with <code>ffrAddToSignalList()</code> and materializes value changes in batch via <code>ffrLoadSignals()</code>.</li>
+            <li><strong>Multi-Signal Plane Sweep (<code>cmd_interval</code>)</strong>: Evaluates conjunctive conditions across multiple signals simultaneously by advancing a min-heap / priority cursor over each signal's next transition tag (<code>ffrGotoNextVC</code>).</li>
+          </ul>
+        </div>
+
+        <div class="layer-card l6">
+          <div class="layer-header">
+            <span class="layer-title" style="color: var(--accent-cyan);">6. MCP Tools Registry</span>
+            <span class="file-pill">JSON-RPC 2.0 stdio</span>
+          </div>
+          <ul>
+            <li><code>fsdb_info</code>: Returns FSDB path, <code>time_scale</code>, <code>max_time_ns</code>, <code>inferred_top</code>, and active daemon session info.</li>
+            <li><code>lookup_signal</code>: Resolves exact hierarchical path and lists sibling pins or fuzzy wildcard candidates.</li>
+            <li><code>track_signal</code>: Full transition, edge, and state-interval tracker over <code>[start_ns, end_ns]</code>.</li>
+            <li><code>signal_values</code>: Batch timestamp sampler for multiple signals.</li>
+            <li><code>list_signals</code> &amp; <code>pattern_windows</code>: Glob search and ATPG <code>LOAD</code> / <code>LAUNCH_CAPTURE</code> window finder.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: WIRE PROTOCOL REFERENCE TABLE -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="section-num">4</span>
+        Daemon &amp; Proxy Wire Protocol Reference
+      </h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Layer</th>
+              <th>Request Syntax</th>
+              <th>Response Format (Terminated by <code>END\n</code>)</th>
+              <th>Underlying Verdi / Proxy Operation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="cmd-tag">TSCALE</span></td>
+              <td>C++ Daemon</td>
+              <td><code>TSCALE</code></td>
+              <td><code>OK &lt;scale_str&gt;\nEND</code> (e.g. <code>OK 1ps</code>)</td>
+              <td>Returns scale string from <code>ffrGetScaleUnit()</code>.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-tag">MAX_TIME</span></td>
+              <td>C++ Daemon</td>
+              <td><code>MAX_TIME</code></td>
+              <td><code>OK &lt;max_ns&gt;\nEND</code> (e.g. <code>OK 2028764.000000</code>)</td>
+              <td>Calls <code>ffrGetMaxXTag()</code> and converts ticks to nanoseconds.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-tag">LIST</span></td>
+              <td>C++ Daemon</td>
+              <td><code>LIST [&lt;fnmatch_glob&gt;]</code></td>
+              <td><code>OK &lt;count&gt;\n&lt;path&gt;\t&lt;idcode&gt;\t&lt;bits&gt;\n...END</code></td>
+              <td>Filters <code>g_ctx.vars</code> using <code>fnmatch(glob, path, FNM_NOESCAPE)</code>.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-tag">ADD</span></td>
+              <td>C++ Daemon</td>
+              <td><code>ADD &lt;hier_path&gt;</code></td>
+              <td><code>OK &lt;idcode&gt;\t&lt;bit_size&gt;\nEND</code></td>
+              <td>Looks up signal (exact, <code>/</code> prefix, or unique tail) &amp; calls <code>ffrAddToSignalList()</code>.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-tag">LOAD</span></td>
+              <td>C++ Daemon</td>
+              <td><code>LOAD</code></td>
+              <td><code>OK &lt;total_loaded&gt;\nEND</code></td>
+              <td>Calls <code>ffrLoadSignals()</code> if new signals were added since the last load.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-tag">VALUE</span></td>
+              <td>C++ Daemon</td>
+              <td><code>VALUE &lt;idcode&gt; &lt;time_ns&gt;</code></td>
+              <td><code>OK &lt;bit_str&gt;\nEND</code> (chars: <code>0, 1, x, z</code>)</td>
+              <td>Converts <code>time_ns</code> to tag, calls <code>ffrGotoXTag()</code> + <code>ffrGetVC()</code>.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-tag">EDGES</span></td>
+              <td>C++ Daemon</td>
+              <td><code>EDGES &lt;idcode&gt; &lt;a_ns&gt; &lt;b_ns&gt;</code></td>
+              <td><code>OK &lt;count&gt;\n&lt;R|F&gt;\t&lt;time_ns&gt;\n...END</code></td>
+              <td>Walks value changes in <code>[a_ns, b_ns]</code> via <code>ffrGotoNextVC()</code>.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-tag">INTERVAL</span></td>
+              <td>C++ Daemon</td>
+              <td><code>INTERVAL &lt;a_ns&gt; &lt;b_ns&gt; &lt;k&gt; (&lt;id&gt; &lt;target&gt;)...</code></td>
+              <td><code>OK &lt;count&gt;\n&lt;start_ns&gt;\t&lt;end_ns&gt;\n...END</code></td>
+              <td>Synchronous plane-sweep across <code>k</code> signals where all match <code>target</code>.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-tag proxy">PING / STATUS / SHUTDOWN</span></td>
+              <td>TCP Proxy</td>
+              <td><code>PING</code> | <code>STATUS</code> | <code>SHUTDOWN</code></td>
+              <td><code>OK pong</code> | <code>OK {json}</code> | <code>OK bye</code></td>
+              <td>Handled by <code>fsdb_talk_server.py</code> for session health &amp; lifecycle control.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 5: LIVE CASE STUDY (.si and .rb) -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="section-num">5</span>
+        Tracked Signal Case Study: <code>.si</code> &amp; Reset Status <code>.rb</code>
+      </h2>
+      <p style="color: var(--text-muted); margin-bottom: 14px;">
+        Target Cell: <code>mentor_tb.par_misc_inst.d2d_rx_rpt_misc_wrap.cfi1_rx_data_to_gfifo_vnn_rpt.auto_vector_clk_gate_vec_rep_ff_reg_1_116_MBIT_..._1_101</code>
+        (16-bit Multi-Bit Scan DFF <code>i0mfuzg03ab1q02x8</code>)
+      </p>
+
+      <div class="CaseStudyGrid">
+        <div class="layer-card l1">
+          <div class="layer-header">
+            <span class="layer-title" style="color: var(--accent-blue);">Scan Input Pin (<code>.si</code>)</span>
+            <span class="file-pill">idcode = 1437656 (1-bit)</span>
+          </div>
+          <div class="stat-row">
+            <div class="stat-box">
+              <div class="stat-label">Initial → Final</div>
+              <div class="stat-val">'x' → '0'</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Total Edges</div>
+              <div class="stat-val">54,972</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">First Edge (F)</div>
+              <div class="stat-val">66,515.0 ns</div>
+            </div>
+          </div>
+          <ul>
+            <li><strong>State Intervals</strong>: <code>'0'</code>: 27,487 intervals | <code>'1'</code>: 27,485 intervals | <code>'x'</code>: 4 intervals (<code>[0, 66515]</code>, <code>[66526, 66531]</code>, <code>[66542, 66547]</code>, <code>[66558, 66563] ns</code>).</li>
+            <li><strong>Netlist Driver</strong>: Driven by net <code>dftscan227652</code> from wrapper hold mux <code>wrp_hold_mux_231402</code> (<code>.a</code> = self-hold feedback from <code>o1</code>, <code>.b</code> = upstream scan chain <code>dftopt40</code>, <code>.sa</code> = <code>~test_se140</code>).</li>
+          </ul>
+        </div>
+
+        <div class="layer-card l4">
+          <div class="layer-header">
+            <span class="layer-title" style="color: var(--accent-emerald);">Reset Bar Pin (<code>.rb</code>)</span>
+            <span class="file-pill">idcode = 1437613 (1-bit)</span>
+          </div>
+          <div class="stat-row">
+            <div class="stat-box">
+              <div class="stat-label">Initial → Final</div>
+              <div class="stat-val">'x' → '0'</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Total Edges</div>
+              <div class="stat-val">4,670</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">First Edge (R)</div>
+              <div class="stat-val">66,517.5 ns</div>
+            </div>
+          </div>
+          <ul>
+            <li><strong>Cell Function</strong>: Active-low <strong>synchronous reset</strong> gating functional data inputs (<code>int[1..16] = d[1..16] &amp; rb</code>), active on <code>posedge clk</code> when <code>ssb == 1</code>.</li>
+            <li><strong>Netlist Driver</strong>: Driven by <code>~rst_ff_reg_1.o</code> (inverted output of local reset pipeline scan flop <code>rst_ff_reg_1</code>).</li>
+            <li><strong>State Intervals</strong>: <code>'x'</code> during <code>TEST_SETUP</code> (<code>[0, 66517.5] ns</code>); <code>'1'</code> (deasserted) across 2,335 intervals (including <code>SHIFT</code> windows and 1,575 <code>LAUNCH_CAPTURE</code> windows); <code>'0'</code> (asserted) across 2,335 intervals (including 1,576 <code>LAUNCH_CAPTURE</code> windows).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>
